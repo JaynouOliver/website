@@ -3050,7 +3050,7 @@ tbody.collapse.in{
     background-color:transparent
 }
 .navbar-inverse .navbar-nav>li>a,.navbar-inverse .navbar-text{
-    color:#666
+    color:#101157
 }
 .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.active>a:focus,.navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:focus,.navbar-inverse .navbar-nav>li>a:hover{
     color:#888;
@@ -4177,8 +4177,8 @@ textarea{
 }
 
 .resume-photo{
-    max-height: 100px !important;
-    max-width: 70% !important;
+    max-height: 100px;
+    max-width: 70% ;
 }
 
 .resume-logo {
