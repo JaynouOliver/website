@@ -189,15 +189,8 @@ export const DATA = {
       link: "https://pytorch.org",
     },
   ],
-  // Talks, conferences, and community — rendered as a simple list.
+  // Talks, conferences, and community — shown under "Research and International presentations" after the papers.
   talks: [
-    {
-      title: "Poster accepted at PyTorch Conference 2025",
-      meta: "September 2025 · California, USA",
-      description:
-        "Research on real-time multi-hop reasoning with Nvidia cuGraphs — optimized graph traversal for multi-hop reasoning in LLMs using GPU acceleration.",
-      link: "https://pytorch.org",
-    },
     {
       title: "AI session on trans-tokenization",
       meta: "March 2025 · Remote, India",
@@ -216,12 +209,6 @@ export const DATA = {
       description:
         "Talk on trans-tokenization for monolingual LLMs — fine-tuning, adapting trans-tokenization to existing methods, and building your own tokenizer.",
       link: "https://www.linkedin.com/feed/update/urn:li:activity:7248060113524031488/",
-    },
-    {
-      title: "SciPy Conference",
-      meta: "July 8–14, 2024 · Tacoma, WA, USA",
-      description: "My paper was accepted at this conference.",
-      link: "https://doi.org/10.25080/XHDR4700",
     },
     {
       title: "Talk: MLOps on cloud-native technologies",

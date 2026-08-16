@@ -34,7 +34,7 @@ export default function Page() {
       </header>
 
       <section id="experience" className="pf-section">
-        <h2 className="pf-h2">Work experience</h2>
+        <h2 className="pf-h2">Main quests</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           {DATA.work.map((job) => (
             <article key={job.company} style={{ display: "flex", gap: 16 }}>
@@ -116,23 +116,19 @@ export default function Page() {
         <GitHubPRs user={DATA.githubUsername} count={8} />
       </section>
 
-      {DATA.research.length > 0 && (
+      {(DATA.research.length > 0 || DATA.talks.length > 0) && (
         <section id="research" className="pf-section">
-          <h2 className="pf-h2">Research</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {DATA.research.map((rp) => (
-              <a key={rp.title} href={rp.link || "#"} target="_blank" rel="noopener" className="pf-flatcard">
-                <span style={{ fontWeight: 600, fontSize: 15, flex: 1, minWidth: 220 }}>{rp.title}</span>
-                <span style={{ color: "var(--faint)", fontSize: 13 }}>{rp.meta}</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {DATA.talks.length > 0 && (
-        <section id="talks" className="pf-section">
-          <h2 className="pf-h2">Talks &amp; conferences</h2>
+          <h2 className="pf-h2">Research and International presentations</h2>
+          {DATA.research.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: DATA.talks.length > 0 ? 22 : 0 }}>
+              {DATA.research.map((rp) => (
+                <a key={rp.title} href={rp.link || "#"} target="_blank" rel="noopener" className="pf-flatcard">
+                  <span style={{ fontWeight: 600, fontSize: 15, flex: 1, minWidth: 220 }}>{rp.title}</span>
+                  <span style={{ color: "var(--faint)", fontSize: 13 }}>{rp.meta}</span>
+                </a>
+              ))}
+            </div>
+          )}
           <div style={{ display: "flex", flexDirection: "column" }}>
             {DATA.talks.map((t) =>
               t.link ? (
