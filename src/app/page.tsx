@@ -1,264 +1,193 @@
-import { HackathonCard } from "@/components/hackathon-card";
-import BlurFade from "@/components/magicui/blur-fade";
-import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { ProjectCard } from "@/components/project-card";
-import { ResumeCard } from "@/components/resume-card";
-import { ClarityTracker } from "@/components/clarity-tracker";
-import { TrackedLink } from "@/components/tracked-link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import GitHubPRs from "@/components/github-prs";
+import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
+import { fmtDate, mdInline } from "@/lib/md";
 import Link from "next/link";
-import Markdown from "react-markdown";
 
-const BLUR_FADE_DELAY = 0.04;
+const arrow = (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--faint)" }}>
+    <path d="M7 17L17 7M9 7h8v8" />
+  </svg>
+);
 
 export default function Page() {
+  const firstName = DATA.name.split(" ")[0].toLowerCase();
+  const gh = "https://github.com/" + DATA.githubUsername;
   return (
-    <ClarityTracker pageName="home">
-      <main className="flex flex-col min-h-[100dvh] space-y-10">
-      <section id="hero">
-        <div className="mx-auto w-full max-w-2xl space-y-8">
-          <div className="gap-2 flex justify-between">
-            <div className="flex-col flex flex-1 space-y-1.5">
-              <BlurFadeText
-                delay={BLUR_FADE_DELAY}
-                className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
-                yOffset={8}
-                text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
-              />
-              <BlurFadeText
-                className="max-w-[600px] md:text-xl"
-                delay={BLUR_FADE_DELAY}
-                text={DATA.description}
-              />
-            </div>
-            <BlurFade delay={BLUR_FADE_DELAY}>
-              <Avatar className="size-28 border">
-                <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-                <AvatarFallback>{DATA.initials}</AvatarFallback>
-              </Avatar>
-            </BlurFade>
-          </div>
+    <main className="pf-main">
+      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "28px 40px" }}>
+        <div style={{ flex: 1, minWidth: 280 }}>
+          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,56px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+            hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
+          </h1>
+          <p
+            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "46ch" }}
+            dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }}
+          />
         </div>
-      </section>
-      <section id="about">
-        <BlurFade delay={BLUR_FADE_DELAY * 3}>
-          <h2 className="text-xl font-bold">About</h2>
-        </BlurFade>
-        <BlurFade delay={BLUR_FADE_DELAY * 4}>
-          <div className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
-            I&apos;m a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research -{" "}
-            <TrackedLink
-              href="https://doi.org/10.25080/XHDR4700"
-              linkType="other"
-              linkName="research_paper"
-              className="text-blue-500 hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </TrackedLink>
-          </div>
-        </BlurFade>
-      </section>
-      <section id="work">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <TrackedLink
-              href="#work"
-              linkType="nav"
-              linkName="work_experience_section"
-              className="cursor-pointer"
-            >
-              <h2 className="text-xl font-bold hover:text-blue-500 transition-colors">Work Experience</h2>
-            </TrackedLink>
-          </BlurFade>
-          {DATA.work.map((work, id) => (
-            <BlurFade
-              key={work.company}
-              delay={BLUR_FADE_DELAY * 6 + id * 0.05}
-            >
-              <ResumeCard
-                key={work.company}
-                logoUrl={work.logoUrl}
-                altText={work.company}
-                title={work.company}
-                subtitle={work.title}
-                href={work.href}
-                badges={work.badges}
-                period={`${work.start} - ${work.end ?? "Present"}`}
-                description={work.description}
-              />
-            </BlurFade>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={DATA.avatarUrl}
+          alt={DATA.name}
+          style={{ width: 132, height: 132, flex: "none", borderRadius: 999, objectFit: "cover", border: "1px solid var(--line)" }}
+        />
+      </header>
+
+      <section id="experience" className="pf-section">
+        <h2 className="pf-h2">Work experience</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          {DATA.work.map((job) => (
+            <article key={job.company} style={{ display: "flex", gap: 16 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
+                {job.company.slice(0, 1).toUpperCase()}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
+                  <span style={{ fontWeight: 700, fontSize: 16 }}>
+                    {job.href ? <a href={job.href} target="_blank" rel="noopener" style={{ textDecoration: "none" }}>{job.company}</a> : job.company}
+                  </span>
+                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{job.title}</span>
+                  <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13.5, whiteSpace: "nowrap" }}>
+                    {job.start} – {job.end}
+                  </span>
+                </div>
+                <ul style={{ margin: "10px 0 0", paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6, color: "var(--muted)", fontSize: 15, listStyle: "disc" }}>
+                  {job.points.map((pt, i) => (
+                    <li key={i} dangerouslySetInnerHTML={{ __html: mdInline(pt) }} />
+                  ))}
+                </ul>
+              </div>
+            </article>
           ))}
         </div>
       </section>
-      <section id="education">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <h2 className="text-xl font-bold">Education</h2>
-          </BlurFade>
-          {DATA.education.map((education, id) => (
-            <BlurFade
-              key={education.school}
-              delay={BLUR_FADE_DELAY * 8 + id * 0.05}
-            >
-              <ResumeCard
-                key={education.school}
-                href={education.href}
-                logoUrl={education.logoUrl}
-                altText={education.school}
-                title={education.school}
-                subtitle={education.degree}
-                period={`${education.start} - ${education.end}`}
+
+      {DATA.education.length > 0 && (
+        <section id="education" className="pf-section">
+          <h2 className="pf-h2">Education</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {DATA.education.map((ed) => (
+              <article key={ed.school} style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
+                  {ed.school.slice(0, 1).toUpperCase()}
+                </div>
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
+                  <span style={{ fontWeight: 700, fontSize: 16 }}>{ed.school}</span>
+                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{ed.degree}</span>
+                  {(ed.start || ed.end) && (
+                    <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13.5, whiteSpace: "nowrap" }}>
+                      {[ed.start, ed.end].filter(Boolean).join(" – ")}
+                    </span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section id="projects" className="pf-section">
+        <h2 className="pf-h2">Projects</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(270px,1fr))", gap: 14 }}>
+          {DATA.projects.map((pj) => (
+            <a key={pj.title} href={pj.href} target="_blank" rel="noopener" className="pf-card">
+              <span style={{ fontWeight: 700, fontSize: 15.5, display: "flex", alignItems: "center", gap: 6 }}>
+                {pj.title}
+                {arrow}
+              </span>
+              <span
+                style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55, flex: 1 }}
+                dangerouslySetInnerHTML={{ __html: mdInline(pj.description) }}
               />
-            </BlurFade>
+              <span style={{ color: "var(--faint)", fontSize: 12.5, letterSpacing: "0.01em" }}>
+                {pj.technologies.join(" · ")}
+              </span>
+            </a>
           ))}
         </div>
       </section>
-      <section id="skills">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 9}>
-            <h2 className="text-xl font-bold">Skills</h2>
-          </BlurFade>
-          <div className="flex flex-wrap gap-1">
-            {DATA.skills.map((skill, id) => (
-              <BlurFade key={skill} delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-                <Badge key={skill}>{skill}</Badge>
-              </BlurFade>
+
+      <section id="opensource" className="pf-section">
+        <h2 className="pf-h2" style={{ marginBottom: 6 }}>Open source</h2>
+        <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 14.5 }}>
+          Recent pull requests, pulled live from GitHub for{" "}
+          <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a> — this list grows on its own.
+        </p>
+        <GitHubPRs user={DATA.githubUsername} count={8} />
+      </section>
+
+      {DATA.research.length > 0 && (
+        <section id="research" className="pf-section">
+          <h2 className="pf-h2">Research</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {DATA.research.map((rp) => (
+              <a key={rp.title} href={rp.link || "#"} target="_blank" rel="noopener" className="pf-flatcard">
+                <span style={{ fontWeight: 600, fontSize: 15, flex: 1, minWidth: 220 }}>{rp.title}</span>
+                <span style={{ color: "var(--faint)", fontSize: 13 }}>{rp.meta}</span>
+              </a>
             ))}
           </div>
-        </div>
-      </section>
-      <section id="projects">
-        <div className="space-y-12 w-full py-12">
-          <BlurFade delay={BLUR_FADE_DELAY * 11}>
-            <TrackedLink
-              href="#projects"
-              linkType="nav"
-              linkName="projects_section"
-              className="flex flex-col items-center justify-center space-y-4 text-center cursor-pointer"
-            >
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                  My Projects
+        </section>
+      )}
+
+      {DATA.talks.length > 0 && (
+        <section id="talks" className="pf-section">
+          <h2 className="pf-h2">Talks &amp; conferences</h2>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {DATA.talks.map((t) =>
+              t.link ? (
+                <a key={t.title} href={t.link} target="_blank" rel="noopener" className="pf-row">
+                  <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
+                    <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{t.title}</span>
+                    <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{t.meta}</span>
+                  </span>
+                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{t.description}</span>
+                </a>
+              ) : (
+                <div key={t.title} className="pf-row">
+                  <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
+                    <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{t.title}</span>
+                    <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{t.meta}</span>
+                  </span>
+                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{t.description}</span>
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Check out my latest work
-                </h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I&apos;ve worked on a variety of projects, from simple
-                  websites to complex web applications. Here are a few of my
-                  favorites.
-                </p>
-              </div>
-            </TrackedLink>
-          </BlurFade>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
-            {DATA.projects.map((project, id) => (
-              <BlurFade
-                key={project.title}
-                delay={BLUR_FADE_DELAY * 12 + id * 0.05}
-              >
-                <ProjectCard
-                  href={project.href}
-                  key={project.title}
-                  title={project.title}
-                  description={project.description}
-                  dates={project.dates}
-                  tags={project.technologies}
-                  image={project.image}
-                  video={project.video}
-                  links={project.links}
-                />
-              </BlurFade>
-            ))}
+              )
+            )}
           </div>
+        </section>
+      )}
+
+      <section id="blog" className="pf-section">
+        <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 22 }}>
+          <h2 className="pf-h2" style={{ margin: 0 }}>Writing</h2>
+          <Link href="/blog" style={{ marginLeft: "auto", fontSize: 14, color: "var(--muted)" }}>
+            All posts →
+          </Link>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {posts.slice(0, 4).map((po) => (
+            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row">
+              <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
+                <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{po.title}</span>
+                <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
+              </span>
+              <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
+            </Link>
+          ))}
         </div>
       </section>
-      <section id="hackathons">
-        <div className="space-y-12 w-full py-12">
-          <BlurFade delay={BLUR_FADE_DELAY * 13}>
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                  Hackathons
-                </div>
-                <TrackedLink
-                  href="#hackathons"
-                  linkType="nav"
-                  linkName="hackathons_section"
-                  className="cursor-pointer"
-                >
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl hover:text-blue-500 transition-colors">
-                    Side Quests
-                  </h2>
-                </TrackedLink>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I have written and publshed research papers, got scholarships from Hack The North and Linux foundation to attend Kubecon. Below are some of my achievements listed.
-                </p>
-              </div>
-            </div>
-          </BlurFade>
-          <BlurFade delay={BLUR_FADE_DELAY * 14}>
-            <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-              {DATA.hackathons.map((project, id) => (
-                <BlurFade
-                  key={project.title + project.dates}
-                  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-                >
-                  <HackathonCard
-                    title={project.title}
-                    description={project.description}
-                    location={project.location}
-                    dates={project.dates}
-                    image={project.image}
-                    links={project.links}
-                  />
-                </BlurFade>
-              ))}
-            </ul>
-          </BlurFade>
+
+      <footer style={{ marginTop: "clamp(56px,9vw,90px)", paddingTop: 24, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
+        <span style={{ color: "var(--faint)", fontSize: 13.5 }}>
+          © {new Date().getFullYear()} {DATA.name}
+        </span>
+        <div style={{ marginLeft: "auto", display: "flex", flexWrap: "wrap", gap: 16 }}>
+          <a href={gh} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>GitHub</a>
+          <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>LinkedIn</a>
+          <a href={DATA.contact.social.X.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>Twitter</a>
+          <a href={"mailto:" + DATA.contact.email} style={{ fontSize: 13.5, color: "var(--muted)" }}>Email</a>
         </div>
-      </section>
-      <section id="contact">
-        <div className="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12">
-          <BlurFade delay={BLUR_FADE_DELAY * 16}>
-            <div className="space-y-3">
-              <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                Contact
-              </div>
-              <TrackedLink
-                href="#contact"
-                linkType="nav"
-                linkName="contact_section"
-                className="cursor-pointer"
-              >
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl hover:text-blue-500 transition-colors">
-                  Get in Touch
-                </h2>
-              </TrackedLink>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Want to chat? Just shoot me a dm{" "}
-                <TrackedLink
-                  href={DATA.contact.social.X.url}
-                  linkType="social"
-                  linkName="twitter_contact"
-                  className="text-blue-500 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  with a direct question on twitter
-                </TrackedLink>{" "}
-                and I&apos;ll respond whenever I can. I will ignore all
-                soliciting.
-              </p>
-            </div>
-          </BlurFade>
-        </div>
-      </section>
-      </main>
-    </ClarityTracker>
+      </footer>
+    </main>
   );
 }

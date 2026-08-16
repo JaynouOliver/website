@@ -1,19 +1,20 @@
-import Navbar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import BgDots from "@/components/bg-dots";
 import { ClarityProvider } from "@/components/clarity";
+import Dock from "@/components/dock";
 import GoogleAnalytics from "@/components/ga";
+import { ThemeProvider } from "@/components/theme-provider";
 import { DATA } from "@/data/resume";
-import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
-import "./globals.css";
+import { Instrument_Sans } from "next/font/google";
 import { Suspense } from "react";
+import "./globals.css";
 
-const fontSans = FontSans({
+const fontSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
+
+const plainDescription = DATA.description.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
 
 export const metadata: Metadata = {
   metadataBase: new URL(DATA.url),
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
     default: DATA.name,
     template: `%s | ${DATA.name}`,
   },
-  description: DATA.description,
+  description: plainDescription,
   openGraph: {
     title: `${DATA.name}`,
-    description: DATA.description,
+    description: plainDescription,
     url: DATA.url,
     siteName: `${DATA.name}`,
     locale: "en_US",
@@ -45,10 +46,6 @@ export const metadata: Metadata = {
     title: `${DATA.name}`,
     card: "summary_large_image",
   },
-  verification: {
-    google: "",
-    yandex: "",
-  },
 };
 
 export default function RootLayout({
@@ -58,21 +55,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased max-w-2xl mx-auto py-12 sm:py-24 px-6",
-          fontSans.variable
-        )}
-      >
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <TooltipProvider delayDuration={0}>
-            <ClarityProvider projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
-            <Suspense fallback={null}>
-              <GoogleAnalytics />
-            </Suspense>
-            {children}
-            <Navbar />
-          </TooltipProvider>
+      <body className={fontSans.variable}>
+        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false}>
+          <ClarityProvider projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
+          <Suspense fallback={null}>
+            <GoogleAnalytics />
+          </Suspense>
+          <BgDots />
+          {children}
+          <Dock />
         </ThemeProvider>
       </body>
     </html>

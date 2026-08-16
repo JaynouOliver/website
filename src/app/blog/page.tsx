@@ -1,46 +1,32 @@
-import BlurFade from "@/components/magicui/blur-fade";
-import { getBlogPosts } from "@/data/blog";
+import { posts } from "@/data/posts";
+import { DATA } from "@/data/resume";
+import { fmtDate } from "@/lib/md";
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Blog",
-  description: "My thoughts on software development, life, and more.",
+export const metadata: Metadata = {
+  title: "Writing",
+  description: DATA.writingTagline,
 };
 
-const BLUR_FADE_DELAY = 0.04;
-
-export default async function BlogPage() {
-  const posts = await getBlogPosts();
-
+export default function BlogPage() {
   return (
-    <section>
-      <BlurFade delay={BLUR_FADE_DELAY}>
-        <h1 className="font-medium text-2xl mb-8 tracking-tighter">blog</h1>
-      </BlurFade>
-      {posts
-        .sort((a, b) => {
-          if (
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
-          ) {
-            return -1;
-          }
-          return 1;
-        })
-        .map((post, id) => (
-          <BlurFade delay={BLUR_FADE_DELAY * 2 + id * 0.05} key={post.slug}>
-            <Link
-              className="flex flex-col space-y-1 mb-4"
-              href={`/blog/${post.slug}`}
-            >
-              <div className="w-full flex flex-col">
-                <p className="tracking-tight">{post.metadata.title}</p>
-                <p className="h-6 text-xs text-muted-foreground">
-                  {post.metadata.publishedAt}
-                </p>
-              </div>
-            </Link>
-          </BlurFade>
+    <main className="pf-main pf-main-blog">
+      <h1 style={{ margin: "0 0 8px", fontSize: "clamp(32px,5.5vw,44px)", fontWeight: 700, letterSpacing: "-0.03em" }}>
+        Writing
+      </h1>
+      <p style={{ margin: "0 0 36px", color: "var(--muted)", fontSize: 16 }}>{DATA.writingTagline}</p>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {posts.map((po) => (
+          <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row" style={{ gap: 4, padding: "20px 12px", margin: "0 -12px", borderRadius: 10 }}>
+            <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
+              <span style={{ fontWeight: 700, fontSize: 18, letterSpacing: "-0.01em", flex: 1, minWidth: 200 }}>{po.title}</span>
+              <span style={{ color: "var(--faint)", fontSize: 13.5, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
+            </span>
+            <span style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "60ch" }}>{po.summary}</span>
+          </Link>
         ))}
-    </section>
+      </div>
+    </main>
   );
 }
