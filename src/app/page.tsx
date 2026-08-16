@@ -107,15 +107,6 @@ export default function Page() {
         </div>
       </section>
 
-      <section id="opensource" className="pf-section">
-        <h2 className="pf-h2" style={{ marginBottom: 6 }}>Open source</h2>
-        <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 14.5 }}>
-          Recent pull requests, pulled live from GitHub for{" "}
-          <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a> — this list grows on its own.
-        </p>
-        <GitHubPRs user={DATA.githubUsername} count={8} />
-      </section>
-
       {(DATA.research.length > 0 || DATA.talks.length > 0) && (
         <section id="research" className="pf-section">
           <h2 className="pf-h2">Research and International presentations</h2>
@@ -152,6 +143,15 @@ export default function Page() {
           </div>
         </section>
       )}
+
+      <section id="opensource" className="pf-section">
+        <h2 className="pf-h2" style={{ marginBottom: 6 }}>Open source</h2>
+        <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 14.5 }}>
+          Recent pull requests — merged, open, and closed — pulled live from GitHub for{" "}
+          <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a> — this list grows on its own.
+        </p>
+        <GitHubPRs user={DATA.githubUsername} count={5} showMoreHref="/open-source" />
+      </section>
 
       <section id="blog" className="pf-section">
         <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 22 }}>

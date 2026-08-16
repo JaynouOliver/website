@@ -1,12 +1,13 @@
 "use client";
 
 import { fmtDate } from "@/lib/md";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type PR = { title: string; url: string; repo: string; date: string; dot: string };
 
-// Recent pull requests, pulled live from the GitHub search API — the list grows on its own.
-export default function GitHubPRs({ user, count = 8 }: { user: string; count?: number }) {
+// Recent pull requests (merged, open, and closed), pulled live from the GitHub search API.
+export default function GitHubPRs({ user, count = 8, showMoreHref }: { user: string; count?: number; showMoreHref?: string }) {
   const [prs, setPrs] = useState<PR[]>([]);
   const [state, setState] = useState<"loading" | "done" | "error">("loading");
   useEffect(() => {
@@ -58,6 +59,16 @@ export default function GitHubPRs({ user, count = 8 }: { user: string; count?: n
           <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{pr.date}</span>
         </a>
       ))}
+      {showMoreHref && prs.length > 0 && (
+        <div style={{ marginTop: 18 }}>
+          <Link
+            href={showMoreHref}
+            style={{ display: "inline-block", padding: "8px 16px", fontSize: 13.5, fontWeight: 600, color: "var(--text)", border: "1px solid var(--line)", borderRadius: 999, textDecoration: "none" }}
+          >
+            Show more →
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
