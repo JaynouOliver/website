@@ -3,6 +3,7 @@ import { ClarityProvider } from "@/components/clarity";
 import Dock from "@/components/dock";
 import GoogleAnalytics from "@/components/ga";
 import { ThemeProvider } from "@/components/theme-provider";
+import VisitTracker from "@/components/visit-tracker";
 import { DATA } from "@/data/resume";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
@@ -66,6 +67,7 @@ export default function RootLayout({
           {children}
           <Dock />
           <Analytics />
+          <VisitTracker />
         </ThemeProvider>
       </body>
     </html>
