@@ -4,41 +4,61 @@ import { fmtDate } from "@/lib/md";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type PR = { title: string; url: string; repo: string; date: string; dot: string };
+type PR = { title: string; url: string; repo: string; date: string; dot: string; state: string; year: number };
 
-// Recent pull requests (merged, open, and closed), pulled live from the GitHub search API.
-export default function GitHubPRs({ user, count = 8, showMoreHref }: { user: string; count?: number; showMoreHref?: string }) {
+// Recent pull requests, pulled live from the GitHub search API.
+// Optional filters: `states` keeps only those PR states, `year` keeps only PRs created that year.
+export default function GitHubPRs({
+  user,
+  count = 8,
+  showMoreHref,
+  states,
+  year,
+}: {
+  user: string;
+  count?: number;
+  showMoreHref?: string;
+  states?: ("merged" | "open" | "closed")[];
+  year?: number;
+}) {
   const [prs, setPrs] = useState<PR[]>([]);
   const [state, setState] = useState<"loading" | "done" | "error">("loading");
+  const statesKey = states ? states.join(",") : "";
   useEffect(() => {
     if (!user) { setState("error"); return; }
     (async () => {
       try {
         const r = await fetch(
           "https://api.github.com/search/issues?q=type:pr+author:" +
-            encodeURIComponent(user) + "&sort=created&order=desc&per_page=" + count
+            encodeURIComponent(user) + "&sort=created&order=desc&per_page=100"
         );
         if (!r.ok) throw new Error(String(r.status));
         const data = await r.json();
+        const wanted = statesKey ? statesKey.split(",") : null;
         setPrs(
-          (data.items || []).map((it: any) => {
-            const merged = it.pull_request && it.pull_request.merged_at;
-            const state = merged ? "merged" : it.state;
-            return {
-              title: it.title,
-              url: it.html_url,
-              repo: (it.repository_url || "").split("/repos/")[1] || "",
-              date: fmtDate(it.created_at),
-              dot: state === "merged" ? "#8250df" : state === "open" ? "#1a7f37" : "#cf222e",
-            };
-          })
+          (data.items || [])
+            .map((it: any): PR => {
+              const merged = it.pull_request && it.pull_request.merged_at;
+              const state = merged ? "merged" : it.state;
+              return {
+                title: it.title,
+                url: it.html_url,
+                repo: (it.repository_url || "").split("/repos/")[1] || "",
+                date: fmtDate(it.created_at),
+                dot: state === "merged" ? "#8250df" : state === "open" ? "#1a7f37" : "#cf222e",
+                state,
+                year: new Date(it.created_at).getFullYear(),
+              };
+            })
+            .filter((pr: PR) => (!wanted || wanted.includes(pr.state)) && (!year || pr.year === year))
+            .slice(0, count)
         );
         setState("done");
       } catch {
         setState("error");
       }
     })();
-  }, [user, count]);
+  }, [user, count, statesKey, year]);
 
   if (state === "loading")
     return <p style={{ color: "var(--faint)", fontSize: 14 }}>Fetching pull requests…</p>;

@@ -31,15 +31,14 @@ export default function OpenSourcePage() {
         Open source
       </h1>
       <p style={{ margin: "0 0 14px", color: "var(--muted)", fontSize: 16 }}>
-        All pull requests by{" "}
+        Merged and open pull requests from 2026 by{" "}
         <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a>, pulled live from GitHub.
       </p>
       <p style={{ margin: "0 0 30px", color: "var(--faint)", fontSize: 13.5, display: "flex", flexWrap: "wrap", gap: "4px 18px" }}>
         <span><span style={dot("#8250df")} />Merged</span>
         <span><span style={dot("#1a7f37")} />Open</span>
-        <span><span style={dot("#cf222e")} />Closed</span>
       </p>
-      <GitHubPRs user={DATA.githubUsername} count={100} />
+      <GitHubPRs user={DATA.githubUsername} count={100} states={["merged", "open"]} year={2026} />
     </main>
   );
 }
