@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 
-// Ambient background: small, widely-spaced dots drifting diagonally. Theme-aware, GPU-cheap.
+// Ambient background: comet-like streaks with fading tails drifting diagonally
+// (up-right). Deep orange in both light and dark themes. GPU-cheap.
 export default function BgDots() {
   useEffect(() => {
     const c = document.createElement("canvas");
@@ -11,8 +12,9 @@ export default function BgDots() {
     const ctx = c.getContext("2d");
     if (!ctx) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const DIAG = 0.7071; // 45° unit vector component
     let W = 0, H = 0;
-    let dots: { x: number; y: number; r: number; s: number; o: number }[] = [];
+    let comets: { x: number; y: number; r: number; s: number; o: number; tail: number }[] = [];
     function size() {
       W = c.width = window.innerWidth * dpr;
       H = c.height = window.innerHeight * dpr;
@@ -20,13 +22,14 @@ export default function BgDots() {
       c.style.height = window.innerHeight + "px";
     }
     function make() {
-      const n = Math.round((window.innerWidth * window.innerHeight) / 36000);
-      dots = Array.from({ length: n }, () => ({
+      const n = Math.max(6, Math.round((window.innerWidth * window.innerHeight) / 90000));
+      comets = Array.from({ length: n }, () => ({
         x: Math.random() * W,
         y: Math.random() * H,
-        r: (Math.random() * 1.3 + 0.7) * dpr,
-        s: (Math.random() * 0.2 + 0.07) * dpr,
-        o: Math.random() * 0.4 + 0.18,
+        r: (Math.random() * 1.4 + 0.9) * dpr,
+        s: (Math.random() * 0.5 + 0.25) * dpr,
+        o: Math.random() * 0.35 + 0.25,
+        tail: (Math.random() * 70 + 50) * dpr,
       }));
     }
     const onResize = () => { size(); make(); };
@@ -37,17 +40,33 @@ export default function BgDots() {
     (function frame() {
       ctx.clearRect(0, 0, W, H);
       const dark = document.documentElement.dataset.theme === "dark";
-      const base = dark ? "208,208,218," : "70,70,82,";
-      for (const d of dots) {
+      // deep orange — slightly brighter in dark mode, slightly deeper in light mode
+      const rgb = dark ? "255,120,40" : "210,80,10";
+      const boost = dark ? 1.0 : 0.85;
+      for (const d of comets) {
+        const tx = d.x - d.tail * DIAG; // tail trails opposite to motion (down-left)
+        const ty = d.y + d.tail * DIAG;
+        const grad = ctx.createLinearGradient(d.x, d.y, tx, ty);
+        grad.addColorStop(0, "rgba(" + rgb + "," + d.o * boost + ")");
+        grad.addColorStop(1, "rgba(" + rgb + ",0)");
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(tx, ty);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = d.r * 1.5;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        // head — a touch brighter than the tail
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.r, 0, 7);
-        ctx.fillStyle = "rgba(" + base + d.o * (dark ? 0.5 : 0.4) + ")";
+        ctx.fillStyle = "rgba(" + rgb + "," + Math.min(1, d.o * boost + 0.25) + ")";
         ctx.fill();
         if (!still) {
           d.x += d.s;
           d.y -= d.s;
-          if (d.x > W + 8) d.x = -8;
-          if (d.y < -8) d.y = H + 8;
+          const pad = d.tail + 8 * dpr;
+          if (d.x - pad > W) d.x = -pad;
+          if (d.y + pad < 0) d.y = H + pad;
         }
       }
       raf = requestAnimationFrame(frame);

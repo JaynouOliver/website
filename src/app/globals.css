@@ -50,8 +50,11 @@ a:hover{text-decoration-color:var(--text)}
 
 .pf-row{display:flex;flex-direction:column;gap:3px;padding:14px 10px;margin:0 -10px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:8px}
 .pf-row:hover{background:var(--soft)}
-.pf-card{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;transition:border-color .15s ease,background .15s ease}
-.pf-card:hover{border-color:var(--faint);background:var(--soft)}
+.pf-card{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;transition:border-color .15s ease,background .15s ease,transform .15s ease,box-shadow .15s ease}
+.pf-card:hover{border-color:var(--faint);background:var(--soft);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.09)}
+.pf-chip{display:inline-block;padding:3px 9px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted);background:var(--soft);white-space:nowrap}
+.pf-logo{width:44px;height:44px;border-radius:999px;object-fit:contain;background:#fff;border:1px solid var(--line);padding:5px;box-sizing:border-box;flex:none}
+.pf-thumb{border-radius:10px;object-fit:cover;flex:none;border:1px solid var(--line);background:var(--soft)}
 .pf-flatcard{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;text-decoration:none;padding:14px 16px;border:1px solid var(--line);border-radius:14px}
 .pf-flatcard:hover{background:var(--soft)}
 .pf-prrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:13px 10px;margin:0 -10px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:8px}

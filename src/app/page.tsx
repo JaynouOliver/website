@@ -10,6 +10,14 @@ const arrow = (
   </svg>
 );
 
+const favicon = (href: string) => {
+  try {
+    return "https://www.google.com/s2/favicons?domain=" + new URL(href).hostname + "&sz=64";
+  } catch {
+    return "";
+  }
+};
+
 export default function Page() {
   const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
@@ -34,13 +42,18 @@ export default function Page() {
       </header>
 
       <section id="experience" className="pf-section">
-        <h2 className="pf-h2">Main quests</h2>
+        <h2 className="pf-h2">Main Quests</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           {DATA.work.map((job) => (
             <article key={job.company} style={{ display: "flex", gap: 16 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
-                {job.company.slice(0, 1).toUpperCase()}
-              </div>
+              {job.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={job.logoUrl} alt={job.company} className="pf-logo" />
+              ) : (
+                <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
+                  {job.company.slice(0, 1).toUpperCase()}
+                </div>
+              )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
                   <span style={{ fontWeight: 700, fontSize: 16 }}>
@@ -62,36 +75,16 @@ export default function Page() {
         </div>
       </section>
 
-      {DATA.education.length > 0 && (
-        <section id="education" className="pf-section">
-          <h2 className="pf-h2">Education</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {DATA.education.map((ed) => (
-              <article key={ed.school} style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
-                  {ed.school.slice(0, 1).toUpperCase()}
-                </div>
-                <div style={{ flex: 1, minWidth: 0, display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
-                  <span style={{ fontWeight: 700, fontSize: 16 }}>{ed.school}</span>
-                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{ed.degree}</span>
-                  {(ed.start || ed.end) && (
-                    <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13.5, whiteSpace: "nowrap" }}>
-                      {[ed.start, ed.end].filter(Boolean).join(" – ")}
-                    </span>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
       <section id="projects" className="pf-section">
         <h2 className="pf-h2">Projects</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(270px,1fr))", gap: 14 }}>
           {DATA.projects.map((pj) => (
             <a key={pj.title} href={pj.href} target="_blank" rel="noopener" className="pf-card">
-              <span style={{ fontWeight: 700, fontSize: 15.5, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontWeight: 700, fontSize: 15.5, display: "flex", alignItems: "center", gap: 8 }}>
+                {favicon(pj.href) && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={favicon(pj.href)} alt="" style={{ width: 18, height: 18, borderRadius: 5, flex: "none" }} />
+                )}
                 {pj.title}
                 {arrow}
               </span>
@@ -99,9 +92,13 @@ export default function Page() {
                 style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55, flex: 1 }}
                 dangerouslySetInnerHTML={{ __html: mdInline(pj.description) }}
               />
-              <span style={{ color: "var(--faint)", fontSize: 12.5, letterSpacing: "0.01em" }}>
-                {pj.technologies.join(" · ")}
-              </span>
+              {pj.technologies.length > 0 && (
+                <span style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
+                  {pj.technologies.map((t) => (
+                    <span key={t} className="pf-chip">{t}</span>
+                  ))}
+                </span>
+              )}
             </a>
           ))}
         </div>
@@ -120,12 +117,18 @@ export default function Page() {
         <h2 className="pf-h2">Research and International presentations</h2>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {posts.slice(0, 5).map((po) => (
-            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row">
-              <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
-                <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{po.title}</span>
-                <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
+            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row" style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+              {po.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={po.image} alt="" className="pf-thumb" style={{ width: 84, height: 56 }} />
+              )}
+              <span style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, minWidth: 0 }}>
+                <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
+                  <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 160 }}>{po.title}</span>
+                  <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
+                </span>
+                <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
               </span>
-              <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
             </Link>
           ))}
         </div>

@@ -9,15 +9,15 @@ export const DATA = {
   name: "Suvrakamal Das",
   nickname: "Subhro", // shown in the "hi, i'm ..." greeting
   initials: "SD",
-  url: "https://suvrakamaldas.online", // used for SEO metadata — set to your deployed URL
+  url: "https://subhrokomol.in", // used for SEO metadata — set to your deployed URL
   location: "Kolkata, India",
   locationLink: "https://www.google.com/maps/place/kolkata",
   // Shown under "hi, i'm ..." on the homepage. Markdown links work: [word](https://url)
   description:
-    "Machine Learning Engineer, I love building things around ML. I am active on [Twitter](https://x.com/SuvrakamalD). Read my latest [research](https://doi.org/10.25080/XHDR4700).",
+    "TLDR: I'm a software engineer and entrepreneur. I work on the conjunction of AI and hardware. I spoke at a couple of conferences and have a few publications. Find me on [X](https://x.com/SuvrakamalD).",
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
-  avatarUrl: "/dp.jpg", // your photo — file lives in public/
+  avatarUrl: "/me.jpg", // your photo — file lives in public/
   githubUsername: "JaynouOliver", // recent PRs are pulled live from GitHub for this user
   blogTagline: "Papers, talks, conferences, and notes.",
   skills: [
@@ -71,7 +71,7 @@ export const DATA = {
       badges: [],
       location: "Remote",
       title: "Software Engineer",
-      logoUrl: "/logo.png",
+      logoUrl: "https://cdn.prod.website-files.com/6356a1df0f3a7a17f96d4ecd/64b41675fb16b8a60739a570_LOGO-Symbol-BLACK-WEB.png",
       start: "January 2026",
       end: "Present",
       // Bullet points shown on the site. Markdown links work in each point.
@@ -81,15 +81,21 @@ export const DATA = {
         "Work on the React frontend fixing bugs and improving UX, focused on the AI features of the software.",
       ],
     },
-  ],
-  education: [
     {
-      school: "Academy of Technology",
-      href: "",
-      degree: "Bachelor of Technology in Computer Science and Business and Systems",
-      logoUrl: "/images.jpeg",
-      start: "",
-      end: "",
+      company: "Mattoboard",
+      href: "https://mattoboard.com/",
+      badges: [],
+      location: "Remote",
+      title: "Software Engineer",
+      logoUrl: "https://cdn.prod.website-files.com/6356a1df0f3a7a17f96d4ecd/64b41675fb16b8a60739a570_LOGO-Symbol-BLACK-WEB.png",
+      start: "January 2026",
+      end: "Present",
+      // Bullet points shown on the site. Markdown links work in each point.
+      points: [
+        "Delivered product finder and similarity search — users find products by image or text, powered by cosine similarity over embeddings.",
+        "Built image upload matching: the system finds the best matching product from the database for any uploaded photo.",
+        "Work on the React frontend fixing bugs and improving UX, focused on the AI features of the software.",
+      ],
     },
   ],
   projects: [
