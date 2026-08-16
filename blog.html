@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+  <script src="./bg-dots.js"></script>
+  <style>
+    :root{--bg:#e5e6ea;--sheen:#f6f7f9;--edge:#d3d5db;--text:#1b1c1f;--muted:#63656c;--faint:#93959d;--line:#cdcfd6;--soft:#dcdee3;--dock:rgba(232,233,237,.78)}
+    html[data-theme="dark"]{--bg:#1c1c1f;--sheen:#2a2a30;--edge:#161618;--text:#e9e9eb;--muted:#a2a2aa;--faint:#6f6f78;--line:#313136;--soft:#26262a;--dock:rgba(32,32,36,.8)}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(165deg,var(--sheen) 0%,var(--bg) 48%,var(--edge) 100%) fixed;background-color:var(--bg);color:var(--text);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.6;transition:background .3s ease,color .3s ease;-webkit-font-smoothing:antialiased}
+    a{color:var(--text);text-decoration-color:var(--faint);text-underline-offset:3px}
+    a:hover{text-decoration-color:var(--text)}
+    :focus{outline:none}
+    :focus-visible{outline:2px solid var(--text);outline-offset:2px;border-radius:4px}
+    ::selection{background:rgba(140,140,150,.25)}
+    .md-body{font-size:16.5px;line-height:1.75;color:var(--text)}
+    .md-body h2,.md-body h3,.md-body h4{font-weight:700;letter-spacing:-0.015em;line-height:1.25;margin:1.8em 0 0.6em}
+    .md-body h2{font-size:22px}.md-body h3{font-size:18px}
+    .md-body p{margin:0 0 1.1em}
+    .md-body ul{margin:0 0 1.1em;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+    .md-body blockquote{margin:1.4em 0;padding:2px 0 2px 18px;border-left:2px solid var(--text);color:var(--muted);font-style:italic}
+    .md-body code{background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:0.88em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .md-body pre{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;margin:1.3em 0}
+    .md-body pre code{background:none;border:none;padding:0;font-size:13.5px;line-height:1.6}
+    .md-body img{max-width:100%;border-radius:14px;display:block}
+    .md-body figure{margin:1.5em 0}
+    .md-body figcaption{font-size:13px;color:var(--faint);margin-top:8px}
+  </style>
+</helmet>
+<div id="top" style="min-height:100vh;position:relative;z-index:1">
+  <main style="max-width:720px;margin:0 auto;padding:clamp(48px,8vw,88px) 24px 140px">
+    <sc-if value="{{ listMode }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <h1 style="margin:0 0 8px;font-size:clamp(32px,5.5vw,44px);font-weight:700;letter-spacing:-0.03em">Writing</h1>
+        <p style="margin:0 0 36px;color:var(--muted);font-size:16px">Notes on systems, performance, and things I broke on purpose.</p>
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ posts }}" as="po" hint-placeholder-count="3">
+            <a href="{{ po.href }}" onClick="{{ po.open }}" style="display:flex;flex-direction:column;gap:4px;padding:20px 12px;margin:0 -12px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:10px" style-hover="background:var(--soft)">
+              <span style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px"><span style="font-weight:700;font-size:18px;letter-spacing:-0.01em;flex:1;min-width:200px">{{ po.title }}</span><span style="color:var(--faint);font-size:13.5px;white-space:nowrap">{{ po.date }}</span></span>
+              <span style="color:var(--muted);font-size:14.5px;max-width:60ch">{{ po.summary }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ postMode }}" hint-placeholder-val="{{ false }}">
+      <article>
+        <a href="blog.html" onClick="{{ backToList }}" style="display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);text-decoration:none;margin-bottom:28px" style-hover="color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>All posts</a>
+        <h1 style="margin:0 0 10px;font-size:clamp(30px,5vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1.12">{{ postTitle }}</h1>
+        <p style="margin:0 0 30px;color:var(--faint);font-size:14px">{{ postDate }}</p>
+        <sc-if value="{{ hasImage }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ postImage }}" alt="" style="width:100%;border-radius:16px;margin-bottom:32px">
+        </sc-if>
+        <div class="md-body">{{ postBody }}</div>
+
+        <div style="margin-top:clamp(48px,8vw,72px);padding-top:28px;border-top:1px solid var(--line)">
+          <h2 style="margin:0 0 18px;font-size:17px;font-weight:700;letter-spacing:-0.01em;color:var(--muted)">Keep reading</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
+            <sc-for list="{{ related }}" as="re" hint-placeholder-count="2">
+              <a href="{{ re.href }}" onClick="{{ re.open }}" style="display:flex;flex-direction:column;gap:6px;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none" style-hover="border-color:var(--faint);background:var(--soft)">
+                <span style="font-weight:700;font-size:15px;line-height:1.35">{{ re.title }}</span>
+                <span style="color:var(--muted);font-size:13.5px;line-height:1.5">{{ re.summary }}</span>
+                <span style="color:var(--faint);font-size:12.5px;margin-top:auto">{{ re.date }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+      </article>
+    </sc-if>
+  </main>
+
+  <nav aria-label="Site" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;padding:7px 9px;border-radius:999px;background:var(--dock);border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.12);backdrop-filter:blur(14px)">
+    <a href="index.html" aria-label="Home" title="Home" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg></a>
+    <a href="blog.html" onClick="{{ backToList }}" aria-label="Blog" title="Blog" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text);background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M9 13h6M9 17h6"></path></svg></a>
+    <span style="width:1px;height:22px;background:var(--line);margin:0 5px"></span>
+    <a href="{{ ghUrl }}" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.26 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.2.67.8.55C20.22 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"></path></svg></a>
+    <a href="{{ linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56z"></path></svg></a>
+    <a href="{{ twitter }}" target="_blank" rel="noopener" aria-label="X / Twitter" title="X / Twitter" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2.25h3.31l-7.23 8.26L22.83 21.75h-6.66l-5.22-6.82-5.97 6.82H1.66l7.73-8.84L1.17 2.25h6.83l4.72 6.24zm-1.16 17.52h1.83L7.08 4.13H5.12z"></path></svg></a>
+    <a href="{{ emailHref }}" aria-label="Email" title="Email" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m3.5 7 8.5 6 8.5-6"></path></svg></a>
+    <span style="width:1px;height:22px;background:var(--line);margin:0 5px"></span>
+    <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" title="Toggle theme" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent;border:none;cursor:pointer;padding:0" style-hover="background:var(--soft)">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+      </sc-if>
+    </button>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;light&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  state = { theme: 'light', meta: {}, posts: [], current: null, body: null };
+  componentDidMount() {
+    const saved = localStorage.getItem('pf-theme');
+    this.applyTheme(saved || this.props.defaultTheme || 'light');
+    this.load();
+    window.addEventListener('hashchange', this.onHash = () => this.syncHash());
+  }
+  componentWillUnmount() { window.removeEventListener('hashchange', this.onHash); }
+  applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    this.setState({ theme });
+  }
+  hashPath() {
+    const m = location.hash.match(/p=([^&]+)/);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  async load() {
+    const md = this.md = await import('./md.js');
+    try {
+      const c = md.parseContent(await (await fetch('content.md')).text());
+      this.setState({ meta: c.meta });
+      const posts = (await Promise.all((c.posts || []).map(async p => {
+        try {
+          const { meta, body } = md.parseFrontMatter(await (await fetch(p)).text());
+          return { path: p, title: meta.title || p, rawDate: meta.date || '', date: md.fmtDate(meta.date), summary: meta.summary || '', image: meta.image || '', body };
+        } catch (e) { return null; }
+      }))).filter(Boolean).sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
+      this.setState({ posts });
+      this.syncHash();
+    } catch (e) { console.warn('blog load failed', e); }
+  }
+  syncHash() {
+    const p = this.hashPath();
+    const post = p && this.state.posts.find(x => x.path === p);
+    this.setState({ current: post || null });
+    window.scrollTo(0, 0);
+  }
+  open(path) {
+    return e => { e.preventDefault(); location.hash = 'p=' + encodeURIComponent(path); };
+  }
+  renderVals() {
+    const m = this.state.meta;
+    const cur = this.state.current;
+    const md = this.md;
+    const mk = p => ({
+      title: p.title, date: p.date, summary: p.summary,
+      href: '#p=' + encodeURIComponent(p.path), open: this.open(p.path)
+    });
+    return {
+      listMode: !cur, postMode: !!cur,
+      posts: this.state.posts.map(mk),
+      postTitle: cur ? cur.title : '',
+      postDate: cur ? cur.date : '',
+      hasImage: !!(cur && cur.image),
+      postImage: cur ? cur.image : '',
+      postBody: cur && md ? React.createElement('div', { dangerouslySetInnerHTML: { __html: md.mdToHtml(cur.body) } }) : null,
+      related: cur ? this.state.posts.filter(p => p.path !== cur.path).slice(0, 4).map(mk) : [],
+      backToList: e => { e.preventDefault(); location.hash = ''; },
+      ghUrl: 'https://github.com/' + (m.github || ''),
+      linkedin: m.linkedin || '#',
+      twitter: m.twitter || '#',
+      emailHref: 'mailto:' + (m.email || ''),
+      isDark: this.state.theme === 'dark',
+      isLight: this.state.theme !== 'dark',
+      toggleTheme: () => {
+        const t = this.state.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('pf-theme', t);
+        this.applyTheme(t);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

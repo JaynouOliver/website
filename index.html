@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+  <script src="./image-slot.js"></script>
+  <script src="./bg-dots.js"></script>
+  <style>
+    :root{--bg:#e5e6ea;--sheen:#f6f7f9;--edge:#d3d5db;--text:#1b1c1f;--muted:#63656c;--faint:#93959d;--line:#cdcfd6;--soft:#dcdee3;--dock:rgba(232,233,237,.78)}
+    html[data-theme="dark"]{--bg:#1c1c1f;--sheen:#2a2a30;--edge:#161618;--text:#e9e9eb;--muted:#a2a2aa;--faint:#6f6f78;--line:#313136;--soft:#26262a;--dock:rgba(32,32,36,.8)}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(165deg,var(--sheen) 0%,var(--bg) 48%,var(--edge) 100%) fixed;background-color:var(--bg);color:var(--text);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.6;transition:background .3s ease,color .3s ease;-webkit-font-smoothing:antialiased}
+    a{color:var(--text);text-decoration-color:var(--faint);text-underline-offset:3px}
+    a:hover{text-decoration-color:var(--text)}
+    :focus{outline:none}
+    :focus-visible{outline:2px solid var(--text);outline-offset:2px;border-radius:4px}
+    ::selection{background:rgba(140,140,150,.25)}
+    @keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}}
+  </style>
+</helmet>
+<div id="top" style="min-height:100vh;position:relative;z-index:1">
+  <main style="max-width:720px;margin:0 auto;padding:clamp(56px,9vw,104px) 24px 140px">
+    <header style="display:flex;flex-wrap:wrap;align-items:center;gap:28px 40px">
+      <div style="flex:1;min-width:280px">
+        <h1 style="margin:0 0 14px;font-size:clamp(38px,6.4vw,56px);font-weight:700;letter-spacing:-0.03em;line-height:1.05">hi, i'm {{ firstName }} <span style="display:inline-block;transform-origin:70% 70%;animation:wave 2.4s ease-in-out 0.4s 2">👋</span></h1>
+        <p style="margin:0;font-size:17px;color:var(--muted);max-width:46ch">{{ taglineEl }}</p>
+      </div>
+      <image-slot id="avatar" shape="circle" placeholder="Your photo" style="width:132px;height:132px;flex:none"></image-slot>
+    </header>
+
+    <section id="experience" data-reveal="1" style="scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)">
+      <h2 style="margin:0 0 22px;font-size:22px;font-weight:700;letter-spacing:-0.015em">Work experience</h2>
+      <div style="display:flex;flex-direction:column;gap:28px">
+        <sc-for list="{{ experience }}" as="job" hint-placeholder-count="2">
+          <article style="display:flex;gap:16px">
+            <div style="width:44px;height:44px;border-radius:999px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none">{{ job.initial }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px">
+                <span style="font-weight:700;font-size:16px">{{ job.company }}</span>
+                <span style="color:var(--muted);font-size:14px">{{ job.role }}</span>
+                <span style="margin-left:auto;color:var(--faint);font-size:13.5px;white-space:nowrap">{{ job.period }}</span>
+              </div>
+              <ul style="margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:15px">
+                <sc-for list="{{ job.points }}" as="pt" hint-placeholder-count="2">
+                  <li>{{ pt.el }}</li>
+                </sc-for>
+              </ul>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="projects" data-reveal="1" style="scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)">
+      <h2 style="margin:0 0 22px;font-size:22px;font-weight:700;letter-spacing:-0.015em">Projects</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px">
+        <sc-for list="{{ projects }}" as="pj" hint-placeholder-count="3">
+          <a href="{{ pj.link }}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;transition:border-color .15s ease,background .15s ease" style-hover="border-color:var(--faint);background:var(--soft)">
+            <span style="font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:6px">{{ pj.title }}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--faint)"><path d="M7 17L17 7M9 7h8v8"></path></svg></span>
+            <span style="color:var(--muted);font-size:14px;line-height:1.55;flex:1">{{ pj.descEl }}</span>
+            <span style="color:var(--faint);font-size:12.5px;letter-spacing:0.01em">{{ pj.tagLine }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="opensource" data-reveal="1" style="scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)">
+      <h2 style="margin:0 0 6px;font-size:22px;font-weight:700;letter-spacing:-0.015em">Open source</h2>
+      <p style="margin:0 0 18px;color:var(--muted);font-size:14.5px">Recent pull requests, pulled live from GitHub for <a href="{{ ghUrl }}" target="_blank" rel="noopener">@{{ ghUser }}</a> — this list grows on its own.</p>
+      <sc-if value="{{ prsLoading }}" hint-placeholder-val="{{ true }}">
+        <p style="color:var(--faint);font-size:14px">Fetching pull requests…</p>
+      </sc-if>
+      <sc-if value="{{ prErr }}" hint-placeholder-val="{{ false }}">
+        <p style="color:var(--faint);font-size:14px">Couldn't reach GitHub right now — see everything on <a href="{{ ghUrl }}" target="_blank" rel="noopener">my profile</a>.</p>
+      </sc-if>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ prs }}" as="pr" hint-placeholder-count="0">
+          <a href="{{ pr.url }}" target="_blank" rel="noopener" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:13px 10px;margin:0 -10px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:8px" style-hover="background:var(--soft)">
+            <span style="width:8px;height:8px;border-radius:999px;background:{{ pr.dot }};flex:none"></span>
+            <span style="font-weight:600;font-size:14.5px;flex:1;min-width:200px">{{ pr.title }}</span>
+            <span style="color:var(--muted);font-size:13px">{{ pr.repo }}</span>
+            <span style="color:var(--faint);font-size:13px;white-space:nowrap">{{ pr.date }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <sc-if value="{{ hasResearch }}" hint-placeholder-val="{{ false }}">
+      <section id="research" data-reveal="1" style="scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)">
+        <h2 style="margin:0 0 22px;font-size:22px;font-weight:700;letter-spacing:-0.015em">Research</h2>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ research }}" as="rp" hint-placeholder-count="1">
+            <a href="{{ rp.link }}" target="_blank" rel="noopener" style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;text-decoration:none;padding:14px 16px;border:1px solid var(--line);border-radius:14px" style-hover="background:var(--soft)">
+              <span style="font-weight:600;font-size:15px;flex:1;min-width:220px">{{ rp.title }}</span>
+              <span style="color:var(--faint);font-size:13px">{{ rp.meta }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <section id="blog" data-reveal="1" style="scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px">
+        <h2 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.015em">Writing</h2>
+        <a href="blog.html" style="margin-left:auto;font-size:14px;color:var(--muted)">All posts →</a>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ posts }}" as="po" hint-placeholder-count="3">
+          <a href="{{ po.href }}" style="display:flex;flex-direction:column;gap:3px;padding:14px 10px;margin:0 -10px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:8px" style-hover="background:var(--soft)">
+            <span style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px"><span style="font-weight:600;font-size:15.5px;flex:1;min-width:200px">{{ po.title }}</span><span style="color:var(--faint);font-size:13px;white-space:nowrap">{{ po.date }}</span></span>
+            <span style="color:var(--muted);font-size:14px">{{ po.summary }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <footer style="margin-top:clamp(56px,9vw,90px);padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px">
+      <span style="color:var(--faint);font-size:13.5px">© {{ year }} {{ name }}</span>
+      <div style="margin-left:auto;display:flex;flex-wrap:wrap;gap:16px">
+        <a href="{{ ghUrl }}" target="_blank" rel="noopener" style="font-size:13.5px;color:var(--muted)">GitHub</a>
+        <a href="{{ linkedin }}" target="_blank" rel="noopener" style="font-size:13.5px;color:var(--muted)">LinkedIn</a>
+        <a href="{{ twitter }}" target="_blank" rel="noopener" style="font-size:13.5px;color:var(--muted)">Twitter</a>
+        <a href="{{ emailHref }}" style="font-size:13.5px;color:var(--muted)">Email</a>
+      </div>
+    </footer>
+  </main>
+
+  <nav aria-label="Site" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;padding:7px 9px;border-radius:999px;background:var(--dock);border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.12);backdrop-filter:blur(14px)">
+    <a href="#top" aria-label="Home" title="Home" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg></a>
+    <a href="blog.html" aria-label="Blog" title="Blog" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M9 13h6M9 17h6"></path></svg></a>
+    <span style="width:1px;height:22px;background:var(--line);margin:0 5px"></span>
+    <a href="{{ ghUrl }}" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.26 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.2.67.8.55C20.22 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"></path></svg></a>
+    <a href="{{ linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56z"></path></svg></a>
+    <a href="{{ twitter }}" target="_blank" rel="noopener" aria-label="X / Twitter" title="X / Twitter" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2.25h3.31l-7.23 8.26L22.83 21.75h-6.66l-5.22-6.82-5.97 6.82H1.66l7.73-8.84L1.17 2.25h6.83l4.72 6.24zm-1.16 17.52h1.83L7.08 4.13H5.12z"></path></svg></a>
+    <a href="{{ emailHref }}" aria-label="Email" title="Email" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:var(--soft)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m3.5 7 8.5 6 8.5-6"></path></svg></a>
+    <span style="width:1px;height:22px;background:var(--line);margin:0 5px"></span>
+    <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" title="Toggle theme" style="width:42px;height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent;border:none;cursor:pointer;padding:0" style-hover="background:var(--soft)">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+      </sc-if>
+    </button>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;light&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;prCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:8,&quot;min&quot;:3,&quot;max&quot;:20,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  state = { theme: 'light', c: null, posts: [], prs: [], prState: 'loading' };
+  componentDidMount() {
+    const saved = localStorage.getItem('pf-theme');
+    const theme = saved || this.props.defaultTheme || 'light';
+    this.applyTheme(theme);
+    this.load();
+    fetch('/api/track?p=home').catch(() => {}); // visit ping — no-op until deployed on Vercel
+  }
+  applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    this.setState({ theme });
+  }
+  async load() {
+    const md = await import('./md.js');
+    this.md = md;
+    try {
+      const text = await (await fetch('content.md')).text();
+      const c = md.parseContent(text);
+      this.setState({ c });
+      this.loadPosts(c.posts, md);
+      this.loadPRs(c.meta.github, md);
+    } catch (e) { console.warn('content.md failed', e); }
+  }
+  async loadPosts(paths, md) {
+    const posts = await Promise.all((paths || []).slice(0, 4).map(async p => {
+      try {
+        const { meta } = md.parseFrontMatter(await (await fetch(p)).text());
+        return { path: p, title: meta.title || p, date: md.fmtDate(meta.date), summary: meta.summary || '' };
+      } catch (e) { return null; }
+    }));
+    this.setState({ posts: posts.filter(Boolean) });
+  }
+  async loadPRs(user, md) {
+    if (!user) { this.setState({ prState: 'error' }); return; }
+    const n = this.props.prCount ?? 8;
+    try {
+      const r = await fetch('https://api.github.com/search/issues?q=type:pr+author:' + encodeURIComponent(user) + '&sort=created&order=desc&per_page=' + n);
+      if (!r.ok) throw new Error(r.status);
+      const data = await r.json();
+      const prs = (data.items || []).map(it => {
+        const merged = it.pull_request && it.pull_request.merged_at;
+        const state = merged ? 'merged' : it.state;
+        return {
+          title: it.title, url: it.html_url,
+          repo: (it.repository_url || '').split('/repos/')[1] || '',
+          date: md.fmtDate(it.created_at), state,
+          dot: state === 'merged' ? '#8250df' : state === 'open' ? '#1a7f37' : '#cf222e'
+        };
+      });
+      this.setState({ prs, prState: 'done' });
+    } catch (e) { this.setState({ prState: 'error' }); }
+  }
+  html(s) { return React.createElement('span', { dangerouslySetInnerHTML: { __html: s } }); }
+  renderVals() {
+    const c = this.state.c || { meta: {}, experience: [], projects: [], research: [], posts: [] };
+    const m = c.meta;
+    const md = this.md;
+    const name = m.name || 'Your Name';
+    const inline = s => md ? this.html(md.mdInline(s)) : s;
+    return {
+      name,
+      firstName: name.split(' ')[0].toLowerCase(),
+      jobTitle: m.title || '',
+      taglineEl: m.tagline ? inline(m.tagline) : '',
+      ghUser: m.github || '',
+      ghUrl: 'https://github.com/' + (m.github || ''),
+      linkedin: m.linkedin || '#',
+      twitter: m.twitter || '#',
+      emailHref: 'mailto:' + (m.email || ''),
+      year: new Date().getFullYear(),
+      experience: c.experience.map(j => ({
+        company: j.company, role: j.role, period: j.period,
+        initial: (j.company || '?').slice(0, 1).toUpperCase(),
+        points: j.points.map(p => ({ el: inline(p) }))
+      })),
+      projects: c.projects.map(p => ({
+        title: p.title, link: p.link || '#',
+        descEl: inline(p.desc || ''),
+        tagLine: (p.tags || []).join(' · ')
+      })),
+      hasResearch: c.research.length > 0,
+      research: c.research,
+      posts: this.state.posts.map(p => ({
+        title: p.title, date: p.date, summary: p.summary,
+        href: 'blog.html#p=' + encodeURIComponent(p.path)
+      })),
+      prs: this.state.prs,
+      prsLoading: this.state.prState === 'loading',
+      prErr: this.state.prState === 'error',
+      isDark: this.state.theme === 'dark',
+      isLight: this.state.theme !== 'dark',
+      toggleTheme: () => {
+        const t = this.state.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('pf-theme', t);
+        this.applyTheme(t);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

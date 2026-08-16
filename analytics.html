@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+  <script src="./bg-dots.js"></script>
+  <style>
+    :root{--bg:#e5e6ea;--sheen:#f6f7f9;--edge:#d3d5db;--text:#1b1c1f;--muted:#63656c;--faint:#93959d;--line:#cdcfd6;--soft:#dcdee3;--dock:rgba(232,233,237,.78)}
+    html[data-theme="dark"]{--bg:#1c1c1f;--sheen:#2a2a30;--edge:#161618;--text:#e9e9eb;--muted:#a2a2aa;--faint:#6f6f78;--line:#313136;--soft:#26262a;--dock:rgba(32,32,36,.8)}
+    body{margin:0;background:linear-gradient(165deg,var(--sheen) 0%,var(--bg) 48%,var(--edge) 100%) fixed;background-color:var(--bg);color:var(--text);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.6;transition:background .3s ease,color .3s ease;-webkit-font-smoothing:antialiased}
+    a{color:var(--text);text-decoration-color:var(--faint);text-underline-offset:3px}
+    a:hover{text-decoration-color:var(--text)}
+    :focus{outline:none}
+    :focus-visible{outline:2px solid var(--text);outline-offset:2px;border-radius:4px}
+    ::selection{background:rgba(140,140,150,.25)}
+    input::placeholder{color:var(--faint)}
+  </style>
+</helmet>
+<div style="min-height:100vh;position:relative;z-index:1">
+  <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px">
+      <form onSubmit="{{ unlock }}" style="width:340px;display:flex;flex-direction:column;gap:14px;padding:32px;border:1px solid var(--line);border-radius:18px">
+        <div style="width:44px;height:44px;border-radius:999px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:4px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="3"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></div>
+        <div>
+          <h1 style="margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-0.02em">Visitor analytics</h1>
+          <p style="margin:0;color:var(--muted);font-size:14px">Enter the dashboard password.</p>
+        </div>
+        <input type="password" value="{{ pw }}" onChange="{{ setPw }}" placeholder="Password" autofocus="autofocus" style="width:100%;box-sizing:border-box;padding:11px 14px;font:inherit;font-size:15px;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:12px">
+        <sc-if value="{{ pwError }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;color:#cf222e;font-size:13.5px">{{ pwErrorMsg }}</p>
+        </sc-if>
+        <button type="submit" style="padding:11px 14px;font:inherit;font-size:15px;font-weight:600;color:var(--bg);background:var(--text);border:none;border-radius:12px;cursor:pointer" style-hover="opacity:0.85">Unlock</button>
+        <p style="margin:0;color:var(--faint);font-size:12.5px">Checked server-side by /api/visits — nothing is stored in this page.</p>
+      </form>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width:960px;margin:0 auto;padding:clamp(36px,6vw,64px) 24px 80px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;margin-bottom:6px">
+        <h1 style="margin:0;font-size:clamp(26px,4.5vw,34px);font-weight:700;letter-spacing:-0.025em">Visitor analytics</h1>
+        <sc-if value="{{ demo }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px">Demo data</span>
+        </sc-if>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button onClick="{{ refresh }}" style="padding:8px 14px;font:inherit;font-size:13.5px;font-weight:600;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:999px;cursor:pointer" style-hover="background:var(--soft)">Refresh</button>
+          <button onClick="{{ logout }}" style="padding:8px 14px;font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;cursor:pointer" style-hover="background:var(--soft)">Lock</button>
+        </div>
+      </div>
+      <sc-if value="{{ demo }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0 0 26px;color:var(--muted);font-size:14px">Live data appears once the site is deployed on Vercel with the tracking API — see <span style="font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px">vercel/README.md</span>.</p>
+      </sc-if>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:18px 0 26px">
+        <div style="padding:16px 18px;border:1px solid var(--line);border-radius:14px"><div style="font-size:12.5px;color:var(--muted);margin-bottom:2px">Visits</div><div style="font-size:26px;font-weight:700;letter-spacing:-0.02em">{{ statVisits }}</div></div>
+        <div style="padding:16px 18px;border:1px solid var(--line);border-radius:14px"><div style="font-size:12.5px;color:var(--muted);margin-bottom:2px">Unique IPs</div><div style="font-size:26px;font-weight:700;letter-spacing:-0.02em">{{ statUnique }}</div></div>
+        <div style="padding:16px 18px;border:1px solid var(--line);border-radius:14px"><div style="font-size:12.5px;color:var(--muted);margin-bottom:2px">Countries</div><div style="font-size:26px;font-weight:700;letter-spacing:-0.02em">{{ statCountries }}</div></div>
+        <div style="padding:16px 18px;border:1px solid var(--line);border-radius:14px"><div style="font-size:12.5px;color:var(--muted);margin-bottom:2px">Top location</div><div style="font-size:26px;font-weight:700;letter-spacing:-0.02em">{{ statTop }}</div></div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;align-items:center">
+        <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search IP, city, country…" style="flex:1;min-width:200px;box-sizing:border-box;padding:9px 14px;font:inherit;font-size:14px;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:999px">
+        <div style="display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px">
+          <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4">
+            <button onClick="{{ r.pick }}" style="padding:6px 13px;font:inherit;font-size:13px;font-weight:600;color:{{ r.color }};background:{{ r.bg }};border:none;border-radius:999px;cursor:pointer">{{ r.label }}</button>
+          </sc-for>
+        </div>
+        <select value="{{ country }}" onChange="{{ setCountry }}" style="padding:9px 14px;font:inherit;font-size:14px;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:999px;cursor:pointer">
+          <option value="">All countries</option>
+          <sc-for list="{{ countryOpts }}" as="co" hint-placeholder-count="3">
+            <option value="{{ co.v }}">{{ co.v }} ({{ co.n }})</option>
+          </sc-for>
+        </select>
+        <select value="{{ page }}" onChange="{{ setPage }}" style="padding:9px 14px;font:inherit;font-size:14px;color:var(--text);background:var(--soft);border:1px solid var(--line);border-radius:999px;cursor:pointer">
+          <option value="">All pages</option>
+          <sc-for list="{{ pageOpts }}" as="pg" hint-placeholder-count="2">
+            <option value="{{ pg.v }}">{{ pg.v }} ({{ pg.n }})</option>
+          </sc-for>
+        </select>
+      </div>
+
+      <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:minmax(130px,1.1fr) minmax(150px,1.4fr) minmax(70px,0.6fr) minmax(150px,1fr);gap:12px;padding:11px 18px;background:var(--soft);border-bottom:1px solid var(--line);font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted)">
+          <span>IP address</span><span>Location</span><span>Page</span><span style="text-align:right">Time</span>
+        </div>
+        <sc-for list="{{ rows }}" as="v" hint-placeholder-count="8">
+          <div style="display:grid;grid-template-columns:minmax(130px,1.1fr) minmax(150px,1.4fr) minmax(70px,0.6fr) minmax(150px,1fr);gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);font-size:14px;align-items:baseline" style-hover="background:var(--soft)">
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:13px">{{ v.ip }}</span>
+            <span>{{ v.loc }}</span>
+            <span style="color:var(--muted);font-size:13px">{{ v.path }}</span>
+            <span style="text-align:right;color:var(--muted);font-size:13px">{{ v.when }}</span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;padding:28px 18px;color:var(--faint);font-size:14px;text-align:center">No visits match these filters.</p>
+        </sc-if>
+      </div>
+      <p style="margin:14px 2px 0;color:var(--faint);font-size:13px">{{ countLine }}</p>
+    </main>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { auth: false, pw: '', pwError: '', visits: [], demo: false, q: '', country: '', page: '', range: 'all' };
+  componentDidMount() {
+    document.documentElement.dataset.theme = localStorage.getItem('pf-theme') || 'light';
+    const saved = sessionStorage.getItem('pf-dash-key');
+    if (saved) this.tryUnlock(saved);
+  }
+  demoData() {
+    const now = Date.now(), H = 36e5;
+    const mk = (ip, city, region, country, path, agoH) => ({ ip, city, region, country, path, t: now - agoH * H });
+    return [
+      mk('73.162.14.85', 'San Francisco', 'CA', 'US', 'home', 0.4), mk('49.37.115.202', 'Kolkata', 'WB', 'IN', 'home', 1.2),
+      mk('88.104.22.19', 'London', 'ENG', 'GB', 'blog', 3), mk('73.162.14.85', 'San Francisco', 'CA', 'US', 'blog', 5),
+      mk('103.86.99.4', 'Bengaluru', 'KA', 'IN', 'home', 9), mk('178.24.55.130', 'Berlin', 'BE', 'DE', 'home', 14),
+      mk('66.249.66.1', 'Mountain View', 'CA', 'US', 'home', 22), mk('49.37.115.202', 'Kolkata', 'WB', 'IN', 'blog', 30),
+      mk('201.17.88.61', 'São Paulo', 'SP', 'BR', 'home', 50), mk('88.104.22.19', 'London', 'ENG', 'GB', 'home', 76),
+      mk('14.139.196.12', 'Mumbai', 'MH', 'IN', 'home', 120), mk('92.184.100.7', 'Paris', 'IDF', 'FR', 'blog', 200),
+      mk('73.162.14.85', 'San Francisco', 'CA', 'US', 'home', 320), mk('118.92.11.44', 'Auckland', 'AUK', 'NZ', 'home', 400)
+    ];
+  }
+  async tryUnlock(key) {
+    try {
+      const r = await fetch('/api/visits?key=' + encodeURIComponent(key));
+      if (r.status === 401) { this.setState({ pwError: 'Wrong password.' }); return; }
+      if (!r.ok) throw new Error(r.status);
+      const data = await r.json();
+      sessionStorage.setItem('pf-dash-key', key);
+      this.setState({ auth: true, visits: data.visits || [], demo: false, pwError: '' });
+    } catch (e) {
+      // API not deployed (local preview) — show the design with demo data
+      sessionStorage.setItem('pf-dash-key', key);
+      this.setState({ auth: true, visits: this.demoData(), demo: true, pwError: '' });
+    }
+  }
+  fmt(t) {
+    const d = new Date(t), diff = Date.now() - t;
+    const ago = diff < 36e5 ? Math.max(1, Math.round(diff / 6e4)) + 'm ago' : diff < 864e5 ? Math.round(diff / 36e5) + 'h ago' : Math.round(diff / 864e5) + 'd ago';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) + ' · ' + ago;
+  }
+  renderVals() {
+    const s = this.state;
+    const cutoffs = { '24h': 864e5, '7d': 7 * 864e5, '30d': 30 * 864e5, all: Infinity };
+    const q = s.q.toLowerCase();
+    const filtered = s.visits.filter(v => {
+      if (Date.now() - v.t > cutoffs[s.range]) return false;
+      if (s.country && v.country !== s.country) return false;
+      if (s.page && v.path !== s.page) return false;
+      if (q && !((v.ip || '') + ' ' + (v.city || '') + ' ' + (v.region || '') + ' ' + (v.country || '')).toLowerCase().includes(q)) return false;
+      return true;
+    }).sort((a, b) => b.t - a.t);
+    const count = (arr, k) => { const m = {}; arr.forEach(v => { const x = v[k]; if (x && x !== '—') m[x] = (m[x] || 0) + 1; }); return m; };
+    const cm = count(filtered, 'country');
+    const cities = count(filtered, 'city');
+    const topCity = Object.entries(cities).sort((a, b) => b[1] - a[1])[0];
+    return {
+      locked: !s.auth, unlocked: s.auth, demo: s.demo,
+      pw: s.pw, setPw: e => this.setState({ pw: e.target.value, pwError: '' }),
+      pwError: !!s.pwError, pwErrorMsg: s.pwError,
+      unlock: e => { e.preventDefault(); if (s.pw) this.tryUnlock(s.pw); },
+      logout: () => { sessionStorage.removeItem('pf-dash-key'); this.setState({ auth: false, pw: '' }); },
+      refresh: () => this.tryUnlock(sessionStorage.getItem('pf-dash-key') || ''),
+      statVisits: filtered.length,
+      statUnique: new Set(filtered.map(v => v.ip)).size,
+      statCountries: Object.keys(cm).length,
+      statTop: topCity ? topCity[0] : '—',
+      q: s.q, setQ: e => this.setState({ q: e.target.value }),
+      country: s.country, setCountry: e => this.setState({ country: e.target.value }),
+      page: s.page, setPage: e => this.setState({ page: e.target.value }),
+      countryOpts: Object.entries(count(s.visits, 'country')).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ v, n })),
+      pageOpts: Object.entries(count(s.visits, 'path')).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ v, n })),
+      ranges: ['24h', '7d', '30d', 'all'].map(r => ({
+        label: r === 'all' ? 'All time' : r,
+        pick: () => this.setState({ range: r }),
+        bg: s.range === r ? 'var(--text)' : 'transparent',
+        color: s.range === r ? 'var(--bg)' : 'var(--muted)'
+      })),
+      rows: filtered.slice(0, 200).map(v => ({
+        ip: v.ip,
+        loc: [v.city, v.region, v.country].filter(x => x && x !== '—').join(', ') || '—',
+        path: v.path || '/', when: this.fmt(v.t)
+      })),
+      empty: filtered.length === 0,
+      countLine: 'Showing ' + Math.min(filtered.length, 200) + ' of ' + filtered.length + ' visits' + (s.demo ? ' (demo)' : '')
+    };
+  }
+}
+</script>
+</body>
+</html>
