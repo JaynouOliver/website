@@ -5,9 +5,11 @@ export const post: Post = {
   title: "Give every request a latency budget",
   date: "2026-02-11",
   summary: "p99 problems are rarely one slow thing. They are ten fine things with no budget.",
-  image: "",
+  image: "https://picsum.photos/seed/latency/1200/630",
   body: `
 When a request is slow, teams hunt for the one slow component. Usually there isn't one. There are ten components each taking a reasonable 30ms, and nobody ever added them up.
+
+https://picsum.photos/seed/latency-inline/900/500
 
 ## Budgets change conversations
 

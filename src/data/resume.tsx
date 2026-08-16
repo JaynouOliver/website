@@ -19,7 +19,7 @@ export const DATA = {
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/dp.jpg", // your photo — file lives in public/
   githubUsername: "JaynouOliver", // recent PRs are pulled live from GitHub for this user
-  writingTagline: "Notes on systems, ML, and things I broke on purpose.",
+  blogTagline: "Notes on systems, ML, and things I broke on purpose.",
   skills: [
     "TensorFlow", "PyTorch", "NLP", "Computer Vision", "Tableau", "Power BI", "SQL", "Python", "C++", "Typescript", "Node.js", "Go", "Java", "AWS (Sagemaker, Lambda)", "GCP (Vertex AI, Dialogflow CX)", "Postgres", "Docker", "Kubernetes", "Scrum", "Jenkins", "CICD", "React", "Next.js",
   ],

@@ -36,6 +36,12 @@ export function mdToHtml(md: string): string {
       html += '<figure><img src="' + img[2] + '" alt="' + esc(img[1]) + '">' + (img[1] ? "<figcaption>" + esc(img[1]) + "</figcaption>" : "") + "</figure>";
       continue;
     }
+    // A bare URL on its own line renders as a centered image — just paste an image URL between two paragraphs.
+    if (/^https?:\/\/\S+$/.test(t)) {
+      flushP(); flushL();
+      html += '<figure><img src="' + esc(t) + '" alt=""></figure>';
+      continue;
+    }
     const h = t.match(/^(#{1,4})\s+(.*)$/);
     if (h) { flushP(); flushL(); const n = Math.min(h[1].length + 1, 5); html += "<h" + n + ">" + mdInline(h[2]) + "</h" + n + ">"; continue; }
     if (t.startsWith("> ")) { flushP(); flushL(); html += "<blockquote>" + mdInline(t.slice(2)) + "</blockquote>"; continue; }

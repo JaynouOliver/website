@@ -5,9 +5,11 @@ export const post: Post = {
   title: "Why boring technology keeps winning",
   date: "2026-07-18",
   summary: "The most reliable systems I have worked on were built from the dullest parts. That is not an accident.",
-  image: "",
+  image: "https://picsum.photos/seed/boring-tech/1200/630",
   body: `
 Every few months a new database, framework, or runtime promises to change everything. And every few months the systems that quietly keep working are the ones built on Postgres, plain HTTP, and a queue.
+
+https://picsum.photos/seed/boring-tech-inline/900/500
 
 ## Innovation tokens are real
 

@@ -79,6 +79,6 @@ a:hover{text-decoration-color:var(--text)}
 .md-body code{background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:0.88em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .md-body pre{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;margin:1.3em 0}
 .md-body pre code{background:none;border:none;padding:0;font-size:13.5px;line-height:1.6}
-.md-body img{max-width:100%;border-radius:14px;display:block}
-.md-body figure{margin:1.5em 0}
-.md-body figcaption{font-size:13px;color:var(--faint);margin-top:8px}
+.md-body img{display:block;margin:0 auto;max-width:min(100%,580px);border-radius:14px}
+.md-body figure{margin:1.6em auto}
+.md-body figcaption{font-size:13px;color:var(--faint);margin-top:8px;text-align:center}

@@ -159,7 +159,7 @@ export default function Page() {
 
       <section id="blog" className="pf-section">
         <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 22 }}>
-          <h2 className="pf-h2" style={{ margin: 0 }}>Writing</h2>
+          <h2 className="pf-h2" style={{ margin: 0 }}>Blog</h2>
           <Link href="/blog" style={{ marginLeft: "auto", fontSize: 14, color: "var(--muted)" }}>
             All posts →
           </Link>

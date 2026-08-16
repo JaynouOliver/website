@@ -5,9 +5,11 @@ export const post: Post = {
   title: "What I learned building Raft from scratch",
   date: "2026-05-02",
   summary: "Consensus looks simple in the paper. Then you try to implement leader election with real clocks and real networks.",
-  image: "",
+  image: "https://picsum.photos/seed/raft/1200/630",
   body: `
 I spent six weekends implementing Raft in Go for [keyv-lite](https://github.com/octocat/keyv-lite). The paper is famously readable. The implementation is famously humbling.
+
+https://picsum.photos/seed/raft-inline/900/500
 
 ## The paper hides the hard parts
 
