@@ -4,6 +4,7 @@ import Dock from "@/components/dock";
 import GoogleAnalytics from "@/components/ga";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DATA } from "@/data/resume";
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import { Suspense } from "react";
@@ -64,6 +65,7 @@ export default function RootLayout({
           <BgDots />
           {children}
           <Dock />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
