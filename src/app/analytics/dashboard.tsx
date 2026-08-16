@@ -1,5 +1,6 @@
 "use client";
 
+import PillSelect from "@/components/ui/pill-select";
 import { useEffect, useState } from "react";
 
 type Visit = {
@@ -190,18 +191,18 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
-        <select value={country} onChange={(e) => setCountry(e.target.value)} style={{ ...inputStyle, padding: "9px 14px", fontSize: 14, borderRadius: 999, cursor: "pointer" }}>
-          <option value="">All countries</option>
-          {Object.entries(count(visits, "country")).sort((a, b) => b[1] - a[1]).map(([v, n]) => (
-            <option key={v} value={v}>{v} ({n})</option>
-          ))}
-        </select>
-        <select value={page} onChange={(e) => setPage(e.target.value)} style={{ ...inputStyle, padding: "9px 14px", fontSize: 14, borderRadius: 999, cursor: "pointer" }}>
-          <option value="">All pages</option>
-          {Object.entries(count(visits, "path")).sort((a, b) => b[1] - a[1]).map(([v, n]) => (
-            <option key={v} value={v}>{v} ({n})</option>
-          ))}
-        </select>
+        <PillSelect
+          value={country}
+          onValueChange={setCountry}
+          allLabel="All countries"
+          options={Object.entries(count(visits, "country")).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, label: `${v} (${n})` }))}
+        />
+        <PillSelect
+          value={page}
+          onValueChange={setPage}
+          allLabel="All pages"
+          options={Object.entries(count(visits, "path")).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, label: `${v} (${n})` }))}
+        />
       </div>
 
       <div style={{ border: "1px solid var(--line)", borderRadius: 14, overflow: "hidden" }}>
