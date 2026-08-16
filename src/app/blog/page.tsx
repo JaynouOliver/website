@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Blog",
+  title: "Research and International presentations",
   description: DATA.blogTagline,
 };
 
@@ -13,7 +13,7 @@ export default function BlogPage() {
   return (
     <main className="pf-main pf-main-blog">
       <h1 style={{ margin: "0 0 8px", fontSize: "clamp(32px,5.5vw,44px)", fontWeight: 700, letterSpacing: "-0.03em" }}>
-        Blog
+        Research and International presentations
       </h1>
       <p style={{ margin: "0 0 36px", color: "var(--muted)", fontSize: 16 }}>{DATA.blogTagline}</p>
       <div style={{ display: "flex", flexDirection: "column" }}>

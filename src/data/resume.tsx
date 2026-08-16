@@ -19,7 +19,7 @@ export const DATA = {
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/dp.jpg", // your photo — file lives in public/
   githubUsername: "JaynouOliver", // recent PRs are pulled live from GitHub for this user
-  blogTagline: "Notes on systems, ML, and things I broke on purpose.",
+  blogTagline: "Papers, talks, conferences, and notes.",
   skills: [
     "TensorFlow", "PyTorch", "NLP", "Computer Vision", "Tableau", "Power BI", "SQL", "Python", "C++", "Typescript", "Node.js", "Go", "Java", "AWS (Sagemaker, Lambda)", "GCP (Vertex AI, Dialogflow CX)", "Postgres", "Docker", "Kubernetes", "Scrum", "Jenkins", "CICD", "React", "Next.js",
   ],
@@ -176,60 +176,6 @@ export const DATA = {
       video: "",
     },
   ],
-  // Papers and publications. meta = venue/year shown on the right.
-  research: [
-    {
-      title: "Publication at SciPy Conference — accepted paper",
-      meta: "SciPy 2024",
-      link: "https://doi.org/10.25080/XHDR4700",
-    },
-    {
-      title: "Poster: Real-time multi-hop reasoning with Nvidia cuGraphs",
-      meta: "PyTorch Conference 2025",
-      link: "https://pytorch.org",
-    },
-  ],
-  // Talks, conferences, and community — shown under "Research and International presentations" after the papers.
-  talks: [
-    {
-      title: "AI session on trans-tokenization",
-      meta: "March 2025 · Remote, India",
-      description: "Conducted a session on trans-tokenization for large language models.",
-      link: "",
-    },
-    {
-      title: "Kubecon India",
-      meta: "Dec 11–12, 2024 · Delhi, India",
-      description: "Got a scholarship to attend Kubecon India.",
-      link: "",
-    },
-    {
-      title: "Speaker at FOSS Kolkata",
-      meta: "October 2024 · Kolkata, India",
-      description:
-        "Talk on trans-tokenization for monolingual LLMs — fine-tuning, adapting trans-tokenization to existing methods, and building your own tokenizer.",
-      link: "https://www.linkedin.com/feed/update/urn:li:activity:7248060113524031488/",
-    },
-    {
-      title: "Talk: MLOps on cloud-native technologies",
-      meta: "May 2024 · Kolkata, India",
-      description:
-        "End-to-end ML pipelines with Kubeflow — an end-to-end MLOps project walkthrough.",
-      link: "",
-    },
-    {
-      title: "Talk on entrepreneurship",
-      meta: "April 2024 · Kolkata, India",
-      description:
-        "How we raised funds for our startup with the initial MVP and scaled it for customers.",
-      link: "https://www.linkedin.com/posts/academy-of-technology_a-special-talk-on-how-to-build-prize-winning-activity-7184774748038467584-P74E",
-    },
-    {
-      title: "Hack The North",
-      meta: "September 14–16, 2023 · Waterloo, Ontario",
-      description:
-        "Scholarship to attend Hack the North, Canada's largest hackathon, organized by the University of Waterloo.",
-      link: "",
-    },
-  ],
+  // Research, talks, and conferences now live as blog posts in src/data/posts/ —
+  // one TS file each, listed under "Research and International presentations".
 };

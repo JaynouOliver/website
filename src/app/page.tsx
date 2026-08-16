@@ -107,43 +107,6 @@ export default function Page() {
         </div>
       </section>
 
-      {(DATA.research.length > 0 || DATA.talks.length > 0) && (
-        <section id="research" className="pf-section">
-          <h2 className="pf-h2">Research and International presentations</h2>
-          {DATA.research.length > 0 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: DATA.talks.length > 0 ? 22 : 0 }}>
-              {DATA.research.map((rp) => (
-                <a key={rp.title} href={rp.link || "#"} target="_blank" rel="noopener" className="pf-flatcard">
-                  <span style={{ fontWeight: 600, fontSize: 15, flex: 1, minWidth: 220 }}>{rp.title}</span>
-                  <span style={{ color: "var(--faint)", fontSize: 13 }}>{rp.meta}</span>
-                </a>
-              ))}
-            </div>
-          )}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {DATA.talks.map((t) =>
-              t.link ? (
-                <a key={t.title} href={t.link} target="_blank" rel="noopener" className="pf-row">
-                  <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
-                    <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{t.title}</span>
-                    <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{t.meta}</span>
-                  </span>
-                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{t.description}</span>
-                </a>
-              ) : (
-                <div key={t.title} className="pf-row">
-                  <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
-                    <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{t.title}</span>
-                    <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{t.meta}</span>
-                  </span>
-                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{t.description}</span>
-                </div>
-              )
-            )}
-          </div>
-        </section>
-      )}
-
       <section id="opensource" className="pf-section">
         <h2 className="pf-h2" style={{ marginBottom: 6 }}>Open source</h2>
         <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 14.5 }}>
@@ -154,14 +117,9 @@ export default function Page() {
       </section>
 
       <section id="blog" className="pf-section">
-        <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 22 }}>
-          <h2 className="pf-h2" style={{ margin: 0 }}>Blog</h2>
-          <Link href="/blog" style={{ marginLeft: "auto", fontSize: 14, color: "var(--muted)" }}>
-            All posts →
-          </Link>
-        </div>
+        <h2 className="pf-h2">Research and International presentations</h2>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {posts.slice(0, 4).map((po) => (
+          {posts.slice(0, 5).map((po) => (
             <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row">
               <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
                 <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 200 }}>{po.title}</span>
@@ -170,6 +128,14 @@ export default function Page() {
               <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
             </Link>
           ))}
+        </div>
+        <div style={{ marginTop: 18 }}>
+          <Link
+            href="/blog"
+            style={{ display: "inline-block", padding: "8px 16px", fontSize: 13.5, fontWeight: 600, color: "var(--text)", border: "1px solid var(--line)", borderRadius: 999, textDecoration: "none" }}
+          >
+            Show more →
+          </Link>
         </div>
       </section>
 
