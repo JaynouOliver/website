@@ -110,10 +110,10 @@ export default function Page() {
       <section id="opensource" className="pf-section">
         <h2 className="pf-h2" style={{ marginBottom: 6 }}>Open source</h2>
         <p style={{ margin: "0 0 18px", color: "var(--muted)", fontSize: 14.5 }}>
-          Recent pull requests — merged, open, and closed — pulled live from GitHub for{" "}
+          Recent merged and open pull requests, pulled live from GitHub for{" "}
           <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a> — this list grows on its own.
         </p>
-        <GitHubPRs user={DATA.githubUsername} count={5} showMoreHref="/open-source" />
+        <GitHubPRs user={DATA.githubUsername} count={5} states={["merged", "open"]} showMoreHref="/open-source" />
       </section>
 
       <section id="blog" className="pf-section">
