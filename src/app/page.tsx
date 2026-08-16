@@ -11,7 +11,7 @@ const arrow = (
 );
 
 export default function Page() {
-  const firstName = DATA.name.split(" ")[0].toLowerCase();
+  const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
   return (
     <main className="pf-main">

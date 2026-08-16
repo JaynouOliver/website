@@ -7,6 +7,7 @@ import { HomeIcon, NotebookIcon } from "lucide-react";
 // Blog posts live in src/data/posts/ — one TS file per post.
 export const DATA = {
   name: "Suvrakamal Das",
+  nickname: "Subhro", // shown in the "hi, i'm ..." greeting
   initials: "SD",
   url: "https://suvrakamaldas.online", // used for SEO metadata — set to your deployed URL
   location: "Kolkata, India",
