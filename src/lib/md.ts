@@ -8,7 +8,12 @@ export function mdInline(s: string): string {
   s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
-  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // Internal links (starting with /) open in the same tab; external ones in a new tab.
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, text, href) =>
+    href.startsWith("/")
+      ? '<a href="' + href + '">' + text + "</a>"
+      : '<a href="' + href + '" target="_blank" rel="noopener">' + text + "</a>"
+  );
   return s;
 }
 
@@ -36,8 +41,8 @@ export function mdToHtml(md: string): string {
       html += '<figure><img src="' + img[2] + '" alt="' + esc(img[1]) + '">' + (img[1] ? "<figcaption>" + esc(img[1]) + "</figcaption>" : "") + "</figure>";
       continue;
     }
-    // A bare URL on its own line renders as a centered image — just paste an image URL between two paragraphs.
-    if (/^https?:\/\/\S+$/.test(t)) {
+    // A bare URL or local /path on its own line renders as a centered image — just paste it between two paragraphs.
+    if (/^https?:\/\/\S+$/.test(t) || /^\/\S+\.(png|jpe?g|gif|webp|avif|svg)$/i.test(t)) {
       flushP(); flushL();
       html += '<figure><img src="' + esc(t) + '" alt=""></figure>';
       continue;

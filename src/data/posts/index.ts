@@ -16,10 +16,12 @@ import { post as fossKolkataTalk } from "./foss-kolkata-talk";
 import { post as mlopsCloudNativeTalk } from "./mlops-cloud-native-talk";
 import { post as entrepreneurshipTalk } from "./entrepreneurship-talk";
 import { post as hackTheNorth2023 } from "./hack-the-north-2023";
+import { post as lifeStory } from "./life_story";
 
 export type { Post };
 
 export const posts: Post[] = [
+  
   whyBoringTechWins,
   raftFromScratch,
   latencyBudget,
@@ -31,6 +33,7 @@ export const posts: Post[] = [
   mlopsCloudNativeTalk,
   entrepreneurshipTalk,
   hackTheNorth2023,
+  lifeStory,
 ].sort((a, b) => +new Date(b.date) - +new Date(a.date));
 
 export function getPost(slug: string): Post | undefined {
