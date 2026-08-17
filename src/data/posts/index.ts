@@ -2,22 +2,13 @@
 // Hand-editing still works: add a file in this folder and either re-save any
 // post in the editor or add the import here yourself.
 import type { Post } from "./types";
-import { post as p0 } from "./entrepreneurship-talk";
-import { post as p1 } from "./foss-kolkata-talk";
-import { post as p2 } from "./hack-the-north-2023";
-import { post as p3 } from "./kubecon-india-2024";
-import { post as p4 } from "./latency-budget";
-import { post as p5 } from "./life_story";
-import { post as p6 } from "./mlops-cloud-native-talk";
-import { post as p7 } from "./pyconusa26";
-import { post as p8 } from "./pytorch-2025-poster";
-import { post as p9 } from "./raft-from-scratch";
-import { post as p10 } from "./scipy-2024-paper";
-import { post as p11 } from "./transtokenization-session";
+import { post as p0 } from "./life_story";
+import { post as p1 } from "./pyconusa26";
+import { post as p2 } from "./scipy-2024-paper";
 
 export type { Post };
 
-export const posts: Post[] = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11].sort(
+export const posts: Post[] = [p0, p1, p2].sort(
   (a, b) => +new Date(b.date) - +new Date(a.date)
 );
 
