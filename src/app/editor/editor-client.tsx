@@ -2,6 +2,7 @@
 
 import PillSelect from "@/components/ui/pill-select";
 import { fmtDate, mdToHtml } from "@/lib/md";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Draft = { slug: string; title: string; date: string; summary: string; image: string; body: string };
@@ -85,23 +86,27 @@ export default function EditorClient({ initialPosts }: { initialPosts: Draft[] }
     setBusy(false);
   }
 
+  async function doSave(): Promise<boolean> {
+    const slug = cur.slug || slugify(cur.title);
+    const payload = { ...cur, slug, prevSlug };
+    const r = await fetch("/api/editor/save", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    if (!r.ok) { setStatus("Save failed: " + data.error); return false; }
+    setCur((c) => ({ ...c, slug }));
+    setPrevSlug(slug);
+    setDrafts((ds) => [...ds.filter((d) => d.slug !== prevSlug && d.slug !== slug), { ...payload }]
+      .sort((a, b) => +new Date(b.date) - +new Date(a.date)));
+    return true;
+  }
+
   async function save() {
     if (!cur.title.trim()) { setStatus("Give it a title first."); return; }
     setBusy(true); setStatus("Saving…");
     try {
-      const slug = cur.slug || slugify(cur.title);
-      const payload = { ...cur, slug, prevSlug };
-      const r = await fetch("/api/editor/save", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data.error);
-      setCur((c) => ({ ...c, slug }));
-      setPrevSlug(slug);
-      setDrafts((ds) => [...ds.filter((d) => d.slug !== prevSlug && d.slug !== slug), { ...payload }]
-        .sort((a, b) => +new Date(b.date) - +new Date(a.date)));
-      setStatus("Saved — live locally at /blog/" + slug + ". Publish when ready.");
+      if (await doSave()) setStatus("Saved — live locally at /blog/" + (cur.slug || slugify(cur.title)) + ". Publish when ready.");
     } catch (e: any) { setStatus("Save failed: " + e.message); }
     setBusy(false);
   }
@@ -120,8 +125,14 @@ export default function EditorClient({ initialPosts }: { initialPosts: Draft[] }
   }
 
   async function publish() {
-    setBusy(true); setStatus("Publishing (git commit + push)…");
+    setBusy(true);
     try {
+      // Auto-save the open draft first so Publish always ships what you see.
+      if (cur.title.trim()) {
+        setStatus("Saving draft…");
+        if (!(await doSave())) { setBusy(false); return; }
+      }
+      setStatus("Publishing (git commit + push)…");
       const r = await fetch("/api/editor/publish", { method: "POST" });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error);
@@ -141,6 +152,7 @@ export default function EditorClient({ initialPosts }: { initialPosts: Draft[] }
             allLabel="✍️ New draft"
             options={drafts.map((d) => ({ value: d.slug, label: d.title || d.slug }))}
           />
+          <Link href="/editor/quests" style={{ ...ghost, textDecoration: "none" }}>Main quests →</Link>
           <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13 }}>{words} words</span>
           <div style={{ display: "flex", gap: 4, padding: 3, border: "1px solid var(--line)", borderRadius: 999 }}>
             {(["write", "preview"] as const).map((m) => (
