@@ -15,7 +15,7 @@ export const DATA = {
   locationLink: "https://www.google.com/maps/place/kolkata",
   // Shown under "hi, i'm ..." on the homepage. Markdown links work: [word](https://url)
   description:
-    "TLDR: I'm a software engineer and entrepreneur, [here's](/blog/life-story) my life so far in a nutshell. I work on the conjunction of AI and hardware. I spoke at a couple of conferences and have a few publications. Find me on [X](https://x.com/SuvrakamalD).",
+    "TLDR: Suvrakamal Das is a software engineer and entrepreneur, [here's](/blog/life-story) my life so far in a nutshell. I work on the conjunction of AI and hardware. I spoke at a couple of conferences and have a few publications. Find me on [X](https://x.com/SuvrakamalD).",
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/me.jpg", // your photo — file lives in public/
