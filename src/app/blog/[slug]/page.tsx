@@ -1,3 +1,4 @@
+import Pic from "@/components/pic";
 import { getPost, posts } from "@/data/posts";
 import { fmtDate, mdToHtml } from "@/lib/md";
 import type { Metadata } from "next";
@@ -32,8 +33,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
         </h1>
         <p style={{ margin: "0 0 30px", color: "var(--faint)", fontSize: 14 }}>{fmtDate(post.date)}</p>
         {post.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.image} alt="" style={{ width: "100%", borderRadius: 16, marginBottom: 32 }} />
+          <Pic src={post.image} width={1200} height={675} priority style={{ width: "100%", height: "auto", borderRadius: 16, marginBottom: 32 }} />
         ) : null}
         <div className="md-body" dangerouslySetInnerHTML={{ __html: mdToHtml(post.body) }} />
 

@@ -1,3 +1,4 @@
+import Pic from "@/components/pic";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
 import { fmtDate } from "@/lib/md";
@@ -20,8 +21,7 @@ export default function BlogPage() {
         {posts.map((po) => (
           <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row" style={{ flexDirection: "row", alignItems: "center", gap: 16, padding: "18px 12px", margin: "0 -12px", borderRadius: 10 }}>
             {po.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={po.image} alt="" className="pf-thumb" style={{ width: 108, height: 70 }} />
+              <Pic src={po.image} width={108} height={70} className="pf-thumb" style={{ width: 108, height: 70, objectFit: "cover" }} />
             )}
             <span style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 0 }}>
               <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>

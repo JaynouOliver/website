@@ -17,6 +17,16 @@ export function mdInline(s: string): string {
   return s;
 }
 
+// Local images route through Vercel's optimizer (resized + WebP + CDN); all
+// body images lazy-load so they never block the initial page render.
+function imgTag(src: string, alt = ""): string {
+  const attrs = ' loading="lazy" decoding="async" alt="' + esc(alt) + '"';
+  if (src.startsWith("/")) {
+    return '<img src="/_next/image?url=' + encodeURIComponent(src) + '&w=1200&q=75"' + attrs + ">";
+  }
+  return '<img src="' + esc(src) + '"' + attrs + ">";
+}
+
 export function mdToHtml(md: string): string {
   const lines = md.replace(/\r/g, "").split("\n");
   let html = "";
@@ -38,13 +48,13 @@ export function mdToHtml(md: string): string {
     const img = t.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
     if (img) {
       flushP(); flushL();
-      html += '<figure><img src="' + img[2] + '" alt="' + esc(img[1]) + '">' + (img[1] ? "<figcaption>" + esc(img[1]) + "</figcaption>" : "") + "</figure>";
+      html += "<figure>" + imgTag(img[2], img[1]) + (img[1] ? "<figcaption>" + esc(img[1]) + "</figcaption>" : "") + "</figure>";
       continue;
     }
     // A bare URL or local /path on its own line renders as a centered image — just paste it between two paragraphs.
     if (/^https?:\/\/\S+$/.test(t) || /^\/\S+\.(png|jpe?g|gif|webp|avif|svg)$/i.test(t)) {
       flushP(); flushL();
-      html += '<figure><img src="' + esc(t) + '" alt=""></figure>';
+      html += "<figure>" + imgTag(t) + "</figure>";
       continue;
     }
     const h = t.match(/^(#{1,4})\s+(.*)$/);
