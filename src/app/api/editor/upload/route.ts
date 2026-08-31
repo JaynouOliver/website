@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // Photos come off phones at 5MB+ — resize to web resolution (max 1600px) and
 // recompress on upload so heavy originals never enter the repo.
-async function compress(buf: Buffer, name: string): Promise<Buffer> {
+async function compress(buf: Uint8Array, name: string): Promise<Uint8Array> {
   const ext = path.extname(name).toLowerCase();
   if (![".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return buf;
   try {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const form = await req.formData();
   const file = form.get("file") as File | null;
   if (!file) return NextResponse.json({ error: "no file" }, { status: 400 });
-  let buf = Buffer.from(await file.arrayBuffer());
+  let buf: Uint8Array = Buffer.from(await file.arrayBuffer());
   // sanitize: lowercase, spaces/symbols -> dashes, keep the extension
   let name = (file.name || "image.png").toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-+|-+$/g, "");
   if (!/\.(png|jpe?g|gif|webp|avif|svg)$/.test(name)) name += ".png";
