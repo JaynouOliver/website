@@ -2,6 +2,7 @@
 
 import PillSelect from "@/components/ui/pill-select";
 import { useEffect, useState } from "react";
+import VisitMap from "./visit-map";
 
 type Visit = {
   ip: string;
@@ -10,8 +11,22 @@ type Visit = {
   country?: string;
   path?: string;
   ua?: string;
+  lat?: number | string;
+  lon?: number | string;
   t: number;
 };
+
+function deviceOf(ua?: string): string {
+  if (!ua) return "";
+  if (/bot|crawler|spider|curl|python|httpx|wget|headless/i.test(ua)) return "Bot";
+  if (/iphone/i.test(ua)) return "iPhone";
+  if (/android/i.test(ua)) return "Android";
+  if (/ipad|tablet/i.test(ua)) return "Tablet";
+  if (/macintosh/i.test(ua)) return "Mac";
+  if (/windows/i.test(ua)) return "Windows";
+  if (/linux/i.test(ua)) return "Linux";
+  return "";
+}
 
 const H = 36e5;
 
@@ -59,6 +74,15 @@ export default function Dashboard() {
   const [country, setCountry] = useState("");
   const [page, setPage] = useState("");
   const [range, setRange] = useState<"24h" | "7d" | "30d" | "all">("all");
+  const [exclude, setExclude] = useState("");
+
+  useEffect(() => {
+    setExclude(localStorage.getItem("pf-exclude-ips") || "");
+  }, []);
+  const setExcludePersist = (v: string) => {
+    setExclude(v);
+    localStorage.setItem("pf-exclude-ips", v);
+  };
 
   async function tryUnlock(key: string) {
     try {
@@ -117,8 +141,10 @@ export default function Dashboard() {
 
   const cutoffs: Record<string, number> = { "24h": 24 * H, "7d": 7 * 24 * H, "30d": 30 * 24 * H, all: Infinity };
   const ql = q.toLowerCase();
+  const excludeSet = new Set(exclude.split(",").map((s) => s.trim()).filter(Boolean));
   const filtered = visits
     .filter((v) => {
+      if (excludeSet.has(v.ip)) return false;
       if (Date.now() - v.t > cutoffs[range]) return false;
       if (country && v.country !== country) return false;
       if (page && v.path !== page) return false;
@@ -203,7 +229,16 @@ export default function Dashboard() {
           allLabel="All pages"
           options={Object.entries(count(visits, "path")).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, label: `${v} (${n})` }))}
         />
+        <input
+          value={exclude}
+          onChange={(e) => setExcludePersist(e.target.value)}
+          placeholder="Exclude IPs (comma-separated)"
+          title="Hide these IPs from all stats, the map, and the table — remembered in this browser"
+          style={{ ...inputStyle, width: 230, padding: "9px 14px", fontSize: 14, borderRadius: 999 }}
+        />
       </div>
+
+      <VisitMap visits={filtered} />
 
       <div style={{ border: "1px solid var(--line)", borderRadius: 14, overflow: "hidden" }}>
         <div style={{ display: "grid", gridTemplateColumns: gridCols, gap: 12, padding: "11px 18px", background: "var(--soft)", borderBottom: "1px solid var(--line)", fontSize: 12, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
@@ -213,7 +248,10 @@ export default function Dashboard() {
           <div key={i} style={{ display: "grid", gridTemplateColumns: gridCols, gap: 12, padding: "12px 18px", borderBottom: "1px solid var(--line)", fontSize: 14, alignItems: "baseline" }}>
             <span style={{ fontFamily: "ui-monospace,Menlo,monospace", fontSize: 13 }}>{v.ip}</span>
             <span>{[v.city, v.region, v.country].filter((x) => x && x !== "—").join(", ") || "—"}</span>
-            <span style={{ color: "var(--muted)", fontSize: 13 }}>{v.path || "/"}</span>
+            <span style={{ color: "var(--muted)", fontSize: 13 }}>
+              {v.path || "/"}
+              {deviceOf(v.ua) && <span style={{ color: "var(--faint)" }}> · {deviceOf(v.ua)}</span>}
+            </span>
             <span style={{ textAlign: "right", color: "var(--muted)", fontSize: 13 }}>{fmtWhen(v.t)}</span>
           </div>
         ))}

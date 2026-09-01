@@ -15,6 +15,8 @@ export async function GET(req: NextRequest) {
       country: h.get("x-vercel-ip-country") || "—",
       path: req.nextUrl.searchParams.get("p") || "/",
       ua: (h.get("user-agent") || "").slice(0, 120),
+      lat: parseFloat(h.get("x-vercel-ip-latitude") || "") || undefined,
+      lon: parseFloat(h.get("x-vercel-ip-longitude") || "") || undefined,
       t: Date.now(),
     };
     await redis.lpush("visits", JSON.stringify(visit));
