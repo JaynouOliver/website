@@ -43,7 +43,7 @@ const CENTROIDS: Record<string, [number, number]> = {
 // Deterministic small offset so cities sharing a country centroid don't stack exactly.
 function jitter(s: string): [number, number] {
   let h = 0;
-  for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) | 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return [((((h % 100) + 100) % 100) / 100 - 0.5) * 2.4, (((((h >> 7) % 100) + 100) % 100) / 100 - 0.5) * 2.4];
 }
 
@@ -68,7 +68,7 @@ function computeGroups(visits: MapVisit[]): Group[] {
     g.pages[p] = (g.pages[p] || 0) + 1;
     m.set(key, g);
   }
-  return [...m.entries()].map(([key, g]) => ({
+  return Array.from(m.entries()).map(([key, g]) => ({
     key, lat: g.lat, lon: g.lon, city: g.city, country: g.country, count: g.count,
     ips: g.ips.size, precise: g.precise,
     pages: Object.entries(g.pages).sort((a, b) => b[1] - a[1]).slice(0, 5),
