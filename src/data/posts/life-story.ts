@@ -34,7 +34,7 @@ A first year kid who did not know how to code untill recently, got an internship
 The real motivation to pursue CS was to start a company that will solve a major problem in India and will somehow contribute to the betterment of this country.
 Sounds very childish, but I never did any work in hope of making more money. Later in my life i came to know a lot about purpose, GRIT, and being nationalistic. 
 I found out everything around me is created by men and women who had GRIT and were unrealistic. 
-[The blue LED light in my monitor had was created by someone whom I was heavily inspired with.](https://www.youtube.com/watch?v=AF8d72mA41M)
+[The blue LED light in my monitor  was created by someone whom I was heavily inspired with.](https://www.youtube.com/watch?v=AF8d72mA41M)
 
 I was fortunate enough in life to meet some people at the right place at the right time that changed the course of my life. In 2023 me and my friends started [ProjectX](https://projectx.cloud/). It was a simple idea, we wanted to give people access to high performance computing on browsers. People who did not have money to buy macbook could rent our software through their old devices and run heavy applications on the web. 
 
