@@ -48,7 +48,7 @@ Entrepreneurship is a luxury in India, without a safety net, your life can get v
 
 ## 2025-2026 and present 
 
-I continued my journey in field of AI/ML, along the way I worked with many companies that built relationships from the beginning. I spent a few months at XRI Global, RegCore AI before finally joining Mattoboard. 
+I continued my journey in AI/ML, along the way I worked with many companies that built relationships from the beginning. I spent a few months at XRI Global, RegCore AI before finally joining Mattoboard. 
 
 My contributions in Open source led me to various conferences and 2026 was one of the best years of my life to travel. 
 
