@@ -42,7 +42,7 @@ I used to manage, tech, finance, day to day operations, had some of the best yea
 
 By the end of 2024 we still had a lot left to uncover, but managed to pull off handsome amount of funds ($30000). Build a basic prototype, hire a few people at the age of 20, pull of an absolute fight with college management to grant 100% attendance for the rest of the college(I only came to college during exams 😆). Everytime someone said no, I made the system work in my favour.
 
-Entrepreneurship is a luxury in India, without a safety net, your life can get very complicated. The fear of failing is real. I quit the startup later due to various reasons to pursue my ML career and later hoped to start a company someday.
+Entrepreneurship is a luxury in India, without a safety net, your life can get very complicated. The fear of failing is real. I quit the startup later due to various reasons and pursued my ML career and later hoped to start a company someday.
 ![Subhro speaking about his entrepreneurship journey](/life_story3.jpg)
 
 
