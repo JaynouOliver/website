@@ -2,7 +2,7 @@
 // Hand-editing still works: add a file in this folder and either re-save any
 // post in the editor or add the import here yourself.
 import type { Post } from "./types";
-import { post as p0 } from "./life_story";
+import { post as p0 } from "./life-story";
 import { post as p1 } from "./pyconusa26";
 import { post as p2 } from "./scipy-2024-paper";
 

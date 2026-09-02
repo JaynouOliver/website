@@ -7,7 +7,6 @@ export const post: Post = {
   summary: "The most reliable systems I have worked on were built from the dullest parts. That is not an accident.",
   image: "/life_story1.jpg",
   body: `
-
 ## 2015-2019
 
 Back when I was in school, I scored low in a maths exam in class 8. 
@@ -37,7 +36,7 @@ Sounds very childish, but I never did any work in hope of making more money. Lat
 I found out everything around me is created by men and women who had GRIT and were unrealistic. 
 [The blue LED light in my monitor had was created by someone whom I was heavily inspired with.](https://www.youtube.com/watch?v=AF8d72mA41M)
 
-I was fortunate enough in life to meet some people at the right place at the right time that changed the course of my life. In 2023 I, Ronit and Rounak started [ProjectX](https://projectx.cloud/). It was a simple idea, we wanted to give people access to high performance computing on browsers. People who did not have money to buy macbook could rent our software through their old devices and run heavy applications on the web. 
+I was fortunate enough in life to meet some people at the right place at the right time that changed the course of my life. In 2023 me and my friends started [ProjectX](https://projectx.cloud/). It was a simple idea, we wanted to give people access to high performance computing on browsers. People who did not have money to buy macbook could rent our software through their old devices and run heavy applications on the web. 
 
 I used to manage, tech, finance, day to day operations, had some of the best years of my life during this phase. I travelled places across the country, and boarded my first domestic flight. Building a startup from scratch from a tier 3 college and village with the kind of societial pressure from primitive mindset people, family, friends etc is hard with limited resources. We fought, we still pulled off. 
 
@@ -70,6 +69,5 @@ I visited 5 countries in a span of 5 months, from nothing in 2021 to exploring t
 
 
 I am planning to pursue something in hardware now. more about it later.
- 
 `,
 };
