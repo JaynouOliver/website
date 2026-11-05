@@ -17,9 +17,9 @@ export default function Page() {
   const pj = DATA.project;
   return (
     <main className="pf-main">
-      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "28px 40px" }}>
-        <div style={{ flex: 1, minWidth: 280 }}>
-          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,56px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+      <header className="pf-hero">
+        <div className="pf-hero-text">
+          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,60px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
           </h1>
           <p className="pf-role">
@@ -37,14 +37,17 @@ export default function Page() {
             <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" className="pf-btn">LinkedIn</a>
           </div>
         </div>
-        <Pic
-          src={DATA.avatarUrl}
-          alt={DATA.name}
-          width={132}
-          height={132}
-          priority
-          style={{ width: 132, height: 132, flex: "none", borderRadius: 999, objectFit: "cover", border: "1px solid var(--line)" }}
-        />
+        <figure className="pf-hero-photo">
+          <Pic
+            src={DATA.heroImage}
+            alt={DATA.heroImageAlt}
+            width={1400}
+            height={1866}
+            priority
+            sizes="(max-width: 600px) 100vw, (max-width: 860px) 560px, 460px"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        </figure>
       </header>
 
       <section id="experience" className="pf-section">

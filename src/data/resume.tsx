@@ -20,6 +20,8 @@ export const DATA = {
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/me.jpg", // your photo — file lives in public/
+  heroImage: "/me-golden-gate.webp", // big photo at the top of the homepage (portrait works best)
+  heroImageAlt: "Subhro at the Golden Gate Bridge",
   githubUsername: "JaynouOliver", // recent PRs are pulled live from GitHub for this user
   blogTagline: "Papers, talks, conferences, and notes.",
   skills: [

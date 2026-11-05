@@ -11,6 +11,7 @@ export default function Pic({
   className,
   style,
   priority,
+  sizes,
 }: {
   src: string;
   alt?: string;
@@ -19,10 +20,11 @@ export default function Pic({
   className?: string;
   style?: React.CSSProperties;
   priority?: boolean;
+  sizes?: string; // responsive hint for next/image, e.g. "(max-width: 860px) 100vw, 480px"
 }) {
   if (src.startsWith("/")) {
     return (
-      <Image src={src} alt={alt} width={width} height={height} className={className} style={style} priority={priority} />
+      <Image src={src} alt={alt} width={width} height={height} className={className} style={style} priority={priority} sizes={sizes} />
     );
   }
   return (

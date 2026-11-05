@@ -48,6 +48,14 @@ a:hover{text-decoration-color:var(--text)}
 .pf-h2{margin:0 0 22px;font-size:22px;font-weight:700;letter-spacing:-0.015em}
 .pf-section{scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)}
 
+/* Hero: text + large portrait. Wider than the text column on desktop. */
+.pf-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,460px);align-items:center;gap:clamp(32px,5vw,64px);width:min(1100px,calc(100vw - 32px));margin-left:calc(50% - min(550px,50vw - 16px))}
+.pf-hero-photo{margin:0;aspect-ratio:3/4;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--soft);box-shadow:0 24px 60px rgba(0,0,0,.14)}
+@media (max-width:860px){
+  .pf-hero{grid-template-columns:1fr;width:auto;margin-left:0;gap:26px}
+  .pf-hero-photo{order:-1;width:100%;max-width:560px;aspect-ratio:4/5;margin:0 auto}
+  .pf-hero-photo img{object-position:50% 62%}
+}
 .pf-role{display:flex;flex-wrap:wrap;gap:4px 8px;margin:0 0 14px;font-size:14.5px;font-weight:600;color:var(--text);letter-spacing:-0.005em}
 .pf-role span[aria-hidden]{color:var(--faint)}
 .pf-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
