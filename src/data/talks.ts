@@ -126,12 +126,8 @@ export const talks: Talk[] = [
       "Almost every layer of an agent stack is prompt-driven, and hand-tuning prompts against a non-deterministic model doesn't scale. We showed how agents can **learn from their own mistakes**: reflection-driven prompting that evolves behavior without RL or fine-tuning, with evaluations and feedback loops to measure which change actually made the system better.",
     ],
     photos: [
-      {
-        src: "/talks/shanghai-pudong.webp",
-        alt: "Shanghai International Convention Center below the Oriental Pearl Tower in Pudong",
-        credit: "Hermann Luyken, CC0",
-        creditHref: "https://commons.wikimedia.org/wiki/File:2014.11.16.151057_Shanghai_International_Conference_Center_Oriental_Pearl_Tower_Shanghai.jpg",
-      },
+      { src: "/talks/shanghai-stage.webp", alt: "Subhro at the podium with the title slide: How We Built Reliable Self Evolving Agent Skills" },
+      { src: "/talks/shanghai-room.webp", alt: "The full room at AGNTCon + MCPCon China during Subhro's talk" },
     ],
     links: [
       { label: "Session page", href: "https://www.lfopensource.cn/mcp-dev-summit-shanghai/program/schedule/?id=1244038" },
