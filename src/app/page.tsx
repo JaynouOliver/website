@@ -175,12 +175,6 @@ export default function Page() {
         <span style={{ color: "var(--faint)", fontSize: 13.5 }}>
           © {new Date().getFullYear()} {DATA.name}
         </span>
-        <div style={{ marginLeft: "auto", display: "flex", flexWrap: "wrap", gap: 16 }}>
-          <a href={gh} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>GitHub</a>
-          <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>LinkedIn</a>
-          <a href={DATA.contact.social.X.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>Twitter</a>
-          <a href={"mailto:" + DATA.contact.email} style={{ fontSize: 13.5, color: "var(--muted)" }}>Email</a>
-        </div>
       </footer>
     </main>
   );
