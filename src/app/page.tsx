@@ -1,4 +1,6 @@
 import GitHubPRs from "@/components/github-prs";
+import TalksJourney from "@/components/talks-journey";
+import { alsoNote, home, talks } from "@/data/talks";
 import Pic from "@/components/pic";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
@@ -135,24 +137,13 @@ export default function Page() {
         </article>
       </section>
 
-      <section id="awards" className="pf-section">
-        <h2 className="pf-h2">Talks &amp; awards</h2>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {DATA.awards.map((aw) => (
-            <div key={aw.title} className="pf-award">
-              <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, minWidth: 200 }}>
-                <span style={{ fontWeight: 600, fontSize: 15.5 }} dangerouslySetInnerHTML={{ __html: mdInline(aw.title) }} />
-                <span style={{ color: "var(--muted)", fontSize: 14 }}>{aw.note}</span>
-              </span>
-              {(aw.date || aw.place) && (
-                <span className="pf-award-meta">
-                  {aw.date && <span>{aw.date}</span>}
-                  {aw.place && <span>{aw.place}</span>}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+      <section id="talks" className="pf-section">
+        <h2 className="pf-h2" style={{ marginBottom: 6 }}>Talks &amp; travels</h2>
+        <p style={{ margin: "0 0 8px", color: "var(--muted)", fontSize: 14.5 }}>
+          Papers, posters and talks that took me from {home.city} around the world. Scroll and the globe follows along.
+        </p>
+        <TalksJourney talks={talks} home={home} />
+        <p style={{ margin: "8px 0 0", color: "var(--muted)", fontSize: 14 }}>{alsoNote}</p>
       </section>
 
       <section id="opensource" className="pf-section">

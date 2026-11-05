@@ -94,14 +94,6 @@ export const DATA = {
     demo: "https://meld-fawn.vercel.app",
     source: "https://github.com/JaynouOliver/Meld",
   },
-  // Shown in "Talks & awards". Markdown links work in title/note.
-  awards: [
-    { title: "MCP Dev Summit Shanghai", note: "Scholarship to speak", place: "Shanghai, China", date: "Sep 2026" },
-    { title: "PyCon JP", note: "Scholarship to attend", place: "Hiroshima, Japan", date: "Aug 2026" },
-    { title: "PyCon US", note: "Scholarship to attend; posters presented", place: "Long Beach, USA", date: "May 2026" },
-    { title: "[Mamba Models a Replacement for Transformers](https://doi.org/10.25080/XHDR4700)", note: "Paper at SciPy 2024", place: "Washington, USA", date: "Aug 2024" },
-    { title: "Open source", note: "Merged PRs in PyTorch, vLLM and other major repos; PyTorch Conference poster", place: "", date: "" },
-  ],
   education: [
     { school: "Academy of Technology", degree: "BTech — Computer Science and Business Systems", place: "Aedconagar, India" },
   ],
