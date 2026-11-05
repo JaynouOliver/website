@@ -78,6 +78,19 @@ a:hover{text-decoration-color:var(--text)}
 .pf-award-meta{display:flex;flex-direction:column;align-items:flex-end;gap:1px;color:var(--faint);font-size:13px;white-space:nowrap;text-align:right}
 @media (max-width:540px){.pf-award-meta{align-items:flex-start;text-align:left;flex-direction:row;gap:8px}}
 
+.pf-feature{display:flex;flex-direction:column;gap:16px;padding:clamp(18px,4vw,28px);border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--sheen) 55%,transparent)}
+.pf-feature-tagline{margin:4px 0 0;font-size:clamp(21px,3.4vw,26px);font-weight:700;letter-spacing:-0.025em;line-height:1.2}
+.pf-feature-shot{display:block;margin-top:6px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff;transition:transform .2s ease,box-shadow .2s ease}
+.pf-feature-shot:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.pf-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pf-stats>div{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.pf-stat-value{font-size:20px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.pf-stat-label{font-size:12.5px;color:var(--muted);line-height:1.4}
+.pf-highlights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;padding:4px 0}
+.pf-highlights>div{display:flex;flex-direction:column;gap:4px}
+.pf-highlights strong{color:var(--text);font-weight:600}
+@media (max-width:560px){.pf-stats{grid-template-columns:1fr;gap:8px}.pf-stats>div{flex-direction:row;align-items:baseline;gap:12px;padding:10px 14px}.pf-stat-value{min-width:84px;font-size:18px}.pf-highlights{grid-template-columns:1fr}}
+
 .pf-row{display:flex;flex-direction:column;gap:3px;padding:14px 10px;margin:0 -10px;border-bottom:1px solid var(--line);text-decoration:none;border-radius:8px}
 .pf-row:hover{background:var(--soft)}
 .pf-card{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;transition:border-color .15s ease,background .15s ease,transform .15s ease,box-shadow .15s ease}

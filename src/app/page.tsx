@@ -5,26 +5,13 @@ import { DATA } from "@/data/resume";
 import { fmtDate, mdInline } from "@/lib/md";
 import Link from "next/link";
 
-const arrow = (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--faint)" }}>
-    <path d="M7 17L17 7M9 7h8v8" />
-  </svg>
-);
-
-const favicon = (href: string) => {
-  try {
-    return "https://www.google.com/s2/favicons?domain=" + new URL(href).hostname + "&sz=64";
-  } catch {
-    return "";
-  }
-};
-
 // Long roles show this many bullet points, with the rest behind "Show more".
 const VISIBLE_POINTS = 3;
 
 export default function Page() {
   const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
+  const pj = DATA.project;
   return (
     <main className="pf-main">
       <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "28px 40px" }}>
@@ -103,33 +90,49 @@ export default function Page() {
         </ol>
       </section>
 
-      <section id="projects" className="pf-section">
-        <h2 className="pf-h2">Projects</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(270px,1fr))", gap: 14 }}>
-          {DATA.projects.map((pj) => (
-            <a key={pj.title} href={pj.href} target="_blank" rel="noopener" className="pf-card">
-              <span style={{ fontWeight: 700, fontSize: 15.5, display: "flex", alignItems: "center", gap: 8 }}>
-                {favicon(pj.href) && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={favicon(pj.href)} alt="" style={{ width: 18, height: 18, borderRadius: 5, flex: "none" }} />
-                )}
-                {pj.title}
-                {arrow}
-              </span>
-              <span
-                style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55, flex: 1 }}
-                dangerouslySetInnerHTML={{ __html: mdInline(pj.description) }}
-              />
-              {pj.technologies.length > 0 && (
-                <span style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-                  {pj.technologies.map((t) => (
-                    <span key={t} className="pf-chip">{t}</span>
-                  ))}
-                </span>
-              )}
-            </a>
-          ))}
-        </div>
+      <section id="project" className="pf-section">
+        <h2 className="pf-h2">Featured project</h2>
+        <article className="pf-feature">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={pj.logo} alt="" width={36} height={36} style={{ width: 36, height: 36, flex: "none" }} />
+            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.25 }}>
+              <span style={{ fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em" }}>{pj.name}</span>
+              <span style={{ color: "var(--faint)", fontSize: 13 }}>{pj.kicker}</span>
+            </div>
+          </div>
+          <p className="pf-feature-tagline">{pj.tagline}</p>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: 15.5, lineHeight: 1.65 }} dangerouslySetInnerHTML={{ __html: mdInline(pj.pitch) }} />
+          <div className="pf-actions" style={{ marginTop: 4 }}>
+            <a href={pj.demo} target="_blank" rel="noopener" className="pf-btn pf-btn-primary">Try the live demo →</a>
+            <a href={pj.source} target="_blank" rel="noopener" className="pf-btn">Source on GitHub</a>
+          </div>
+          <a href={pj.demo} target="_blank" rel="noopener" className="pf-feature-shot" aria-label={"Open the " + pj.name + " live demo"}>
+            <Pic src={pj.image} alt={pj.imageAlt} width={1200} height={1123} style={{ width: "100%", height: "auto", display: "block" }} />
+          </a>
+          <div className="pf-stats">
+            {pj.stats.map((st) => (
+              <div key={st.label}>
+                <span className="pf-stat-value">{st.value}</span>
+                <span className="pf-stat-label">{st.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="pf-highlights">
+            {pj.highlights.map((h) => (
+              <div key={h.title}>
+                <span style={{ fontWeight: 700, fontSize: 15 }}>{h.title}</span>
+                <span style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55 }} dangerouslySetInnerHTML={{ __html: mdInline(h.body) }} />
+              </div>
+            ))}
+          </div>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>{pj.note}</p>
+          <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {pj.technologies.map((t) => (
+              <span key={t} className="pf-chip">{t}</span>
+            ))}
+          </span>
+        </article>
       </section>
 
       <section id="awards" className="pf-section">
