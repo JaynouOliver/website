@@ -25,8 +25,8 @@ export default function Pic({
       <Image src={src} alt={alt} width={width} height={height} className={className} style={style} priority={priority} />
     );
   }
-  // eslint-disable-next-line @next/next/no-img-element
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} width={width} height={height} className={className} style={style} loading={priority ? undefined : "lazy"} />
   );
 }

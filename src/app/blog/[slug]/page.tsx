@@ -9,14 +9,18 @@ export function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getPost(params.slug);
+type Params = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) return {};
   return { title: post.title, description: post.summary };
 }
 
-export default function PostPage({ params }: { params: { slug: string } }) {
-  const post = getPost(params.slug);
+export default async function PostPage({ params }: Params) {
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) notFound();
   const related = posts.filter((p) => p.slug !== post.slug).slice(0, 4);
   return (
