@@ -19,6 +19,9 @@ const favicon = (href: string) => {
   }
 };
 
+// Long roles show this many bullet points, with the rest behind "Show more".
+const VISIBLE_POINTS = 3;
+
 export default function Page() {
   const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
@@ -29,10 +32,20 @@ export default function Page() {
           <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,56px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
           </h1>
+          <p className="pf-role">
+            <span>{DATA.role}</span>
+            <span aria-hidden="true">·</span>
+            <span>{DATA.location}</span>
+          </p>
           <p
-            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "46ch" }}
+            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "50ch" }}
             dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }}
           />
+          <div className="pf-actions">
+            <a href={"mailto:" + DATA.contact.email} className="pf-btn pf-btn-primary">Get in touch</a>
+            <a href={gh} target="_blank" rel="noopener" className="pf-btn">GitHub</a>
+            <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" className="pf-btn">LinkedIn</a>
+          </div>
         </div>
         <Pic
           src={DATA.avatarUrl}
@@ -46,16 +59,14 @@ export default function Page() {
 
       <section id="experience" className="pf-section">
         <h2 className="pf-h2">Main Quests</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        <ol className="pf-timeline">
           {DATA.work.map((job) => (
-            <article key={job.company} style={{ display: "flex", gap: 16 }}>
+            <li key={job.company} className="pf-quest">
               {job.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={job.logoUrl} alt={job.company} className="pf-logo" />
               ) : (
-                <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
-                  {job.company.slice(0, 1).toUpperCase()}
-                </div>
+                <div className="pf-logo pf-logo-fallback">{job.company.slice(0, 1).toUpperCase()}</div>
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
@@ -67,15 +78,29 @@ export default function Page() {
                     {job.start} – {job.end}
                   </span>
                 </div>
-                <ul style={{ margin: "10px 0 0", paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6, color: "var(--muted)", fontSize: 15, listStyle: "disc" }}>
-                  {job.points.map((pt, i) => (
+                {job.location && <div style={{ color: "var(--faint)", fontSize: 13.5 }}>{job.location}</div>}
+                <ul className="pf-points">
+                  {job.points.slice(0, VISIBLE_POINTS).map((pt, i) => (
                     <li key={i} dangerouslySetInnerHTML={{ __html: mdInline(pt) }} />
                   ))}
                 </ul>
+                {job.points.length > VISIBLE_POINTS && (
+                  <details className="pf-more">
+                    <summary>
+                      <span className="pf-more-closed">Show {job.points.length - VISIBLE_POINTS} more</span>
+                      <span className="pf-more-open">Show less</span>
+                    </summary>
+                    <ul className="pf-points">
+                      {job.points.slice(VISIBLE_POINTS).map((pt, i) => (
+                        <li key={i} dangerouslySetInnerHTML={{ __html: mdInline(pt) }} />
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </div>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
       <section id="projects" className="pf-section">
@@ -103,6 +128,26 @@ export default function Page() {
                 </span>
               )}
             </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="awards" className="pf-section">
+        <h2 className="pf-h2">Talks &amp; awards</h2>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {DATA.awards.map((aw) => (
+            <div key={aw.title} className="pf-award">
+              <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, minWidth: 200 }}>
+                <span style={{ fontWeight: 600, fontSize: 15.5 }} dangerouslySetInnerHTML={{ __html: mdInline(aw.title) }} />
+                <span style={{ color: "var(--muted)", fontSize: 14 }}>{aw.note}</span>
+              </span>
+              {(aw.date || aw.place) && (
+                <span className="pf-award-meta">
+                  {aw.date && <span>{aw.date}</span>}
+                  {aw.place && <span>{aw.place}</span>}
+                </span>
+              )}
+            </div>
           ))}
         </div>
       </section>
@@ -142,6 +187,17 @@ export default function Page() {
             Show more →
           </Link>
         </div>
+      </section>
+
+      <section id="education" className="pf-section">
+        <h2 className="pf-h2">Education</h2>
+        {DATA.education.map((ed) => (
+          <div key={ed.school} className="pf-flatcard">
+            <span style={{ fontWeight: 700, fontSize: 15.5 }}>{ed.school}</span>
+            <span style={{ color: "var(--muted)", fontSize: 14 }}>{ed.degree}</span>
+            <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13.5 }}>{ed.place}</span>
+          </div>
+        ))}
       </section>
 
       <footer style={{ marginTop: "clamp(56px,9vw,90px)", paddingTop: 24, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>

@@ -11,11 +11,12 @@ export const DATA = {
   nickname: "Subhro", // shown in the "hi, i'm ..." greeting
   initials: "SD",
   url: "https://subhrokomol.in", // used for SEO metadata — set to your deployed URL
+  role: "Machine Learning Engineer", // shown under the greeting
   location: "Kolkata, India",
   locationLink: "https://www.google.com/maps/place/kolkata",
   // Shown under "hi, i'm ..." on the homepage. Markdown links work: [word](https://url)
   description:
-    "TLDR: I'm Suvrakamal Das, a software engineer and entrepreneur, [here's](/blog/life-story) my journey in a nutshell. I work at the intersection of AI and hardware, have spoken at a several conferences and authored a few publications. Find me on [X](https://x.com/SuvrakamalD).",
+    "I ship AI systems into production and work directly with stakeholders: fine-tuned vision models, retrieval and similarity search, API integrations and GPU inference. Merged PRs in PyTorch and vLLM, spoke at PyCon, published at SciPy. [Here's](/blog/life-story) my journey in a nutshell — or find me on [X](https://x.com/SuvrakamalD).",
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/me.jpg", // your photo — file lives in public/
@@ -92,8 +93,8 @@ export const DATA = {
       dates: "",
       active: true,
       description:
-        "Autonomous code review agent for GitHub pull requests. Celery workers with Redis as broker, built on CrewAI over the OpenAI API — receives, analyzes, and reviews code as structured JSON.",
-      technologies: ["Python", "Celery", "Redis", "CrewAI"],
+        "Production-grade backend that automates pull request analysis and code quality checks — FastAPI + Celery workers with Redis, AI-based issue detection (CrewAI over the OpenAI API), background processing and caching for consistent performance under load.",
+      technologies: ["Python", "FastAPI", "Celery", "Redis", "CrewAI"],
       links: [
         {
           type: "Source",
@@ -150,6 +151,17 @@ export const DATA = {
       image: "",
       video: "",
     },
+  ],
+  // Shown in "Talks & awards". Markdown links work in title/note.
+  awards: [
+    { title: "MCP Dev Summit Shanghai", note: "Scholarship to speak", place: "Shanghai, China", date: "Sep 2026" },
+    { title: "PyCon JP", note: "Scholarship to attend", place: "Hiroshima, Japan", date: "Aug 2026" },
+    { title: "PyCon US", note: "Scholarship to attend; posters presented", place: "Long Beach, USA", date: "May 2026" },
+    { title: "[Mamba Models a Replacement for Transformers](https://doi.org/10.25080/XHDR4700)", note: "Paper at SciPy 2024", place: "Washington, USA", date: "Aug 2024" },
+    { title: "Open source", note: "Merged PRs in PyTorch, vLLM and other major repos; PyTorch Conference poster", place: "", date: "" },
+  ],
+  education: [
+    { school: "Academy of Technology", degree: "BTech — Computer Science and Business Systems", place: "Aedconagar, India" },
   ],
   // Research, talks, and conferences now live as blog posts in src/data/posts/ —
   // one TS file each, listed under "Research and International presentations".
