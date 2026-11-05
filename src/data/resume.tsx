@@ -94,9 +94,6 @@ export const DATA = {
     demo: "https://meld-fawn.vercel.app",
     source: "https://github.com/JaynouOliver/Meld",
   },
-  education: [
-    { school: "Academy of Technology", degree: "BTech — Computer Science and Business Systems", place: "Aedconagar, India" },
-  ],
   // Research, talks, and conferences now live as blog posts in src/data/posts/ —
   // one TS file each, listed under "Research and International presentations".
 };

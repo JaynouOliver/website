@@ -1,7 +1,6 @@
-import Pic from "@/components/pic";
+import PostCard from "@/components/post-card";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
-import { fmtDate } from "@/lib/md";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -18,34 +17,10 @@ export default function BlogPage() {
         Writing
       </h1>
       <p style={{ margin: "0 0 32px", color: "var(--muted)", fontSize: 16 }}>{DATA.blogTagline}</p>
-      {first && (
-        <Link href={"/blog/" + first.slug} className="pf-postcard pf-postcard-lead">
-          <span className="pf-postcard-img">
-            {first.image ? (
-              <Pic src={first.image} width={1200} height={630} priority style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-            ) : null}
-          </span>
-          <span className="pf-postcard-body">
-            <span className="pf-postcard-date">{fmtDate(first.date)}</span>
-            <span className="pf-postcard-title">{first.title}</span>
-            <span className="pf-postcard-sum">{first.summary}</span>
-          </span>
-        </Link>
-      )}
+      {first && <PostCard post={first} lead />}
       <div className="pf-postgrid" style={{ marginTop: 14 }}>
         {rest.map((po) => (
-          <Link key={po.slug} href={"/blog/" + po.slug} className="pf-postcard">
-            <span className="pf-postcard-img">
-              {po.image ? (
-                <Pic src={po.image} width={640} height={400} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-              ) : null}
-            </span>
-            <span className="pf-postcard-body">
-              <span className="pf-postcard-date">{fmtDate(po.date)}</span>
-              <span className="pf-postcard-title">{po.title}</span>
-              <span className="pf-postcard-sum">{po.summary}</span>
-            </span>
-          </Link>
+          <PostCard key={po.slug} post={po} />
         ))}
       </div>
     </main>

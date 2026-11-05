@@ -1,4 +1,5 @@
 import Pic from "@/components/pic";
+import PostCard from "@/components/post-card";
 import { getPost, posts } from "@/data/posts";
 import { fmtDate, mdToHtml } from "@/lib/md";
 import type { Metadata } from "next";
@@ -46,13 +47,9 @@ export default async function PostPage({ params }: Params) {
             <h2 style={{ margin: "0 0 18px", fontSize: 17, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--muted)" }}>
               Keep reading
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 14 }}>
+            <div className="pf-postgrid">
               {related.map((re) => (
-                <Link key={re.slug} href={"/blog/" + re.slug} className="pf-card">
-                  <span style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.35 }}>{re.title}</span>
-                  <span style={{ color: "var(--muted)", fontSize: 13.5, lineHeight: 1.5 }}>{re.summary}</span>
-                  <span style={{ color: "var(--faint)", fontSize: 12.5, marginTop: "auto" }}>{fmtDate(re.date)}</span>
-                </Link>
+                <PostCard key={re.slug} post={re} />
               ))}
             </div>
           </div>

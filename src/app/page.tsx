@@ -2,9 +2,10 @@ import GitHubPRs from "@/components/github-prs";
 import TalksJourney from "@/components/talks-journey";
 import { alsoNote, home, talks } from "@/data/talks";
 import Pic from "@/components/pic";
+import PostCard from "@/components/post-card";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
-import { fmtDate, mdInline } from "@/lib/md";
+import { mdInline } from "@/lib/md";
 import Link from "next/link";
 
 // Long roles show this many bullet points, with the rest behind "Show more".
@@ -165,31 +166,9 @@ export default function Page() {
         <p style={{ margin: "6px 0 18px", color: "var(--muted)", fontSize: 14.5 }}>{DATA.blogTagline}</p>
         <div className="pf-postgrid">
           {posts.slice(0, 4).map((po) => (
-            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-postcard">
-              <span className="pf-postcard-img">
-                {po.image ? (
-                  <Pic src={po.image} width={640} height={400} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                ) : null}
-              </span>
-              <span className="pf-postcard-body">
-                <span className="pf-postcard-date">{fmtDate(po.date)}</span>
-                <span className="pf-postcard-title">{po.title}</span>
-                <span className="pf-postcard-sum">{po.summary}</span>
-              </span>
-            </Link>
+            <PostCard key={po.slug} post={po} />
           ))}
         </div>
-      </section>
-
-      <section id="education" className="pf-section">
-        <h2 className="pf-h2">Education</h2>
-        {DATA.education.map((ed) => (
-          <div key={ed.school} className="pf-flatcard">
-            <span style={{ fontWeight: 700, fontSize: 15.5 }}>{ed.school}</span>
-            <span style={{ color: "var(--muted)", fontSize: 14 }}>{ed.degree}</span>
-            <span style={{ marginLeft: "auto", color: "var(--faint)", fontSize: 13.5 }}>{ed.place}</span>
-          </div>
-        ))}
       </section>
 
       <footer style={{ marginTop: "clamp(56px,9vw,90px)", paddingTop: 24, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
