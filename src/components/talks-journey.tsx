@@ -25,7 +25,12 @@ function km(a: LatLon, b: LatLon) {
   return Math.round((2 * 6371 * Math.asin(Math.sqrt(h))) / 100) * 100;
 }
 
-export default function TalksJourney({ talks, home }: { talks: Talk[]; home: LatLon & { city: string } }) {
+function Flag({ code, label }: { code: string; label: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={"/flags/" + code + ".svg"} alt={label} title={label} className="pf-flag" width={18} height={13} />;
+}
+
+export default function TalksJourney({ talks, home }: { talks: Talk[]; home: LatLon & { city: string; flag: string } }) {
   const [active, setActive] = useState(0);
   const cards = useRef<(HTMLElement | null)[]>([]);
 
@@ -52,7 +57,8 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
           <TalksGlobe home={home} stops={talks} active={active} />
           <div className="pf-journey-hud" aria-live="polite">
             <span className="pf-journey-route">
-              {home.city} <span aria-hidden="true">→</span> {cur.city}
+              <Flag code={home.flag} label="India" /> {home.city} <span aria-hidden="true">→</span>{" "}
+              <Flag code={cur.flag} label={cur.country} /> {cur.city}
             </span>
             <span className="pf-journey-km">{km(home, cur).toLocaleString("en-US")} km</span>
           </div>
@@ -84,7 +90,8 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
           >
             <div className="pf-stop-meta">
               <span className="pf-stop-num">{String(i + 1).padStart(2, "0")}</span>
-              <span>
+              <span className="pf-stop-place">
+                <Flag code={t.flag} label={t.country} />
                 {t.city}, {t.country}
               </span>
               <span aria-hidden="true">·</span>
@@ -99,10 +106,10 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
               ))}
             </div>
 
-            <div className={"pf-stop-photos" + (t.photos.length > 1 ? " is-pair" : "")}>
+            <div className={"pf-stop-photos" + (t.photos.length > 1 ? " is-pair" : "") + (t.tallPhotos ? " is-tall" : "")}>
               {t.photos.map((p) => (
                 <figure key={p.src}>
-                  <Pic src={p.src} alt={p.alt} width={1100} height={825} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <Pic src={p.src} alt={p.alt} width={1100} height={t.tallPhotos ? 1466 : 825} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   {p.credit && (
                     <figcaption>
                       Photo:{" "}

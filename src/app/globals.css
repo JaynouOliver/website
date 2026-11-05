@@ -100,6 +100,9 @@ a:hover{text-decoration-color:var(--text)}
 .pf-globe[data-nowebgl]{background:radial-gradient(circle at 50% 50%,var(--soft) 0 38%,transparent 39%)}
 .pf-journey-hud{display:flex;align-items:baseline;gap:10px;margin-top:6px;font-size:14px}
 .pf-journey-route{font-weight:700;letter-spacing:-0.01em}
+.pf-flag{display:inline-block;width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:-1px;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.pf-stop-place{display:inline-flex;align-items:center;gap:6px}
+.pf-journey-route .pf-flag{margin:0 5px 0 2px}
 .pf-journey-km{color:var(--faint);font-variant-numeric:tabular-nums}
 .pf-journey-steps{display:flex;gap:8px;margin-top:12px}
 .pf-journey-step{width:8px;height:8px;padding:0;border-radius:999px;border:none;background:var(--line);cursor:pointer;transition:width .3s ease,background .3s ease}
@@ -114,6 +117,7 @@ a:hover{text-decoration-color:var(--text)}
 .pf-stop-photos{display:grid;gap:8px;margin:4px 0}
 .pf-stop-photos.is-pair{grid-template-columns:1.25fr 1fr;grid-auto-rows:clamp(150px,17vw,200px)}
 .pf-stop-photos.is-pair figure{aspect-ratio:auto;height:100%}
+.pf-stop-photos.is-pair.is-tall{grid-template-columns:1fr 1fr;grid-auto-rows:clamp(250px,27vw,330px)}
 .pf-stop-photos figure{margin:0;position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--soft)}
 .pf-stop-photos:not(.is-pair) figure{aspect-ratio:16/10}
 .pf-stop-photos figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 10px 6px;font-size:10.5px;color:rgba(255,255,255,.85);background:linear-gradient(transparent,rgba(0,0,0,.55))}

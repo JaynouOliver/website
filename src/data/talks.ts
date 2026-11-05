@@ -11,6 +11,7 @@ export type Talk = {
   event: string;
   city: string;
   country: string;
+  flag: string; // ISO country code; file in public/flags/<code>.svg
   lat: number;
   lon: number;
   date: string; // display text
@@ -20,10 +21,11 @@ export type Talk = {
   about: string; // one line on what the event is
   body: string[]; // what I did there — one paragraph per item
   photos: TalkPhoto[];
+  tallPhotos?: boolean; // taller photo slots, for portrait shots
   links: { label: string; href: string }[];
 };
 
-export const home = { city: "Kolkata", lat: 22.57, lon: 88.36 };
+export const home = { city: "Kolkata", flag: "in", lat: 22.57, lon: 88.36 };
 
 export const talks: Talk[] = [
   {
@@ -31,6 +33,7 @@ export const talks: Talk[] = [
     event: "SciPy 2024",
     city: "Tacoma",
     country: "USA",
+    flag: "us",
     lat: 47.25,
     lon: -122.44,
     date: "Jul 2024",
@@ -59,6 +62,7 @@ export const talks: Talk[] = [
     event: "PyCon US 2026",
     city: "Long Beach",
     country: "USA",
+    flag: "us",
     lat: 33.77,
     lon: -118.19,
     date: "May 2026",
@@ -84,15 +88,18 @@ export const talks: Talk[] = [
     event: "PyCon JP 2026",
     city: "Hiroshima",
     country: "Japan",
+    flag: "jp",
     lat: 34.39,
     lon: 132.45,
     date: "Aug 2026",
     roles: ["Scholarship"],
     about: "Japan's largest international Python conference, held at the International Conference Center Hiroshima, inside Peace Memorial Park.",
     body: [
-      "I attended on a scholarship, joining Japan's Python community in Hiroshima, a world away from Kolkata.",
+      "My first PyCon JP: I attended on a scholarship, joining Japan's Python community in Hiroshima, a world away from Kolkata.",
     ],
+    tallPhotos: true,
     photos: [
+      { src: "/talks/pycon-jp-hiroshima.webp", alt: "Subhro in a PyCon JP 2026 t-shirt outside the International Conference Center Hiroshima" },
       {
         src: "/talks/hiroshima-peace-park.webp",
         alt: "The cenotaph in Hiroshima Peace Memorial Park, next to the conference venue",
@@ -107,6 +114,7 @@ export const talks: Talk[] = [
     event: "MCP Dev Summit Shanghai",
     city: "Shanghai",
     country: "China",
+    flag: "cn",
     lat: 31.24,
     lon: 121.5,
     date: "Sep 2026",
@@ -123,12 +131,6 @@ export const talks: Talk[] = [
         alt: "Shanghai International Convention Center below the Oriental Pearl Tower in Pudong",
         credit: "Hermann Luyken, CC0",
         creditHref: "https://commons.wikimedia.org/wiki/File:2014.11.16.151057_Shanghai_International_Conference_Center_Oriental_Pearl_Tower_Shanghai.jpg",
-      },
-      {
-        src: "/talks/shanghai-venue.webp",
-        alt: "Shanghai International Convention Center on the Huangpu River",
-        credit: "DvTor8303, CC0",
-        creditHref: "https://commons.wikimedia.org/wiki/File:Shanghai_International_Convention_Center_20260417.jpg",
       },
     ],
     links: [
