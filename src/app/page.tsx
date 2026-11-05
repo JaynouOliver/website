@@ -156,30 +156,28 @@ export default function Page() {
       </section>
 
       <section id="blog" className="pf-section">
-        <h2 className="pf-h2">Research and International presentations</h2>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {posts.slice(0, 5).map((po) => (
-            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row" style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-              {po.image && (
-                <Pic src={po.image} width={84} height={56} className="pf-thumb" style={{ width: 84, height: 56, objectFit: "cover" }} />
-              )}
-              <span style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, minWidth: 0 }}>
-                <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
-                  <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 160 }}>{po.title}</span>
-                  <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
-                </span>
-                <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
+        <div className="pf-section-head">
+          <h2 className="pf-h2" style={{ margin: 0 }}>Writing</h2>
+          <Link href="/blog" className="pf-btn">
+            All posts →
+          </Link>
+        </div>
+        <p style={{ margin: "6px 0 18px", color: "var(--muted)", fontSize: 14.5 }}>{DATA.blogTagline}</p>
+        <div className="pf-postgrid">
+          {posts.slice(0, 4).map((po) => (
+            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-postcard">
+              <span className="pf-postcard-img">
+                {po.image ? (
+                  <Pic src={po.image} width={640} height={400} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                ) : null}
+              </span>
+              <span className="pf-postcard-body">
+                <span className="pf-postcard-date">{fmtDate(po.date)}</span>
+                <span className="pf-postcard-title">{po.title}</span>
+                <span className="pf-postcard-sum">{po.summary}</span>
               </span>
             </Link>
           ))}
-        </div>
-        <div style={{ marginTop: 18 }}>
-          <Link
-            href="/blog"
-            style={{ display: "inline-block", padding: "8px 16px", fontSize: 13.5, fontWeight: 600, color: "var(--text)", border: "1px solid var(--line)", borderRadius: 999, textDecoration: "none" }}
-          >
-            Show more →
-          </Link>
         </div>
       </section>
 

@@ -10,7 +10,7 @@ const icon = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinec
 
 export default function Dock() {
   const pathname = usePathname();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, systemTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const dark = mounted && resolvedTheme === "dark";
@@ -38,7 +38,11 @@ export default function Dock() {
       </a>
       <span className="pf-dock-sep" />
       <button
-        onClick={() => setTheme(dark ? "light" : "dark")}
+        onClick={() => {
+          // Toggling back to what the OS uses returns to following the system setting.
+          const next = dark ? "light" : "dark";
+          setTheme(next === systemTheme ? "system" : next);
+        }}
         aria-label="Toggle theme"
         title="Toggle theme"
         className="pf-dock-btn"
