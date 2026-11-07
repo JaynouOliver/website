@@ -174,11 +174,6 @@ export default function Page() {
         </div>
       </section>
 
-      <footer style={{ marginTop: "clamp(56px,9vw,90px)", paddingTop: 24, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
-        <span style={{ color: "var(--faint)", fontSize: 13.5 }}>
-          © {new Date().getFullYear()} {DATA.name}
-        </span>
-      </footer>
     </main>
   );
 }
