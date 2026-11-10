@@ -48,9 +48,8 @@ a:hover{text-decoration-color:var(--text)}
 .pf-h2{margin:0 0 22px;font-size:22px;font-weight:700;letter-spacing:-0.015em}
 .pf-section{scroll-margin-top:40px;margin-top:clamp(48px,8vw,76px)}
 
-/* Hero (src/components/hero.tsx): styled as a vision model's output. The
-   photo is scanned and boxed like a YOLO detection; key phrases in the
-   headline get the same boxes. Box colours are fixed (they sit on a photo). */
+/* Hero (src/components/hero.tsx): key phrases in the headline are boxed and
+   tagged like a model's output. */
 .hx{--det:#4f74ff;--det-main:#ff6a1a;--mono:var(--font-mono),ui-monospace,SFMono-Regular,Menlo,monospace;position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,440px);align-items:center;gap:clamp(32px,6vw,80px);width:min(1100px,calc(100vw - 32px));margin-left:calc(50% - min(550px,50vw - 16px))}
 .hx-status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 30px;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .hx-status a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
@@ -63,36 +62,23 @@ a:hover{text-decoration-color:var(--text)}
 .hx-box{position:relative;display:inline-block;padding:0 .16em;margin:0 .02em;line-height:1.15;border-radius:2px;outline:1.5px solid color-mix(in srgb,var(--det) 70%,transparent);outline-offset:0;background:color-mix(in srgb,var(--det) 7%,transparent);animation:hx-box-in .45s cubic-bezier(.2,.8,.2,1) both;transition:background .2s ease}
 .hx-box:nth-of-type(1){animation-delay:.25s}.hx-box:nth-of-type(2){animation-delay:.45s}.hx-box:nth-of-type(3){animation-delay:.6s}.hx-box:nth-of-type(4){animation-delay:.75s}.hx-box:nth-of-type(5){animation-delay:.9s}
 .hx-box.is-main{outline-color:var(--det-main);background:color-mix(in srgb,var(--det-main) 9%,transparent);cursor:default}
-.hx-box.is-main.is-hot{background:color-mix(in srgb,var(--det-main) 20%,transparent)}
 .hx-tag{position:absolute;left:-1.5px;bottom:calc(100% + 1px);pointer-events:none}
 .hx-tag-label{display:block;padding:1px 5px 0;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0;line-height:1.55;white-space:nowrap;color:#fff;background:var(--det);border-radius:3px 3px 0 0}
 .hx-box.is-main .hx-tag-label{background:var(--det-main)}
-.hx-tag-label i,.hx-det-label i{font-style:normal;font-weight:400;opacity:.8;margin-left:4px}
+.hx-tag-label i{font-style:normal;font-weight:400;opacity:.8;margin-left:4px}
 @keyframes hx-box-in{from{outline-color:transparent;background:transparent}}
 .hx-sub{margin:0;max-width:50ch;font-size:16px;line-height:1.65;color:var(--muted)}
 .hx-sub a{color:var(--text);text-decoration-color:var(--ink);text-underline-offset:3px}
 .hx-photo{margin:0}
 .hx-frame{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:var(--soft);border:1px solid var(--line);box-shadow:0 30px 60px -24px rgba(10,20,60,.35)}
-.hx-scan{position:absolute;left:0;right:0;top:-20%;height:20%;background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--det-main) 28%,transparent));border-bottom:2px solid var(--det-main);opacity:0;animation:hx-scan var(--scan) cubic-bezier(.45,0,.55,1) .2s both;pointer-events:none}
-@keyframes hx-scan{0%{top:-20%;opacity:1}88%{top:100%;opacity:1}100%{top:100%;opacity:0}}
-.hx-det{position:absolute;border:1.5px solid var(--det);border-radius:2px;background:color-mix(in srgb,var(--det) 6%,transparent);opacity:0;animation:hx-det-in .35s cubic-bezier(.2,.8,.2,1) forwards;transition:background .2s ease}
-.hx-det.is-main{border-color:var(--det-main);background:transparent;border-width:2px}
-.hx-det.is-main.is-hot{background:color-mix(in srgb,var(--det-main) 16%,transparent)}
-.hx-det-label{position:absolute;left:-1.5px;bottom:100%;padding:1px 5px 0;font-family:var(--mono);font-size:10px;font-weight:600;line-height:1.55;white-space:nowrap;color:#fff;background:var(--det);border-radius:3px 3px 0 0}
-.hx-det.is-right .hx-det-label{left:auto;right:-1.5px}
-.hx-det.is-main .hx-det-label{background:var(--det-main);left:-2px}
-@keyframes hx-det-in{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
-.hx-hud{position:absolute;left:0;right:0;display:flex;justify-content:space-between;padding:10px 12px;font-family:var(--mono);font-size:10.5px;color:rgba(255,255,255,.92);pointer-events:none}
-.hx-hud-top{top:0;background:linear-gradient(rgba(0,0,0,.32),transparent)}
-.hx-hud-bottom{bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.22))}
 .hx-cap{display:flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 .hx-cap::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--det-main)}
 @media (max-width:860px){
   .hx{grid-template-columns:1fr;width:auto;margin-left:0;gap:34px}
   .hx-photo{order:-1;width:100%;max-width:440px;margin:0 auto}
 }
-@media (max-width:480px){.hx-title{font-size:25px;line-height:1.85}.hx-det-label{font-size:9px}}
-@media (prefers-reduced-motion:reduce){.hx-live::after,.hx-scan{animation:none;display:none}.hx-box,.hx-det{animation:none;opacity:1}}
+@media (max-width:480px){.hx-title{font-size:25px;line-height:1.85}}
+@media (prefers-reduced-motion:reduce){.hx-live::after,.hx-box{animation:none}}
 .pf-skyline{position:relative;z-index:1;width:100vw;margin:clamp(-56px,-3vw,-24px) 0 0 calc(50% - 50vw)}
 .pf-skyline-art{height:clamp(190px,31vw,420px);background:var(--ink);-webkit-mask:url(/header-ink.png) 50% 100%/contain no-repeat;mask:url(/header-ink.png) 50% 100%/contain no-repeat}
 .pf-skyline-note{margin:2px auto 0;padding:0 16px;max-width:720px;text-align:center;font-size:12.5px;color:var(--faint)}
