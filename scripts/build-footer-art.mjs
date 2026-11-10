@@ -1,12 +1,12 @@
 // Turns a photo into an ink-print "engraving" used as the footer illustration.
-//   node scripts/build-footer-art.mjs <photo> [out=public/footer-ink.png]
+//   node scripts/build-footer-art.mjs <photo> [out=public/footer-ink.png] [width=2200] [fade=top|bottom|both][,sides]
 // Output is a PNG whose alpha channel is the ink (no colour). The site paints
 // it with CSS mask-image, so the ink takes the theme colour (blue on light,
 // pale on dark) and the paper is the page background itself.
 import fs from "fs";
 import sharp from "sharp";
 
-const [src, out = "public/footer-ink.png", wArg = "2200"] = process.argv.slice(2);
+const [src, out = "public/footer-ink.png", wArg = "2200", fadeArg = "top"] = process.argv.slice(2);
 if (!src) {
   console.error("usage: node scripts/build-footer-art.mjs <photo> [out] [width]");
   process.exit(1);
@@ -65,11 +65,35 @@ for (let y = 0; y < height; y++) {
   }
 }
 
-// 4. Fade the top quarter so the scene grows out of the page.
-const fade = Math.round(height * 0.28);
-for (let y = 0; y < fade; y++) {
-  const k = (y / fade) ** 1.6;
-  for (let x = 0; x < width; x++) alpha[y * width + x] = Math.round(alpha[y * width + x] * k);
+// 4. Fade the edges so the scene grows out of the page: the top for the
+//    footer (it sits on the page bottom), the bottom for the header.
+const fades = fadeArg.split(",");
+if (fades.includes("top") || fades.includes("both")) {
+  const fade = Math.round(height * 0.28);
+  for (let y = 0; y < fade; y++) {
+    const k = (y / fade) ** 1.6;
+    for (let x = 0; x < width; x++) alpha[y * width + x] = Math.round(alpha[y * width + x] * k);
+  }
+}
+if (fades.includes("bottom") || fades.includes("both")) {
+  const fade = Math.round(height * 0.22);
+  for (let y = 0; y < fade; y++) {
+    const k = (y / fade) ** 1.4;
+    const row = height - 1 - y;
+    for (let x = 0; x < width; x++) alpha[row * width + x] = Math.round(alpha[row * width + x] * k);
+  }
+}
+
+// Optional soft left/right edges, for art that doesn't span the full width.
+if (fades.includes("sides")) {
+  const fade = Math.round(width * 0.07);
+  for (let x = 0; x < fade; x++) {
+    const k = (x / fade) ** 1.3;
+    for (let y = 0; y < height; y++) {
+      alpha[y * width + x] = Math.round(alpha[y * width + x] * k);
+      alpha[y * width + width - 1 - x] = Math.round(alpha[y * width + width - 1 - x] * k);
+    }
+  }
 }
 
 const black = Buffer.alloc(width * height * 4);

@@ -15,11 +15,17 @@ export default function Page() {
   const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
   const pj = DATA.project;
+  const now = DATA.work[0];
+  const countries = new Set(talks.map((t) => t.country)).size;
   return (
     <main className="pf-main">
       <header className="pf-hero">
         <div className="pf-hero-text">
-          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,60px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+          <a href="#experience" className="pf-now">
+            <span className="pf-now-dot" aria-hidden="true" />
+            {now.title} at {now.company}
+          </a>
+          <h1 className="pf-hero-title">
             hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
           </h1>
           <p className="pf-role">
@@ -27,28 +33,57 @@ export default function Page() {
             <span aria-hidden="true">·</span>
             <span>{DATA.location}</span>
           </p>
-          <p
-            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "50ch" }}
-            dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }}
-          />
+          <p className="pf-hero-desc" dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }} />
           <div className="pf-actions">
             <a href={"mailto:" + DATA.contact.email} className="pf-btn pf-btn-primary">Get in touch</a>
             <a href={gh} target="_blank" rel="noopener" className="pf-btn">GitHub</a>
             <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" className="pf-btn">LinkedIn</a>
           </div>
+          <dl className="pf-facts">
+            <div>
+              <dt>Open source</dt>
+              <dd>PyTorch · vLLM</dd>
+            </div>
+            <div>
+              <dt>Talks</dt>
+              <dd>
+                {talks.length} in {countries} countries
+              </dd>
+            </div>
+            <div>
+              <dt>Published</dt>
+              <dd>SciPy 2024</dd>
+            </div>
+          </dl>
         </div>
         <figure className="pf-hero-photo">
-          <Pic
-            src={DATA.heroImage}
-            alt={DATA.heroImageAlt}
-            width={1400}
-            height={1866}
-            priority
-            sizes="(max-width: 600px) 100vw, (max-width: 860px) 560px, 460px"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
+          <div className="pf-hero-frame">
+            <Pic
+              src={DATA.heroImage}
+              alt={DATA.heroImageAlt}
+              width={1400}
+              height={1866}
+              priority
+              sizes="(max-width: 600px) 100vw, (max-width: 860px) 560px, 420px"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          </div>
+          <figcaption>Golden Gate, San Francisco</figcaption>
         </figure>
       </header>
+      <div className="pf-skyline">
+        <div className="pf-skyline-art" role="img" aria-label="Ink illustration of the Pudong skyline in Shanghai" />
+        <p className="pf-skyline-note">
+          <span>Shanghai, where I last spoke.</span> Home, Kolkata, is at the bottom of the page.{" "}
+          <span className="pf-skyline-credit">
+            From a photo by{" "}
+            <a href="https://commons.wikimedia.org/wiki/File:Pudong_Shanghai_November_2017_panorama.jpg" target="_blank" rel="noopener">
+              King of Hearts
+            </a>
+            , CC BY-SA 4.0
+          </span>
+        </p>
+      </div>
 
       <section id="experience" className="pf-section">
         <h2 className="pf-h2">Main Quests</h2>
