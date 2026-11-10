@@ -99,7 +99,9 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
             </div>
             <h3 className="pf-stop-event">{t.event}</h3>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {t.accepted && <span className="pf-chip pf-chip-accepted">Accepted talk · upcoming</span>}
+              {t.status && (
+                <span className="pf-chip pf-chip-accepted">{t.status === "upcoming" ? "Accepted · upcoming" : "Accepted · didn't attend"}</span>
+              )}
               {t.roles.map((r) => (
                 <span key={r} className="pf-chip pf-chip-accent">
                   {r}

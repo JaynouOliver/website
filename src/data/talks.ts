@@ -23,7 +23,8 @@ export type Talk = {
   photos: TalkPhoto[];
   tallPhotos?: boolean; // taller photo slots, for portrait shots
   links: { label: string; href: string }[];
-  accepted?: boolean; // accepted talk that hasn't happened yet
+  // "upcoming": accepted, not happened yet. "missed": accepted, but I didn't go.
+  status?: "upcoming" | "missed";
 };
 
 export const home = { city: "Kolkata", flag: "in", lat: 22.57, lon: 88.36 };
@@ -39,7 +40,7 @@ export const talks: Talk[] = [
     lon: 139.69,
     date: "Dec 10, 2026",
     roles: ["Speaker"],
-    accepted: true,
+    status: "upcoming",
     title: "Five Bits on Metal: Adding Q5_K Quantization to ExecuTorch's MLX Backend",
     with: "with Anika Tibrewala · PyTorch Ecosystem track",
     about: "A one-day PyTorch event in Tokyo, run by the Linux Foundation.",
@@ -59,7 +60,7 @@ export const talks: Talk[] = [
     lon: 36.82,
     date: "Nov 20, 2026",
     roles: ["Speaker"],
-    accepted: true,
+    status: "upcoming",
     title: "Multi Round-Trip Requests – The New Safety Pattern in MCP Agents",
     with: "with Anika Tibrewala · MCP Protocol in Depth track",
     about: "The Linux Foundation's summit for the Model Context Protocol, in Nairobi.",
@@ -68,6 +69,26 @@ export const talks: Talk[] = [
     ],
     photos: [],
     links: [{ label: "Session page", href: "https://events.linuxfoundation.org/mcp-dev-summit-nairobi/program/schedule/?id=1305478" }],
+  },
+  {
+    id: "pytorch-conf-na-2026",
+    event: "PyTorch Conference North America",
+    city: "San Jose",
+    country: "USA",
+    flag: "us",
+    lat: 37.34,
+    lon: -121.89,
+    date: "Oct 20, 2026",
+    roles: ["Poster"],
+    status: "missed",
+    title: "Five Bits on Metal: Adding Q5_K Quantization to ExecuTorch's MLX Backend",
+    with: "with Shivay Lamba · Community Expo",
+    about: "The PyTorch Foundation's flagship conference, in San Jose.",
+    body: [
+      "Our poster on bringing Q5_K, a GGUF quantization format, to ExecuTorch's MLX backend so it runs on Macs was accepted for the Community Expo. I didn't make it to San Jose, but getting a poster into PyTorch Conference was a big one. The same work became my talk at PyTorch Day Japan.",
+    ],
+    photos: [],
+    links: [{ label: "Poster page", href: "https://events.linuxfoundation.org/pytorch-conference-north-america/program/schedule-posters/?id=1295700" }],
   },
   {
     id: "mcp-shanghai-2026",
@@ -182,4 +203,4 @@ export const talks: Talk[] = [
 
 // Shown under the journey.
 export const alsoNote =
-  "Also: merged PRs in PyTorch, vLLM and other major repos, and a poster at the PyTorch Conference.";
+  "Also: merged PRs in PyTorch, vLLM and other major repos.";
