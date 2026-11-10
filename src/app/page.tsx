@@ -23,10 +23,13 @@ export default function Page() {
         <div className="pf-hero-text">
           <a href="#experience" className="pf-now">
             <span className="pf-now-dot" aria-hidden="true" />
-            {now.title} at {now.company}
+            Now at {now.company}
           </a>
           <h1 className="pf-hero-title">
-            hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
+            <span className="pf-hi">
+              hi, i&apos;m <span className="pf-wave">👋</span>
+            </span>
+            <span className="pf-name">{firstName}</span>
           </h1>
           <p className="pf-role">
             <span>{DATA.role}</span>
