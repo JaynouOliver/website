@@ -99,6 +99,7 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
             </div>
             <h3 className="pf-stop-event">{t.event}</h3>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {t.accepted && <span className="pf-chip pf-chip-accepted">Accepted talk · upcoming</span>}
               {t.roles.map((r) => (
                 <span key={r} className="pf-chip pf-chip-accent">
                   {r}
@@ -106,25 +107,27 @@ export default function TalksJourney({ talks, home }: { talks: Talk[]; home: Lat
               ))}
             </div>
 
-            <div className={"pf-stop-photos" + (t.photos.length > 1 ? " is-pair" : "") + (t.tallPhotos ? " is-tall" : "")}>
-              {t.photos.map((p) => (
-                <figure key={p.src}>
-                  <Pic src={p.src} alt={p.alt} width={1100} height={t.tallPhotos ? 1466 : 825} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  {p.credit && (
-                    <figcaption>
-                      Photo:{" "}
-                      {p.creditHref ? (
-                        <a href={p.creditHref} target="_blank" rel="noopener">
-                          {p.credit}
-                        </a>
-                      ) : (
-                        p.credit
-                      )}
-                    </figcaption>
-                  )}
-                </figure>
-              ))}
-            </div>
+            {t.photos.length > 0 && (
+              <div className={"pf-stop-photos" + (t.photos.length > 1 ? " is-pair" : "") + (t.tallPhotos ? " is-tall" : "")}>
+                {t.photos.map((p) => (
+                  <figure key={p.src}>
+                    <Pic src={p.src} alt={p.alt} width={1100} height={t.tallPhotos ? 1466 : 825} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    {p.credit && (
+                      <figcaption>
+                        Photo:{" "}
+                        {p.creditHref ? (
+                          <a href={p.creditHref} target="_blank" rel="noopener">
+                            {p.credit}
+                          </a>
+                        ) : (
+                          p.credit
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            )}
 
             {t.title && (
               <p className="pf-stop-title">

@@ -66,7 +66,10 @@ export async function getPRs(user: string): Promise<PR[]> {
   if (!r.ok) throw new Error("GitHub search failed: " + r.status);
   const items = ((await r.json()) as { items?: SearchItem[] }).items || [];
 
-  const prs: PR[] = items.map((it) => ({
+  // Only contributions to other people's projects: skip PRs in my own repos.
+  const own = (it: SearchItem) => it.repository_url.split("/repos/")[1]?.split("/")[0].toLowerCase() === user.toLowerCase();
+  const kept = items.filter((it) => !own(it));
+  const prs: PR[] = kept.map((it) => ({
     title: it.title,
     url: it.html_url,
     repo: it.repository_url.split("/repos/")[1] || "",
@@ -79,7 +82,7 @@ export async function getPRs(user: string): Promise<PR[]> {
   for (let i = 0; i < prs.length; i++) {
     const pr = prs[i];
     if (pr.state !== "closed") continue;
-    if (items[i].labels?.some((l) => l.name === "Merged")) {
+    if (kept[i].labels?.some((l) => l.name === "Merged")) {
       pr.state = "merged";
       pr.landed = true;
       continue;
