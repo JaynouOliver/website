@@ -1,6 +1,7 @@
 "use client";
 
 import Pic from "@/components/pic";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Homepage hero, styled as a vision model's output (what I build for a living).
@@ -121,7 +122,7 @@ export default function Hero({
         </h1>
 
         <p className="hx-sub">
-          Spoke at PyCon and MCP Dev Summit, published at SciPy. <a href="/blog/life-story">Here&apos;s</a> my journey in
+          Spoke at PyCon and MCP Dev Summit, published at SciPy. <Link href="/blog/life-story">Here&apos;s</Link> my journey in
           a nutshell, or find me on{" "}
           <a href={x} target="_blank" rel="noopener">
             X
