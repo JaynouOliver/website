@@ -11,12 +11,12 @@ export const DATA = {
   nickname: "Subhro", // shown in the "hi, i'm ..." greeting
   initials: "SD",
   url: "https://subhrokomol.in", // used for SEO metadata — set to your deployed URL
-  role: "Machine Learning Engineer", // shown under the greeting
+  role: "AI Engineer", // shown under the greeting
   location: "Kolkata, India",
   locationLink: "https://www.google.com/maps/place/kolkata",
   // Shown under "hi, i'm ..." on the homepage. Markdown links work: [word](https://url)
   description:
-    "I ship AI systems into production and work directly with stakeholders: fine-tuned vision models, retrieval and similarity search, API integrations and GPU inference. Merged PRs in PyTorch and vLLM, spoke at PyCon, published at SciPy. [Here's](/blog/life-story) my journey in a nutshell — or find me on [X](https://x.com/SuvrakamalD).",
+    "I build AI agents: the skills they learn, the orchestration that runs them, and the infra underneath. Merged PRs in PyTorch and vLLM, spoke at PyCon and MCP Dev Summit, published at SciPy. [Here's](/blog/life-story) my journey in a nutshell — or find me on [X](https://x.com/SuvrakamalD).",
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/me.jpg", // your photo — file lives in public/

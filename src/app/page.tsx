@@ -1,6 +1,7 @@
 import GitHubPRs from "@/components/github-prs";
 import TalksJourney from "@/components/talks-journey";
 import { alsoNote, home, talks } from "@/data/talks";
+import Hero from "@/components/hero";
 import Pic from "@/components/pic";
 import PostCard from "@/components/post-card";
 import { posts } from "@/data/posts";
@@ -16,57 +17,19 @@ export default function Page() {
   const gh = "https://github.com/" + DATA.githubUsername;
   const pj = DATA.project;
   const now = DATA.work[0];
-  const countries = new Set(talks.map((t) => t.country)).size;
   return (
     <main className="pf-main">
-      <header className="pf-hero">
-        <div className="pf-hero-text">
-          <a href="#experience" className="pf-now">
-            <span className="pf-now-dot" aria-hidden="true" />
-            {now.title} at {now.company}
-          </a>
-          <h1 className="pf-hero-title">
-            hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
-          </h1>
-          <p className="pf-role">
-            <span>{DATA.role}</span>
-            <span aria-hidden="true">·</span>
-            <span>{DATA.location}</span>
-          </p>
-          <p className="pf-hero-desc" dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }} />
-          <div className="pf-actions">
-            <a href={"mailto:" + DATA.contact.email} className="pf-btn pf-btn-primary">Get in touch</a>
-            <a href={gh} target="_blank" rel="noopener" className="pf-btn">GitHub</a>
-            <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" className="pf-btn">LinkedIn</a>
-          </div>
-          <dl className="pf-facts">
-            <div>
-              <dt>Open source</dt>
-              <dd>PyTorch · vLLM</dd>
-            </div>
-            <div>
-              <dt>Talks</dt>
-              <dd>
-                {talks.length} in {countries} countries
-              </dd>
-            </div>
-          </dl>
-        </div>
-        <figure className="pf-hero-photo">
-          <div className="pf-hero-frame">
-            <Pic
-              src={DATA.heroImage}
-              alt={DATA.heroImageAlt}
-              width={1400}
-              height={1866}
-              priority
-              sizes="(max-width: 600px) 100vw, (max-width: 860px) 560px, 420px"
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
-          </div>
-          <figcaption>Golden Gate, San Francisco</figcaption>
-        </figure>
-      </header>
+      <Hero
+        name={firstName}
+        company={now.company.replace(/ \(.*\)$/, "")}
+        companyHref={now.href}
+        email={DATA.contact.email}
+        github={gh}
+        linkedin={DATA.contact.social.LinkedIn.url}
+        x={DATA.contact.social.X.url}
+        photo={DATA.heroImage}
+        photoAlt={DATA.heroImageAlt}
+      />
       <div className="pf-skyline">
         <div className="pf-skyline-art" role="img" aria-label="Ink illustration of the Pudong skyline in Shanghai" />
         <p className="pf-skyline-note">

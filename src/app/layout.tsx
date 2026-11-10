@@ -8,9 +8,15 @@ import VisitTracker from "@/components/visit-tracker";
 import { DATA } from "@/data/resume";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
-import { Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
+
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-mono",
+});
 
 const fontSans = Instrument_Sans({
   subsets: ["latin"],
@@ -58,7 +64,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={fontSans.variable}>
+      <body className={fontSans.variable + " " + fontMono.variable}>
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClarityProvider projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
           <Suspense fallback={null}>
