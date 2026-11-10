@@ -33,10 +33,11 @@ export async function POST(req: NextRequest) {
   buf = await compress(buf, name);
   let target = path.join(PUBLIC_DIR, name);
   let n = 1;
-  while (fs.existsSync(target)) {
+  // Dev-only route: keep Turbopack from tracing all of public/ into the server bundle.
+  while (fs.existsSync(/*turbopackIgnore: true*/ target)) {
     const ext = path.extname(name);
     target = path.join(PUBLIC_DIR, name.slice(0, -ext.length) + "-" + n++ + ext);
   }
-  fs.writeFileSync(target, buf);
+  fs.writeFileSync(/*turbopackIgnore: true*/ target, buf);
   return NextResponse.json({ path: "/" + path.basename(target) });
 }

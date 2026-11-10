@@ -8,15 +8,6 @@ export const metadata: Metadata = {
   description: `Pull requests by ${DATA.name} — merged, open, and closed.`,
 };
 
-const dot = (color: string) => ({
-  display: "inline-block",
-  width: 8,
-  height: 8,
-  borderRadius: 999,
-  background: color,
-  marginRight: 6,
-});
-
 export default function OpenSourcePage() {
   const gh = "https://github.com/" + DATA.githubUsername;
   return (
@@ -30,15 +21,13 @@ export default function OpenSourcePage() {
       <h1 style={{ margin: "0 0 8px", fontSize: "clamp(32px,5.5vw,44px)", fontWeight: 700, letterSpacing: "-0.03em" }}>
         Open source
       </h1>
-      <p style={{ margin: "0 0 14px", color: "var(--muted)", fontSize: 16 }}>
+      <p style={{ margin: "0 0 20px", color: "var(--muted)", fontSize: 16 }}>
         Merged and open pull requests from 2026 by{" "}
-        <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a>, pulled live from GitHub.
+        <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a>. Some projects, PyTorch among them, land
+        changes by rebasing them onto main and closing the PR; those count as merged here and are marked{" "}
+        <span className="pf-pr-landed">landed on main</span>.
       </p>
-      <p style={{ margin: "0 0 30px", color: "var(--faint)", fontSize: 13.5, display: "flex", flexWrap: "wrap", gap: "4px 18px" }}>
-        <span><span style={dot("#8250df")} />Merged</span>
-        <span><span style={dot("#1a7f37")} />Open</span>
-      </p>
-      <GitHubPRs user={DATA.githubUsername} count={100} states={["merged", "open"]} year={2026} />
+      <GitHubPRs user={DATA.githubUsername} count={100} states={["merged", "open"]} year={2026} summary />
     </main>
   );
 }

@@ -5,10 +5,12 @@ import type { Post } from "./types";
 import { post as p0 } from "./life-story";
 import { post as p1 } from "./pyconusa26";
 import { post as p2 } from "./scipy-2024-paper";
+import { post as p3 } from "./pycon-jp-2026";
+import { post as p4 } from "./mcp-dev-summit-shanghai";
 
 export type { Post };
 
-export const posts: Post[] = [p0, p1, p2].sort(
+export const posts: Post[] = [p0, p1, p2, p3, p4].sort(
   (a, b) => +new Date(b.date) - +new Date(a.date)
 );
 

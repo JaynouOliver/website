@@ -1,61 +1,65 @@
 import GitHubPRs from "@/components/github-prs";
+import TalksJourney from "@/components/talks-journey";
+import { alsoNote, home, talks } from "@/data/talks";
 import Pic from "@/components/pic";
+import PostCard from "@/components/post-card";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
-import { fmtDate, mdInline } from "@/lib/md";
+import { mdInline } from "@/lib/md";
 import Link from "next/link";
 
-const arrow = (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--faint)" }}>
-    <path d="M7 17L17 7M9 7h8v8" />
-  </svg>
-);
-
-const favicon = (href: string) => {
-  try {
-    return "https://www.google.com/s2/favicons?domain=" + new URL(href).hostname + "&sz=64";
-  } catch {
-    return "";
-  }
-};
+// Long roles show this many bullet points, with the rest behind "Show more".
+const VISIBLE_POINTS = 3;
 
 export default function Page() {
   const firstName = DATA.nickname || DATA.name.split(" ")[0].toLowerCase();
   const gh = "https://github.com/" + DATA.githubUsername;
+  const pj = DATA.project;
   return (
     <main className="pf-main">
-      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "28px 40px" }}>
-        <div style={{ flex: 1, minWidth: 280 }}>
-          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,56px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+      <header className="pf-hero">
+        <div className="pf-hero-text">
+          <h1 style={{ margin: "0 0 14px", fontSize: "clamp(38px,6.4vw,60px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             hi, i&apos;m {firstName} <span className="pf-wave">👋</span>
           </h1>
+          <p className="pf-role">
+            <span>{DATA.role}</span>
+            <span aria-hidden="true">·</span>
+            <span>{DATA.location}</span>
+          </p>
           <p
-            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "46ch" }}
+            style={{ margin: 0, fontSize: 17, color: "var(--muted)", maxWidth: "50ch" }}
             dangerouslySetInnerHTML={{ __html: mdInline(DATA.description) }}
           />
+          <div className="pf-actions">
+            <a href={"mailto:" + DATA.contact.email} className="pf-btn pf-btn-primary">Get in touch</a>
+            <a href={gh} target="_blank" rel="noopener" className="pf-btn">GitHub</a>
+            <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" className="pf-btn">LinkedIn</a>
+          </div>
         </div>
-        <Pic
-          src={DATA.avatarUrl}
-          alt={DATA.name}
-          width={132}
-          height={132}
-          priority
-          style={{ width: 132, height: 132, flex: "none", borderRadius: 999, objectFit: "cover", border: "1px solid var(--line)" }}
-        />
+        <figure className="pf-hero-photo">
+          <Pic
+            src={DATA.heroImage}
+            alt={DATA.heroImageAlt}
+            width={1400}
+            height={1866}
+            priority
+            sizes="(max-width: 600px) 100vw, (max-width: 860px) 560px, 460px"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        </figure>
       </header>
 
       <section id="experience" className="pf-section">
         <h2 className="pf-h2">Main Quests</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        <ol className="pf-timeline">
           {DATA.work.map((job) => (
-            <article key={job.company} style={{ display: "flex", gap: 16 }}>
+            <li key={job.company} className="pf-quest">
               {job.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={job.logoUrl} alt={job.company} className="pf-logo" />
               ) : (
-                <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15, flex: "none" }}>
-                  {job.company.slice(0, 1).toUpperCase()}
-                </div>
+                <div className="pf-logo pf-logo-fallback">{job.company.slice(0, 1).toUpperCase()}</div>
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 12px" }}>
@@ -67,44 +71,83 @@ export default function Page() {
                     {job.start} – {job.end}
                   </span>
                 </div>
-                <ul style={{ margin: "10px 0 0", paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6, color: "var(--muted)", fontSize: 15, listStyle: "disc" }}>
-                  {job.points.map((pt, i) => (
+                {job.location && <div style={{ color: "var(--faint)", fontSize: 13.5 }}>{job.location}</div>}
+                <ul className="pf-points">
+                  {job.points.slice(0, VISIBLE_POINTS).map((pt, i) => (
                     <li key={i} dangerouslySetInnerHTML={{ __html: mdInline(pt) }} />
                   ))}
                 </ul>
+                {job.points.length > VISIBLE_POINTS && (
+                  <details className="pf-more">
+                    <summary>
+                      <span className="pf-more-closed">Show {job.points.length - VISIBLE_POINTS} more</span>
+                      <span className="pf-more-open">Show less</span>
+                    </summary>
+                    <ul className="pf-points">
+                      {job.points.slice(VISIBLE_POINTS).map((pt, i) => (
+                        <li key={i} dangerouslySetInnerHTML={{ __html: mdInline(pt) }} />
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </div>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
-      <section id="projects" className="pf-section">
-        <h2 className="pf-h2">Projects</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(270px,1fr))", gap: 14 }}>
-          {DATA.projects.map((pj) => (
-            <a key={pj.title} href={pj.href} target="_blank" rel="noopener" className="pf-card">
-              <span style={{ fontWeight: 700, fontSize: 15.5, display: "flex", alignItems: "center", gap: 8 }}>
-                {favicon(pj.href) && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={favicon(pj.href)} alt="" style={{ width: 18, height: 18, borderRadius: 5, flex: "none" }} />
-                )}
-                {pj.title}
-                {arrow}
-              </span>
-              <span
-                style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55, flex: 1 }}
-                dangerouslySetInnerHTML={{ __html: mdInline(pj.description) }}
-              />
-              {pj.technologies.length > 0 && (
-                <span style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-                  {pj.technologies.map((t) => (
-                    <span key={t} className="pf-chip">{t}</span>
-                  ))}
-                </span>
-              )}
-            </a>
-          ))}
-        </div>
+      <section id="project" className="pf-section">
+        <h2 className="pf-h2">Featured project</h2>
+        <article className="pf-feature">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={pj.logo} alt="" width={36} height={36} style={{ width: 36, height: 36, flex: "none" }} />
+            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.25 }}>
+              <span style={{ fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em" }}>{pj.name}</span>
+              <span style={{ color: "var(--faint)", fontSize: 13 }}>{pj.kicker}</span>
+            </div>
+          </div>
+          <p className="pf-feature-tagline">{pj.tagline}</p>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: 15.5, lineHeight: 1.65 }} dangerouslySetInnerHTML={{ __html: mdInline(pj.pitch) }} />
+          <div className="pf-actions" style={{ marginTop: 4 }}>
+            <a href={pj.demo} target="_blank" rel="noopener" className="pf-btn pf-btn-primary">Try the live demo →</a>
+            <a href={pj.source} target="_blank" rel="noopener" className="pf-btn">Source on GitHub</a>
+          </div>
+          <a href={pj.demo} target="_blank" rel="noopener" className="pf-feature-shot" aria-label={"Open the " + pj.name + " live demo"}>
+            <Pic src={pj.image} alt={pj.imageAlt} width={1200} height={1123} style={{ width: "100%", height: "auto", display: "block" }} />
+          </a>
+          <div className="pf-stats">
+            {pj.stats.map((st) => (
+              <div key={st.label}>
+                <span className="pf-stat-value">{st.value}</span>
+                <span className="pf-stat-label">{st.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="pf-highlights">
+            {pj.highlights.map((h) => (
+              <div key={h.title}>
+                <span style={{ fontWeight: 700, fontSize: 15 }}>{h.title}</span>
+                <span style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.55 }} dangerouslySetInnerHTML={{ __html: mdInline(h.body) }} />
+              </div>
+            ))}
+          </div>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>{pj.note}</p>
+          <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {pj.technologies.map((t) => (
+              <span key={t} className="pf-chip">{t}</span>
+            ))}
+          </span>
+        </article>
+      </section>
+
+      <section id="talks" className="pf-section">
+        <h2 className="pf-h2" style={{ marginBottom: 6 }}>Talks &amp; travels</h2>
+        <p style={{ margin: "0 0 8px", color: "var(--muted)", fontSize: 14.5 }}>
+          Papers, posters and talks that took me from {home.city} around the world. Scroll and the globe follows along.
+        </p>
+        <TalksJourney talks={talks} home={home} />
+        <p style={{ margin: "8px 0 0", color: "var(--muted)", fontSize: 14 }}>{alsoNote}</p>
       </section>
 
       <section id="opensource" className="pf-section">
@@ -117,44 +160,20 @@ export default function Page() {
       </section>
 
       <section id="blog" className="pf-section">
-        <h2 className="pf-h2">Research and International presentations</h2>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {posts.slice(0, 5).map((po) => (
-            <Link key={po.slug} href={"/blog/" + po.slug} className="pf-row" style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-              {po.image && (
-                <Pic src={po.image} width={84} height={56} className="pf-thumb" style={{ width: 84, height: 56, objectFit: "cover" }} />
-              )}
-              <span style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, minWidth: 0 }}>
-                <span style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10 }}>
-                  <span style={{ fontWeight: 600, fontSize: 15.5, flex: 1, minWidth: 160 }}>{po.title}</span>
-                  <span style={{ color: "var(--faint)", fontSize: 13, whiteSpace: "nowrap" }}>{fmtDate(po.date)}</span>
-                </span>
-                <span style={{ color: "var(--muted)", fontSize: 14 }}>{po.summary}</span>
-              </span>
-            </Link>
-          ))}
-        </div>
-        <div style={{ marginTop: 18 }}>
-          <Link
-            href="/blog"
-            style={{ display: "inline-block", padding: "8px 16px", fontSize: 13.5, fontWeight: 600, color: "var(--text)", border: "1px solid var(--line)", borderRadius: 999, textDecoration: "none" }}
-          >
-            Show more →
+        <div className="pf-section-head">
+          <h2 className="pf-h2" style={{ margin: 0 }}>Writing</h2>
+          <Link href="/blog" className="pf-btn">
+            All posts →
           </Link>
+        </div>
+        <p style={{ margin: "6px 0 18px", color: "var(--muted)", fontSize: 14.5 }}>{DATA.blogTagline}</p>
+        <div className="pf-postgrid">
+          {posts.slice(0, 4).map((po) => (
+            <PostCard key={po.slug} post={po} />
+          ))}
         </div>
       </section>
 
-      <footer style={{ marginTop: "clamp(56px,9vw,90px)", paddingTop: 24, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 18px" }}>
-        <span style={{ color: "var(--faint)", fontSize: 13.5 }}>
-          © {new Date().getFullYear()} {DATA.name}
-        </span>
-        <div style={{ marginLeft: "auto", display: "flex", flexWrap: "wrap", gap: 16 }}>
-          <a href={gh} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>GitHub</a>
-          <a href={DATA.contact.social.LinkedIn.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>LinkedIn</a>
-          <a href={DATA.contact.social.X.url} target="_blank" rel="noopener" style={{ fontSize: 13.5, color: "var(--muted)" }}>Twitter</a>
-          <a href={"mailto:" + DATA.contact.email} style={{ fontSize: 13.5, color: "var(--muted)" }}>Email</a>
-        </div>
-      </footer>
     </main>
   );
 }

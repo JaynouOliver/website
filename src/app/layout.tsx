@@ -1,6 +1,7 @@
 import BgDots from "@/components/bg-dots";
 import { ClarityProvider } from "@/components/clarity";
 import Dock from "@/components/dock";
+import SiteFooter from "@/components/site-footer";
 import GoogleAnalytics from "@/components/ga";
 import { ThemeProvider } from "@/components/theme-provider";
 import VisitTracker from "@/components/visit-tracker";
@@ -58,13 +59,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={fontSans.variable}>
-        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClarityProvider projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
           <Suspense fallback={null}>
             <GoogleAnalytics />
           </Suspense>
           <BgDots />
           {children}
+          <SiteFooter />
           <Dock />
           <Analytics />
           <VisitTracker />

@@ -102,7 +102,6 @@ export default function Dashboard() {
   useEffect(() => {
     const saved = sessionStorage.getItem("pf-dash-key");
     if (saved) tryUnlock(saved);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!auth) {
