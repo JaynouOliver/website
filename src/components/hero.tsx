@@ -4,9 +4,9 @@ import Pic from "@/components/pic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-// Homepage hero, styled as a vision model's output (what I build for a living).
-// The photo gets a scan line and YOLO-style detection boxes; key phrases in the
-// headline get the same boxes. Hovering "Subhro" lights up the person box in
+// Homepage hero. The photo is shown as the result of an agent's tool call: a
+// scan line, then detection boxes. Key phrases in the headline get the same
+// boxes. Hovering "Subhro" lights up the person box in
 // the photo and the other way round.
 //
 // Box coordinates are percentages of the photo (public/me-golden-gate.webp,
@@ -81,7 +81,7 @@ export default function Hero({
         <p className="hx-status">
           <span className="hx-live" aria-hidden="true" />
           <span>
-            ML engineer at{" "}
+            AI engineer at{" "}
             <a href={companyHref} target="_blank" rel="noopener">
               {company}
             </a>
@@ -98,31 +98,31 @@ export default function Hero({
             {name}
             <Tag label="person" conf="0.99" />
           </span>
-          . I train{" "}
+          , a software engineer building{" "}
           <span className="hx-box">
-            vision models
-            <Tag label="yolo · gan" />
+            AI agents
+            <Tag label="agent" />
           </span>
-          , ship them on{" "}
+          : the{" "}
           <span className="hx-box">
-            GPUs
-            <Tag label="inference" />
+            skills
+            <Tag label="self-evolving" />
           </span>{" "}
-          and send PRs to{" "}
+          they learn, the{" "}
           <span className="hx-box">
-            PyTorch
-            <Tag label="merged" />
+            orchestration
+            <Tag label="multi-agent" />
           </span>{" "}
-          and{" "}
+          that runs them, and the{" "}
           <span className="hx-box">
-            vLLM
-            <Tag label="merged" />
-          </span>
-          .
+            infra
+            <Tag label="gpu" />
+          </span>{" "}
+          underneath.
         </h1>
 
         <p className="hx-sub">
-          Spoke at PyCon and MCP Dev Summit, published at SciPy. <Link href="/blog/life-story">Here&apos;s</Link> my journey in
+          Merged PRs in PyTorch and vLLM, spoke at PyCon and MCP Dev Summit, published at SciPy. <Link href="/blog/life-story">Here&apos;s</Link> my journey in
           a nutshell, or find me on{" "}
           <a href={x} target="_blank" rel="noopener">
             X
@@ -176,11 +176,11 @@ export default function Hero({
             </div>
           ))}
           <div className="hx-hud hx-hud-top" aria-hidden="true">
-            <span>yolo-seg</span>
+            <span>agent → tool: detect()</span>
             <span>golden_gate.jpg</span>
           </div>
           <div className="hx-hud hx-hud-bottom" aria-hidden="true">
-            <span>{DETECTIONS.length} objects</span>
+            <span>{DETECTIONS.length} objects → agent</span>
             <span>conf ≥ 0.80</span>
           </div>
         </div>
