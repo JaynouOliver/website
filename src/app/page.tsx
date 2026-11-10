@@ -50,10 +50,6 @@ export default function Page() {
                 {talks.length} in {countries} countries
               </dd>
             </div>
-            <div>
-              <dt>Published</dt>
-              <dd>SciPy 2024</dd>
-            </div>
           </dl>
         </div>
         <figure className="pf-hero-photo">
