@@ -51,9 +51,9 @@ export const quests: Quest[] = [
     "start": "Oct 2022",
     "end": "Oct 2024",
     "points": [
-      "**RAG System** — built a production RAG chatbot (Python, FastAPI, LangChain, Chroma DB) over 1,000+ documents, with Redis caching and Celery background tasks.",
-      "**Impact** — improved chat response time 1.5× through RAG optimization; a PR agent detected 80% of code quality issues on a prototype platform handling 500 daily user queries.",
-      "**Performance** — cut API response times by 45% with caching and async processing under concurrent load.",
+      "**The product** — ProjectX builds [Infinity](https://projectx.cloud/), a workspace in the browser where every app (Blender, Unreal, Isaac Sim, VS Code and more) runs on its own dedicated GPU machine. Think cloud gaming, but for software.",
+      "**Core platform** — helped build the underlying code that still runs the product today.",
+      "**GPU VNC backend** — worked on the backend architecture behind it: GPU-backed VNC sessions where each app gets its own GPU in its own sandboxed environment, streamed from the server to your laptop, where you control it as if it were running locally.",
       "**Early-stage ownership** — all-hands role in the company's earliest days, covering engineering and the business side of building a startup."
     ]
   }
