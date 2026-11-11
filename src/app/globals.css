@@ -85,6 +85,8 @@ a:hover{text-decoration-color:var(--text)}
 .pf-skyline-note>span:first-child{color:var(--muted);font-weight:600}
 .pf-skyline-credit{display:block;margin-top:2px;font-size:11px}
 .pf-skyline-credit a,.pf-footer-credit a{color:inherit}
+.pf-footer-credit-wide{display:none}
+@media (min-width:1360px){.pf-footer-credit-wide{display:inline}}
 @media (max-width:860px){.pf-skyline{margin-top:8px}}
 /* Desktop: a wider composition (towers at both edges, low in the middle)
    rises behind the hero, so the text and photo sit in front of it. */
@@ -273,4 +275,12 @@ html[data-theme="dark"] .pf-pr-landed{color:#a371f7}
 .pf-footer-art{aspect-ratio:1920/1080;background:var(--ink);-webkit-mask:url(/footer-ink.png) 50% 100%/100% 100% no-repeat;mask:url(/footer-ink.png) 50% 100%/100% 100% no-repeat}
 .pf-footer-credit{margin:0;padding:10px 16px 88px;text-align:center;font-size:11px;color:var(--faint)}
 .pf-footer-credit a{color:inherit}
+/* Desktop: the wide two-bridge drawing (Howrah left, Vidyasagar Setu right)
+   spans the page and rises behind the footer, which floats on a frosted card. */
+@media (min-width:1360px){
+  .pf-footer{padding-top:14vw}
+  .pf-footer-top{border:1px solid var(--line);border-radius:22px;padding:30px 36px;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(8px);box-shadow:0 24px 60px -30px rgba(10,20,60,.35)}
+  .pf-footer-artwrap{width:100%;margin-top:-32vw}
+  .pf-footer-art{aspect-ratio:2560/1080;-webkit-mask-image:url(/footer-ink-wide.png);mask-image:url(/footer-ink-wide.png)}
+}
 @media (max-width:600px){.pf-footer-cols{display:grid;grid-template-columns:1fr 1.4fr;gap:20px 24px;width:100%}.pf-footer-cols a{font-size:13.5px}.pf-footer-artwrap{margin-top:16px}.pf-footer-art{aspect-ratio:auto;height:clamp(240px,70vw,320px);-webkit-mask-position:72% 100%;mask-position:72% 100%;-webkit-mask-size:cover;mask-size:cover}}
