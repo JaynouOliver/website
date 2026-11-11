@@ -3,7 +3,8 @@ import { DATA } from "@/data/resume";
 import Link from "next/link";
 
 // Site-wide footer: text block on top, a full-width ink illustration of
-// Kolkata (Vidyasagar Setu) at the bottom. The illustration is a mask
+// Kolkata at the bottom: Vidyasagar Setu, plus Howrah Bridge on wide screens
+// (public/footer-ink-wide.png, scripts/build-footer-wide.mjs). The illustration is a mask
 // (public/footer-ink.png, made by scripts/build-footer-art.mjs), painted with
 // --ink, so it changes colour with the theme and sits on the page background.
 
@@ -58,11 +59,19 @@ export default function SiteFooter() {
       <div className="pf-footer-artwrap">
         <div className="pf-footer-art" role="img" aria-label="Ink illustration of Vidyasagar Setu and the Kolkata skyline" />
         <p className="pf-footer-credit">
-          Illustration from a photo by{" "}
+          Illustrations from photos by{" "}
           <a href="https://commons.wikimedia.org/wiki/File:Kolkata_Skyline_From_Vidyasagar_Seti_2.jpg" target="_blank" rel="noopener">
             Innocentbunny
-          </a>
-          , CC BY-SA 3.0
+          </a>{" "}
+          (CC BY-SA 3.0)
+          <span className="pf-footer-credit-wide">
+            {" "}
+            and{" "}
+            <a href="https://commons.wikimedia.org/wiki/File:The_Howrah_Bridge,_Kolkata,_India.jpg" target="_blank" rel="noopener">
+              Vyacheslav Argenberg
+            </a>{" "}
+            (CC BY 4.0)
+          </span>
         </p>
       </div>
     </footer>
