@@ -25,20 +25,29 @@ const fontSans = Instrument_Sans({
 
 const plainDescription = DATA.description.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
 
+const siteTitle = `${DATA.name} (${DATA.nickname}) · ${DATA.role}`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(DATA.url),
   title: {
-    default: DATA.name,
-    template: `%s | ${DATA.name}`,
+    default: siteTitle,
+    template: `%s · ${DATA.name}`,
   },
   description: plainDescription,
+  applicationName: DATA.name,
+  authors: [{ name: DATA.name, url: DATA.url }],
+  creator: DATA.name,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: `${DATA.name}`,
+    title: siteTitle,
     description: plainDescription,
-    url: DATA.url,
-    siteName: `${DATA.name}`,
+    url: "/",
+    siteName: DATA.name,
     locale: "en_US",
-    type: "website",
+    type: "profile",
+    firstName: "Suvrakamal",
+    lastName: "Das",
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: DATA.heroImageAlt }],
   },
   robots: {
     index: true,
@@ -52,8 +61,11 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: `${DATA.name}`,
+    title: siteTitle,
+    description: plainDescription,
     card: "summary_large_image",
+    creator: "@SuvrakamalD",
+    images: ["/og.jpg"],
   },
 };
 

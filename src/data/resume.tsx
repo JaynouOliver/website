@@ -10,7 +10,7 @@ export const DATA = {
   name: "Suvrakamal Das",
   nickname: "Subhro", // shown in the "hi, i'm ..." greeting
   initials: "SD",
-  url: "https://subhrokomol.in", // used for SEO metadata — set to your deployed URL
+  url: "https://www.subhrokomol.in", // canonical address (subhrokomol.in redirects here) — used for SEO metadata
   role: "AI Engineer", // shown under the greeting
   location: "Kolkata, India",
   locationLink: "https://www.google.com/maps/place/kolkata",
