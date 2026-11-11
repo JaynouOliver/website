@@ -8,11 +8,20 @@ import { NextResponse, type NextRequest } from "next/server";
 //   blog.example.com/<slug>      → shows /blog/<slug>
 //   blog.example.com/blog/<slug> → redirects to /<slug> (clean URLs)
 //   example.com/blog/<slug>      → redirects to blog.example.com/<slug>
+//
+// Also: the *.vercel.app copies of the site (preview and the project's default
+// domain) are marked noindex, so Google only lists www.subhrokomol.in.
 export function proxy(request: NextRequest) {
+  const host = (request.headers.get("host") || "").toLowerCase();
+  if (host.endsWith(".vercel.app")) {
+    const res = NextResponse.next();
+    res.headers.set("X-Robots-Tag", "noindex");
+    return res;
+  }
+
   const blogHost = process.env.BLOG_HOST;
   if (!blogHost) return NextResponse.next();
 
-  const host = (request.headers.get("host") || "").toLowerCase();
   const { pathname } = request.nextUrl;
   const onBlog = host === blogHost.toLowerCase();
 

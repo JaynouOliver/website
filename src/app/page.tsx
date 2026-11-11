@@ -7,6 +7,7 @@ import PostCard from "@/components/post-card";
 import { posts } from "@/data/posts";
 import { DATA } from "@/data/resume";
 import { mdInline } from "@/lib/md";
+import { ldJson, personJsonLd, websiteJsonLd } from "@/lib/seo";
 import Link from "next/link";
 
 // Long roles show this many bullet points, with the rest behind "Show more".
@@ -19,8 +20,10 @@ export default function Page() {
   const now = DATA.work[0];
   return (
     <main className="pf-main">
+      <script type="application/ld+json" dangerouslySetInnerHTML={ldJson([personJsonLd(), websiteJsonLd()])} />
       <Hero
         name={firstName}
+        fullName={DATA.name}
         company={now.company.replace(/ \(.*\)$/, "")}
         companyHref={now.href}
         email={DATA.contact.email}

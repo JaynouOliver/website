@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Writing",
   description: DATA.blogTagline,
 };

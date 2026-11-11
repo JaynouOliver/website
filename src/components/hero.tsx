@@ -32,6 +32,7 @@ function Clock() {
 
 export default function Hero({
   name,
+  fullName,
   company,
   companyHref,
   email,
@@ -42,6 +43,7 @@ export default function Hero({
   photoAlt,
 }: {
   name: string;
+  fullName: string;
   company: string;
   companyHref: string;
   email: string;
@@ -56,6 +58,8 @@ export default function Hero({
       <div className="hx-text">
         <p className="hx-status">
           <span className="hx-live" aria-hidden="true" />
+          <span className="hx-fullname">{fullName}</span>
+          <span className="hx-sep" aria-hidden="true">/</span>
           <span>
             AI engineer at{" "}
             <a href={companyHref} target="_blank" rel="noopener">
