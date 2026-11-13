@@ -23,7 +23,7 @@ const fontSans = Instrument_Sans({
   variable: "--font-sans",
 });
 
-const plainDescription = DATA.description.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+const plainDescription = DATA.seoDescription;
 
 const siteTitle = `${DATA.name} (${DATA.nickname}) · ${DATA.role}`;
 
