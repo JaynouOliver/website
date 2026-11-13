@@ -17,6 +17,9 @@ export const DATA = {
   // Shown under "hi, i'm ..." on the homepage. Markdown links work: [word](https://url)
   description:
     "I build AI agents: the skills they learn, the orchestration that runs them, and the infra underneath. Merged PRs in PyTorch and vLLM, spoke at PyCon and MCP Dev Summit, published at SciPy. [Here's](/blog/life-story) my journey in a nutshell — or find me on [X](https://x.com/SuvrakamalD).",
+  // Search-result snippet (meta description): name first, under ~160 characters.
+  seoDescription:
+    "Suvrakamal Das (Subhro), AI engineer in Kolkata building AI agents, agent skills and orchestration. PyTorch and vLLM contributor; spoke at PyCon and MCP Dev Summit.",
   summary:
     "I'm a certified TensorFlow ML Engineer, and have publications at the SciPyConf. Read my latest research - [here](https://doi.org/10.25080/XHDR4700)",
   avatarUrl: "/me.jpg", // your photo — file lives in public/
