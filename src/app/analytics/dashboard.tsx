@@ -41,7 +41,7 @@ export default function Dashboard() {
 
   const load = useCallback(async (r: Range) => {
     const days = RANGE_DAYS[r] ? Math.max(90, RANGE_DAYS[r] * 2) : 0; // extra history for comparisons and "returning"
-    const res = await api("/api/analytics/data?days=" + days).catch(() => null);
+    const res = await api("/api/analytics/data?days=" + days + (ls.get("pf-count-net") === "1" ? "&net=0" : "")).catch(() => null);
     if (!res) return;
     if (res.status === 401) return setStatus("login");
     if (res.status === 503) return setStatus("unconfigured");
@@ -141,8 +141,7 @@ export default function Dashboard() {
   const more = (id: string) => setExpanded((x) => ({ ...x, [id]: true }));
   const clicks = clickBreakdown(cur, lim("clicks"));
 
-  const myIpViews = data.events.filter((e) => e.k === "p" && e.ip === data.myIp && !(e.v && data.owners.includes(e.v))).length;
-  const myIpHidden = data.xips.includes(data.myIp);
+  const netMine = data.myips?.[data.myIp] !== undefined;
 
   const setting = (body: Record<string, unknown>) => api("/api/analytics/settings", body);
   const actions = {
@@ -189,11 +188,16 @@ export default function Dashboard() {
         }}>
           {deviceMine ? "Count this device" : "Don't count this device"}
         </button>
-        {myIpViews > 0 && !myIpHidden && (
-          <button onClick={() => { setting({ action: "xip", ip: data.myIp, on: true }); setData({ ...data, xips: [...data.xips, data.myIp] }); }}>
-            Also hide {myIpViews} earlier view{myIpViews === 1 ? "" : "s"} from this network ({data.myIp})
-          </button>
-        )}
+        <span>
+          {netMine ? <>Views from your current network ({data.myIp}) are hidden too, including private windows.</> : <>Your current network ({data.myIp}) is being counted.</>}
+        </span>
+        <button onClick={async () => {
+          if (netMine) { ls.set("pf-count-net", "1"); await setting({ action: "mynet", ip: data.myIp }); }
+          else ls.del("pf-count-net");
+          load(range);
+        }}>
+          {netMine ? "Count this network" : "Hide this network"}
+        </button>
         <span className="an-spacer" />
         {(model.hiddenMine > 0 || showMine) && (
           <label><input type="checkbox" checked={showMine} onChange={(e) => setShowMine(e.target.checked)} /> Show my {showMine ? "" : model.hiddenMine + " "}views</label>

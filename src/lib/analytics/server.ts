@@ -13,7 +13,8 @@ export const KEYS = {
   legacy: "visits", // the old list, read-only now
   ipinfo: "an:ip", // hash: ip -> IpInfo
   owners: "an:owners", // set of my own visitor ids
-  xips: "an:xips", // set of IPs to hide
+  xips: "an:xips", // set of IPs to hide (manual, permanent)
+  myips: "an:myips", // hash: ip -> last time I opened the dashboard from it
   labels: "an:labels", // hash: visitor key -> name I gave them
   beats: "an:hb", // hash: visitor id -> Beat (last heartbeat)
 };
