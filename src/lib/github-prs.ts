@@ -6,7 +6,9 @@
 // GitHub then reports it as closed, not merged. For each closed PR we check:
 //   1. a "Merged" label (PyTorch's merge bot adds one), else
 //   2. a commit on the repo's default branch referencing "(#N)" that hasn't
-//      been reverted (commit search only covers the default branch).
+//      been reverted (commit search only covers the default branch), else
+//   3. a commit there that I authored with the PR's title: maintainers
+//      sometimes cherry-pick a PR by hand and close it (Graphify does).
 // Everything is unauthenticated (public data only) and cached, so visitors
 // never hit GitHub's rate limits directly.
 
@@ -18,7 +20,8 @@ export type PR = {
   number: number;
   created: string;
   state: PRState;
-  landed?: boolean; // merged by commit (rebase/bot), not GitHub's merge button
+  landed?: boolean; // merged by commit (rebase/bot/cherry-pick), not GitHub's merge button
+  how?: "rebased" | "cherry-picked";
 };
 
 const GH = "https://api.github.com";
@@ -36,25 +39,36 @@ type SearchItem = {
   pull_request?: { merged_at: string | null };
 };
 
-async function landedOnMain(repo: string, number: number): Promise<boolean | null> {
-  const q = `repo:${repo} "#${number}"`;
-  const r = await fetch(`${GH}/search/commits?per_page=20&q=${encodeURIComponent(q)}`, {
+type Commit = { commit: { message: string; committer?: { date?: string } } };
+
+async function searchCommits(q: string): Promise<Commit[] | null> {
+  const r = await fetch(`${GH}/search/commits?per_page=50&sort=committer-date&order=desc&q=${encodeURIComponent(q)}`, {
     headers: HEADERS,
     // A closed PR's fate rarely changes; recheck once a day.
     next: { revalidate: 86400 },
   });
   if (!r.ok) return null; // rate-limited or unavailable: leave it as closed
-  const data = (await r.json()) as { items?: { commit: { message: string } }[] };
-  const ref = new RegExp(`\\(#${number}\\)|/pull/${number}\\b`);
-  let landed = 0;
-  let reverted = 0;
-  for (const it of data.items || []) {
+  return ((await r.json()) as { items?: Commit[] }).items || [];
+}
+
+// "fix(x): do the thing (#123)" -> "fix(x): do the thing"
+const norm = (s: string) => s.split("\n")[0].replace(/\s*\(#\d+\)\s*$/, "").replace(/\s+/g, " ").trim().toLowerCase();
+
+// How a closed PR reached the default branch, if it did:
+//   "rebased"       a commit there references the PR ("(#N)" or its URL)
+//   "cherry-picked" a commit there, authored by me after the PR was opened,
+//                   has the PR's title (maintainers cherry-picked it by hand)
+function landedIn(commits: Commit[], pr: PR): "rebased" | "cherry-picked" | null {
+  const ref = new RegExp(`\\(#${pr.number}\\)|/pull/${pr.number}\\b`);
+  let landed = 0, reverted = 0, picked = false;
+  for (const it of commits) {
     const msg = it.commit.message;
-    if (!ref.test(msg)) continue;
-    if (/^Revert\b/i.test(msg)) reverted++;
-    else landed++;
+    if (ref.test(msg)) {
+      if (/^Revert\b/i.test(msg)) reverted++;
+      else landed++;
+    } else if (norm(msg) === norm(pr.title) && (it.commit.committer?.date || "") >= pr.created) picked = true;
   }
-  return landed > reverted;
+  return landed > reverted ? "rebased" : picked ? "cherry-picked" : null;
 }
 
 export async function getPRs(user: string): Promise<PR[]> {
@@ -78,20 +92,34 @@ export async function getPRs(user: string): Promise<PR[]> {
     state: it.pull_request?.merged_at ? "merged" : it.state,
   }));
 
+  // Commit search allows 10 unauthenticated requests a minute, so: one search
+  // per repo for commits I authored (covers both cases for most projects),
+  // then a per-PR search for the PR number if that found nothing.
   let checks = 0;
+  const mine = new Map<string, Commit[] | null>();
   for (let i = 0; i < prs.length; i++) {
     const pr = prs[i];
     if (pr.state !== "closed") continue;
     if (kept[i].labels?.some((l) => l.name === "Merged")) {
       pr.state = "merged";
       pr.landed = true;
+      pr.how = "rebased";
       continue;
     }
-    if (checks >= MAX_COMMIT_CHECKS) continue;
-    checks++;
-    if (await landedOnMain(pr.repo, pr.number)) {
+    if (!mine.has(pr.repo)) {
+      if (checks >= MAX_COMMIT_CHECKS) continue;
+      checks++;
+      mine.set(pr.repo, await searchCommits(`repo:${pr.repo} author:${user}`));
+    }
+    let how = landedIn(mine.get(pr.repo) || [], pr);
+    if (!how && checks < MAX_COMMIT_CHECKS) {
+      checks++;
+      how = landedIn((await searchCommits(`repo:${pr.repo} "#${pr.number}"`)) || [], pr) === "rebased" ? "rebased" : null;
+    }
+    if (how) {
       pr.state = "merged";
       pr.landed = true;
+      pr.how = how;
     }
   }
   return prs;

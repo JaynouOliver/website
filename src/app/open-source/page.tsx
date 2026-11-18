@@ -26,7 +26,8 @@ export default function OpenSourcePage() {
         Merged and open pull requests from 2026 by{" "}
         <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a>. Some projects, PyTorch among them, land
         changes by rebasing them onto main and closing the PR; those count as merged here and are marked{" "}
-        <span className="pf-pr-landed">landed on main</span>.
+        <span className="pf-pr-landed">landed on main</span>. Others cherry-pick the commit with my authorship; those
+        are marked <span className="pf-pr-landed">cherry-picked to main</span>.
       </p>
       <GitHubPRs user={DATA.githubUsername} count={100} states={["merged", "open"]} year={2026} summary />
     </main>
