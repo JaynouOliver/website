@@ -1,266 +1,252 @@
 "use client";
 
-import PillSelect from "@/components/ui/pill-select";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import "./analytics.css";
+import { applyFilters, breakdown, build, clickBreakdown, countryName, DAY, field, flag, fmtDur, series, stats, tabOpen, type Data, type FilterKey, type Filters, type PV, type Visitor } from "./compute";
+import { Kpi, Panel, TimeChart, type Tab } from "./panels";
+import People from "./people";
 import VisitMap from "./visit-map";
 
-type Visit = {
-  ip: string;
-  city?: string;
-  region?: string;
-  country?: string;
-  path?: string;
-  ua?: string;
-  lat?: number | string;
-  lon?: number | string;
-  t: number;
-};
+// /analytics: private dashboard for the site's own visitor analytics.
+// Data comes from /api/analytics/data (login cookie required); everything on
+// screen is computed in compute.ts from that one response.
 
-function deviceOf(ua?: string): string {
-  if (!ua) return "";
-  if (/bot|crawler|spider|curl|python|httpx|wget|headless/i.test(ua)) return "Bot";
-  if (/iphone/i.test(ua)) return "iPhone";
-  if (/android/i.test(ua)) return "Android";
-  if (/ipad|tablet/i.test(ua)) return "Tablet";
-  if (/macintosh/i.test(ua)) return "Mac";
-  if (/windows/i.test(ua)) return "Windows";
-  if (/linux/i.test(ua)) return "Linux";
-  return "";
-}
+type Range = "24h" | "7d" | "30d" | "90d" | "all";
+const RANGE_DAYS: Record<Range, number> = { "24h": 1, "7d": 7, "30d": 30, "90d": 90, all: 0 };
+const RANGE_LABEL: Record<Range, string> = { "24h": "24 hours", "7d": "7 days", "30d": "30 days", "90d": "90 days", all: "All time" };
+const FILTER_LABEL: Record<FilterKey, string> = { page: "Page", source: "Source", country: "Country", city: "City", device: "Device", model: "Model", browser: "Browser", os: "System", network: "Network" };
 
-const H = 36e5;
+const api = (path: string, body?: unknown, method?: string) =>
+  fetch(path, { method: method || (body ? "POST" : "GET"), headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined, cache: "no-store" });
 
-function demoData(): Visit[] {
-  const now = Date.now();
-  const mk = (ip: string, city: string, region: string, country: string, path: string, agoH: number): Visit =>
-    ({ ip, city, region, country, path, t: now - agoH * H });
-  return [
-    mk("73.162.14.85", "San Francisco", "CA", "US", "/", 0.4), mk("49.37.115.202", "Kolkata", "WB", "IN", "/", 1.2),
-    mk("88.104.22.19", "London", "ENG", "GB", "/blog", 3), mk("73.162.14.85", "San Francisco", "CA", "US", "/blog", 5),
-    mk("103.86.99.4", "Bengaluru", "KA", "IN", "/", 9), mk("178.24.55.130", "Berlin", "BE", "DE", "/", 14),
-    mk("66.249.66.1", "Mountain View", "CA", "US", "/", 22), mk("49.37.115.202", "Kolkata", "WB", "IN", "/blog", 30),
-    mk("201.17.88.61", "São Paulo", "SP", "BR", "/", 50), mk("88.104.22.19", "London", "ENG", "GB", "/", 76),
-    mk("14.139.196.12", "Mumbai", "MH", "IN", "/", 120), mk("92.184.100.7", "Paris", "IDF", "FR", "/blog", 200),
-    mk("73.162.14.85", "San Francisco", "CA", "US", "/", 320), mk("118.92.11.44", "Auckland", "AUK", "NZ", "/", 400),
-  ];
-}
-
-function fmtWhen(t: number): string {
-  const d = new Date(t);
-  const diff = Date.now() - t;
-  const ago = diff < H ? Math.max(1, Math.round(diff / 6e4)) + "m ago"
-    : diff < 24 * H ? Math.round(diff / H) + "h ago"
-    : Math.round(diff / (24 * H)) + "d ago";
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ", " +
-    d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) + " · " + ago;
-}
-
-const inputStyle: React.CSSProperties = {
-  boxSizing: "border-box", font: "inherit", color: "var(--text)",
-  background: "var(--soft)", border: "1px solid var(--line)",
-};
-const pillBtn: React.CSSProperties = {
-  font: "inherit", fontSize: 13.5, fontWeight: 600, background: "transparent",
-  border: "1px solid var(--line)", borderRadius: 999, cursor: "pointer", padding: "8px 14px",
+const ls = {
+  get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch {} },
+  del: (k: string) => { try { localStorage.removeItem(k); } catch {} },
 };
 
 export default function Dashboard() {
-  const [auth, setAuth] = useState(false);
+  const [status, setStatus] = useState<"loading" | "login" | "ready" | "unconfigured">("loading");
+  const [data, setData] = useState<Data | null>(null);
+  const [range, setRange] = useState<Range>("30d");
+  const [filters, setFilters] = useState<Filters>({});
+  const [showMine, setShowMine] = useState(false);
+  const [showBots, setShowBots] = useState(false);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [deviceMine, setDeviceMine] = useState(false);
   const [pw, setPw] = useState("");
-  const [pwError, setPwError] = useState("");
-  const [visits, setVisits] = useState<Visit[]>([]);
-  const [demo, setDemo] = useState(false);
-  const [q, setQ] = useState("");
-  const [country, setCountry] = useState("");
-  const [page, setPage] = useState("");
-  const [range, setRange] = useState<"24h" | "7d" | "30d" | "all">("all");
-  const [exclude, setExclude] = useState("");
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const lookups = useRef(0);
+
+  const load = useCallback(async (r: Range) => {
+    const days = RANGE_DAYS[r] ? Math.max(90, RANGE_DAYS[r] * 2) : 0; // extra history for comparisons and "returning"
+    const res = await api("/api/analytics/data?days=" + days).catch(() => null);
+    if (!res) return;
+    if (res.status === 401) return setStatus("login");
+    if (res.status === 503) return setStatus("unconfigured");
+    if (!res.ok) return;
+    setData(await res.json());
+    setStatus("ready");
+  }, []);
 
   useEffect(() => {
-    setExclude(localStorage.getItem("pf-exclude-ips") || "");
-  }, []);
-  const setExcludePersist = (v: string) => {
-    setExclude(v);
-    localStorage.setItem("pf-exclude-ips", v);
-  };
+    load(range);
+  }, [load, range]);
 
-  async function tryUnlock(key: string) {
-    try {
-      const r = await fetch("/api/visits?key=" + encodeURIComponent(key), { cache: "no-store" });
-      if (r.status === 401) { setPwError("Wrong password."); return; }
-      if (!r.ok) throw new Error(String(r.status));
-      const data = await r.json();
-      sessionStorage.setItem("pf-dash-key", key);
-      setAuth(true); setVisits(data.visits || []); setDemo(false); setPwError("");
-    } catch {
-      // API not configured yet (no DB / no password / local preview) — show the design with demo data
-      sessionStorage.setItem("pf-dash-key", key);
-      setAuth(true); setVisits(demoData()); setDemo(true); setPwError("");
+  // A browser that can log in here is mine: stop counting it, and hide what it already sent.
+  useEffect(() => {
+    if (status !== "ready" || !data) return;
+    if (ls.get("pf-owner") === "0") return; // I chose to count this device
+    ls.set("pf-owner", "1");
+    setDeviceMine(true);
+    const vid = ls.get("pf-vid");
+    if (vid && !data.owners.includes(vid)) {
+      api("/api/analytics/settings", { action: "owner", vid, on: true });
+      setData({ ...data, owners: [...data.owners, vid] });
     }
+  }, [status, data]);
+
+  // Fill in network names for addresses logged before lookups existed (20 per pass).
+  useEffect(() => {
+    if (status !== "ready" || !data || lookups.current >= 3) return;
+    const missing = Array.from(new Set(data.events.filter((e) => e.k === "p" && !e.bot && e.ip && !data.ipinfo[e.ip]).map((e) => e.ip!))).slice(0, 20);
+    if (!missing.length) return;
+    lookups.current++;
+    api("/api/analytics/settings", { action: "lookup", ips: missing }).then(() => load(range));
+  }, [status, data, load, range]);
+
+  const model = useMemo(() => (data ? build(data, { showMine, showBots }) : null), [data, showMine, showBots]);
+
+  async function login(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pw || busy) return;
+    setBusy(true);
+    const res = await api("/api/analytics/login", { password: pw }).catch(() => null);
+    setBusy(false);
+    if (res?.ok) { setPw(""); setErr(""); setStatus("loading"); load(range); }
+    else setErr(res?.status === 429 ? "Too many tries. Wait ten minutes." : res?.status === 503 ? "Analytics isn't configured on this deployment." : "Wrong password.");
   }
 
-  useEffect(() => {
-    const saved = sessionStorage.getItem("pf-dash-key");
-    if (saved) tryUnlock(saved);
-  }, []);
-
-  if (!auth) {
+  if (status === "loading") return <main className="an"><p className="an-empty">Loading…</p></main>;
+  if (status === "unconfigured")
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative", zIndex: 1 }}>
-        <form
-          onSubmit={(e) => { e.preventDefault(); if (pw) tryUnlock(pw); }}
-          style={{ width: 340, display: "flex", flexDirection: "column", gap: 14, padding: 32, border: "1px solid var(--line)", borderRadius: 18 }}
-        >
-          <div style={{ width: 44, height: 44, borderRadius: 999, background: "var(--soft)", border: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="4" y="11" width="16" height="10" rx="3" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
-            </svg>
-          </div>
+      <main className="an">
+        <h1>Visitor analytics</h1>
+        <p style={{ color: "var(--muted)", maxWidth: 560 }}>
+          Not configured here. In Vercel, attach the Upstash Redis store to the project (Storage) and set <code>DASH_PASSWORD</code> under Settings → Environment Variables, then redeploy.
+        </p>
+      </main>
+    );
+  if (status === "login" || !data || !model)
+    return (
+      <div className="an-login">
+        <form onSubmit={login}>
           <div>
             <h1 style={{ margin: "0 0 4px", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Visitor analytics</h1>
             <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>Enter the dashboard password.</p>
           </div>
-          <input
-            type="password"
-            value={pw}
-            onChange={(e) => { setPw(e.target.value); setPwError(""); }}
-            placeholder="Password"
-            autoFocus
-            style={{ ...inputStyle, width: "100%", padding: "11px 14px", fontSize: 15, borderRadius: 12 }}
-          />
-          {pwError && <p style={{ margin: 0, color: "#cf222e", fontSize: 13.5 }}>{pwError}</p>}
-          <button type="submit" style={{ padding: "11px 14px", font: "inherit", fontSize: 15, fontWeight: 600, color: "var(--bg)", background: "var(--text)", border: "none", borderRadius: 12, cursor: "pointer" }}>
-            Unlock
-          </button>
-          <p style={{ margin: 0, color: "var(--faint)", fontSize: 12.5 }}>Checked server-side by /api/visits — nothing is stored in this page.</p>
+          <input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setErr(""); }} placeholder="Password" autoFocus autoComplete="current-password" aria-label="Password" />
+          {err && <p className="an-err" role="alert">{err}</p>}
+          <button type="submit" disabled={busy}>{busy ? "Checking…" : "Unlock"}</button>
+          <p style={{ margin: 0, color: "var(--faint)", fontSize: 12.5 }}>You stay signed in on this device for 30 days. Its visits are not counted.</p>
         </form>
       </div>
     );
-  }
 
-  const cutoffs: Record<string, number> = { "24h": 24 * H, "7d": 7 * 24 * H, "30d": 30 * 24 * H, all: Infinity };
-  const ql = q.toLowerCase();
-  const excludeSet = new Set(exclude.split(",").map((s) => s.trim()).filter(Boolean));
-  const filtered = visits
-    .filter((v) => {
-      if (excludeSet.has(v.ip)) return false;
-      if (Date.now() - v.t > cutoffs[range]) return false;
-      if (country && v.country !== country) return false;
-      if (page && v.path !== page) return false;
-      if (ql && !((v.ip || "") + " " + (v.city || "") + " " + (v.region || "") + " " + (v.country || "")).toLowerCase().includes(ql)) return false;
-      return true;
-    })
-    .sort((a, b) => b.t - a.t);
-  const count = (arr: Visit[], k: keyof Visit) => {
-    const m: Record<string, number> = {};
-    arr.forEach((v) => { const x = v[k]; if (x && x !== "—") m[String(x)] = (m[String(x)] || 0) + 1; });
-    return m;
+  const now = data.now;
+  const days = RANGE_DAYS[range];
+  const from = days ? now - days * DAY : model.pvs[0]?.t ?? now;
+  const inRange = model.pvs.filter((p) => p.t >= from);
+  const cur = applyFilters(inRange, filters);
+  const prev = days ? applyFilters(model.pvs.filter((p) => p.t >= from - days * DAY && p.t < from), filters) : null;
+  const hasPrev = !!prev && model.pvs.length > 0 && model.pvs[0].t < from;
+  const st = stats(cur, model, from);
+  const pst = hasPrev ? stats(prev!, model, from - days * DAY) : null;
+  const liveKeys = new Set(model.pvs.filter((p) => p.t > now - 5 * 60 * 1000).map((p) => p.key));
+  for (const v of model.visitors.values()) if (tabOpen(v, now)) liveKeys.add(v.key);
+  const live = liveKeys.size;
+  const buckets = series(cur, days ? from : Math.max(from, now - 400 * DAY), now, range === "24h");
+
+  const seen = new Set(cur.map((p) => p.key));
+  const people = Array.from(seen, (k) => model.visitors.get(k)).filter((v): v is Visitor => !!v);
+
+  const firsts = new Set(model.sessions.map((s) => s.pvs[0]));
+  const entries = cur.filter((p) => firsts.has(p));
+  const pick = (key: FilterKey) => (name: string) => setFilters((f) => ({ ...f, [key]: name }));
+  const lim = (id: string) => (expanded[id] ? 50 : 8);
+  const tab = (id: string, title: string, get: (p: PV) => string, key?: FilterKey, src: PV[] = cur, render?: Tab["render"]): Tab => ({
+    id, title, ...breakdown(src, get, lim(id)), onPick: key ? pick(key) : undefined, render,
+  });
+  const more = (id: string) => setExpanded((x) => ({ ...x, [id]: true }));
+  const clicks = clickBreakdown(cur, lim("clicks"));
+
+  const myIpViews = data.events.filter((e) => e.k === "p" && e.ip === data.myIp && !(e.v && data.owners.includes(e.v))).length;
+  const myIpHidden = data.xips.includes(data.myIp);
+
+  const setting = (body: Record<string, unknown>) => api("/api/analytics/settings", body);
+  const actions = {
+    rename: (key: string, name: string) => {
+      setting({ action: "label", key, name });
+      const labels = { ...data.labels };
+      if (name) labels[key] = name; else delete labels[key];
+      setData({ ...data, labels });
+    },
+    markMine: (v: Visitor, on: boolean) => {
+      let owners = data.owners, xips = data.xips;
+      if (v.vid) { setting({ action: "owner", vid: v.vid, on }); owners = on ? [...owners, v.vid] : owners.filter((x) => x !== v.vid); }
+      else for (const ip of v.ips) { setting({ action: "xip", ip, on }); xips = on ? [...xips, ip] : xips.filter((x) => x !== ip); }
+      setData({ ...data, owners, xips });
+    },
   };
-  const topCity = Object.entries(count(filtered, "city")).sort((a, b) => b[1] - a[1])[0];
-  const gridCols = "minmax(130px,1.1fr) minmax(150px,1.4fr) minmax(70px,0.6fr) minmax(150px,1fr)";
 
   return (
-    <main style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(36px,6vw,64px) 24px 120px", position: "relative", zIndex: 1 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "10px 16px", marginBottom: 6 }}>
-        <h1 style={{ margin: 0, fontSize: "clamp(26px,4.5vw,34px)", fontWeight: 700, letterSpacing: "-0.025em" }}>Visitor analytics</h1>
-        {demo && (
-          <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--muted)", border: "1px solid var(--line)", borderRadius: 999, padding: "3px 10px" }}>
-            Demo data
-          </span>
-        )}
-        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <button onClick={() => tryUnlock(sessionStorage.getItem("pf-dash-key") || "")} style={{ ...pillBtn, color: "var(--text)" }}>Refresh</button>
-          <button onClick={() => { sessionStorage.removeItem("pf-dash-key"); setAuth(false); setPw(""); }} style={{ ...pillBtn, color: "var(--muted)" }}>Lock</button>
-        </div>
-      </div>
-      {demo && (
-        <p style={{ margin: "0 0 26px", color: "var(--muted)", fontSize: 14 }}>
-          Live data appears once the Upstash Redis store is attached in Vercel and DASH_PASSWORD is set.
-        </p>
-      )}
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12, margin: "18px 0 26px" }}>
-        {[
-          ["Visits", String(filtered.length)],
-          ["Unique IPs", String(new Set(filtered.map((v) => v.ip)).size)],
-          ["Countries", String(Object.keys(count(filtered, "country")).length)],
-          ["Top location", topCity ? topCity[0] : "—"],
-        ].map(([label, value]) => (
-          <div key={label} style={{ padding: "16px 18px", border: "1px solid var(--line)", borderRadius: 14 }}>
-            <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 2 }}>{label}</div>
-            <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>{value}</div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18, alignItems: "center" }}>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search IP, city, country…"
-          style={{ ...inputStyle, flex: 1, minWidth: 200, padding: "9px 14px", fontSize: 14, borderRadius: 999 }}
-        />
-        <div style={{ display: "flex", gap: 4, padding: 3, border: "1px solid var(--line)", borderRadius: 999 }}>
-          {(["24h", "7d", "30d", "all"] as const).map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              style={{
-                padding: "6px 13px", font: "inherit", fontSize: 13, fontWeight: 600,
-                color: range === r ? "var(--bg)" : "var(--muted)",
-                background: range === r ? "var(--text)" : "transparent",
-                border: "none", borderRadius: 999, cursor: "pointer",
-              }}
-            >
-              {r === "all" ? "All time" : r}
-            </button>
+    <main className="an">
+      <div className="an-head">
+        <h1>Visitor analytics</h1>
+        <span className={"an-live" + (live ? "" : " is-zero")} title="Viewed a page in the last 5 minutes, or still has a tab open"><i /> {live} online now</span>
+        <span className="an-spacer" />
+        <div className="an-seg" role="group" aria-label="Time range">
+          {(Object.keys(RANGE_DAYS) as Range[]).map((r) => (
+            <button key={r} className={range === r ? "is-on" : ""} onClick={() => setRange(r)}>{r === "all" ? "All" : r}</button>
           ))}
         </div>
-        <PillSelect
-          value={country}
-          onValueChange={setCountry}
-          allLabel="All countries"
-          options={Object.entries(count(visits, "country")).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, label: `${v} (${n})` }))}
-        />
-        <PillSelect
-          value={page}
-          onValueChange={setPage}
-          allLabel="All pages"
-          options={Object.entries(count(visits, "path")).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, label: `${v} (${n})` }))}
-        />
-        <input
-          value={exclude}
-          onChange={(e) => setExcludePersist(e.target.value)}
-          placeholder="Exclude IPs (comma-separated)"
-          title="Hide these IPs from all stats, the map, and the table — remembered in this browser"
-          style={{ ...inputStyle, width: 230, padding: "9px 14px", fontSize: 14, borderRadius: 999 }}
-        />
+        <button className="an-btn" onClick={() => load(range)}>Refresh</button>
+        <button className="an-btn is-quiet" onClick={async () => { await api("/api/analytics/login", undefined, "DELETE"); setStatus("login"); }}>Lock</button>
       </div>
 
-      <VisitMap visits={filtered} />
-
-      <div style={{ border: "1px solid var(--line)", borderRadius: 14, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: gridCols, gap: 12, padding: "11px 18px", background: "var(--soft)", borderBottom: "1px solid var(--line)", fontSize: 12, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
-          <span>IP address</span><span>Location</span><span>Page</span><span style={{ textAlign: "right" }}>Time</span>
-        </div>
-        {filtered.slice(0, 200).map((v, i) => (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: gridCols, gap: 12, padding: "12px 18px", borderBottom: "1px solid var(--line)", fontSize: 14, alignItems: "baseline" }}>
-            <span style={{ fontFamily: "ui-monospace,Menlo,monospace", fontSize: 13 }}>{v.ip}</span>
-            <span>{[v.city, v.region, v.country].filter((x) => x && x !== "—").join(", ") || "—"}</span>
-            <span style={{ color: "var(--muted)", fontSize: 13 }}>
-              {v.path || "/"}
-              {deviceOf(v.ua) && <span style={{ color: "var(--faint)" }}> · {deviceOf(v.ua)}</span>}
-            </span>
-            <span style={{ textAlign: "right", color: "var(--muted)", fontSize: 13 }}>{fmtWhen(v.t)}</span>
-          </div>
-        ))}
-        {filtered.length === 0 && (
-          <p style={{ margin: 0, padding: "28px 18px", color: "var(--faint)", fontSize: 14, textAlign: "center" }}>No visits match these filters.</p>
+      <div className="an-note">
+        {deviceMine ? (
+          <span><b>This device is yours</b>, so its visits aren&apos;t counted. Sign in here once on each of your devices.</span>
+        ) : (
+          <span><b>This device is being counted</b> like any visitor.</span>
+        )}
+        <button onClick={() => {
+          const vid = ls.get("pf-vid");
+          if (deviceMine) { ls.set("pf-owner", "0"); if (vid) { setting({ action: "owner", vid, on: false }); setData({ ...data, owners: data.owners.filter((x) => x !== vid) }); } }
+          else { ls.del("pf-owner"); ls.set("pf-owner", "1"); if (vid) { setting({ action: "owner", vid, on: true }); setData({ ...data, owners: [...data.owners, vid] }); } }
+          setDeviceMine(!deviceMine);
+        }}>
+          {deviceMine ? "Count this device" : "Don't count this device"}
+        </button>
+        {myIpViews > 0 && !myIpHidden && (
+          <button onClick={() => { setting({ action: "xip", ip: data.myIp, on: true }); setData({ ...data, xips: [...data.xips, data.myIp] }); }}>
+            Also hide {myIpViews} earlier view{myIpViews === 1 ? "" : "s"} from this network ({data.myIp})
+          </button>
+        )}
+        <span className="an-spacer" />
+        {(model.hiddenMine > 0 || showMine) && (
+          <label><input type="checkbox" checked={showMine} onChange={(e) => setShowMine(e.target.checked)} /> Show my {showMine ? "" : model.hiddenMine + " "}views</label>
+        )}
+        {(model.hiddenBots > 0 || showBots) && (
+          <label><input type="checkbox" checked={showBots} onChange={(e) => setShowBots(e.target.checked)} /> Show {showBots ? "" : model.hiddenBots + " "}bot views</label>
         )}
       </div>
-      <p style={{ margin: "14px 2px 0", color: "var(--faint)", fontSize: 13 }}>
-        Showing {Math.min(filtered.length, 200)} of {filtered.length} visits{demo ? " (demo)" : ""}
-      </p>
+      {data.truncated && <div className="an-note">Only the most recent part of this range could be loaded. Pick a shorter range for complete numbers.</div>}
+
+      {Object.keys(filters).length > 0 && (
+        <div className="an-chips">
+          {(Object.keys(filters) as FilterKey[]).map((k) => (
+            <button key={k} className="an-chip" onClick={() => setFilters((f) => { const n = { ...f }; delete n[k]; return n; })} title="Remove filter">
+              <span>{FILTER_LABEL[k]}</span> {k === "country" ? countryName(filters[k]!) : filters[k]} ✕
+            </button>
+          ))}
+          <button className="an-btn is-small is-quiet" onClick={() => setFilters({})}>Clear all</button>
+        </div>
+      )}
+
+      <div className="an-card an-kpis">
+        <Kpi label="Visitors" value={String(st.visitors)} cur={st.visitors} prev={pst?.visitors} sub={st.visitors ? `${st.newVisitors} new · ${st.returning} returning` : ""} />
+        <Kpi label="Page views" value={String(st.pageviews)} cur={st.pageviews} prev={pst?.pageviews} />
+        <Kpi label="Visits" value={String(st.sessions)} cur={st.sessions} prev={pst?.sessions} sub={st.visitors ? (st.sessions / st.visitors).toFixed(1) + " per visitor" : ""} />
+        <Kpi label="Bounce rate" value={st.sessions ? Math.round(st.bounce * 100) + "%" : "—"} cur={st.bounce} prev={pst?.sessions ? pst.bounce : undefined} lowerIsBetter sub="left after one page" />
+        <Kpi label="Avg. visit time" value={fmtDur(st.avgMs)} cur={st.avgMs} prev={pst?.avgMs || undefined} />
+      </div>
+
+      <TimeChart buckets={buckets} title={"Last " + RANGE_LABEL[range].toLowerCase().replace("all time", "year")} />
+
+      <People visitors={people} labels={data.labels} now={now} actions={actions} />
+
+      <div className="an-h2">
+        <h2>Breakdown</h2>
+        <p>Click any row to filter the whole page by it.</p>
+      </div>
+      <div className="an-grid">
+        <Panel onMore={more} tabs={[tab("pages", "Pages", field.page, "page"), tab("entry", "Entry pages", field.page, "page", entries)]} />
+        <Panel onMore={more} tabs={[tab("sources", "Sources", field.source, "source"), tab("refs", "Referrers", (p) => (firsts.has(p) ? p.r || "" : "")), tab("camps", "Campaigns", (p) => (firsts.has(p) ? p.uc || "" : ""))]} />
+        <Panel onMore={more} tabs={[
+          tab("countries", "Countries", field.country, "country", cur, (cc) => <>{flag(cc)} {countryName(cc)}</>),
+          tab("cities", "Cities", field.city, "city"),
+        ]} />
+        <Panel onMore={more} tabs={[tab("devices", "Devices", field.device, "device"), tab("models", "Models", field.model, "model"), tab("browsers", "Browsers", field.browser, "browser"), tab("os", "Systems", field.os, "os")]} />
+        <Panel onMore={more} tabs={[tab("networks", "Networks & companies", field.network, "network")]} />
+        <Panel onMore={more} tabs={[{ id: "clicks", title: "Links clicked", rows: clicks, total: clicks.length, unit: "People" }]} />
+      </div>
+
+      <div className="an-h2">
+        <h2>Map</h2>
+      </div>
+      <VisitMap visits={cur.map((p) => ({ ip: p.key, city: p.ci, country: p.co, path: p.p, lat: p.la, lon: p.lo }))} />
     </main>
   );
 }

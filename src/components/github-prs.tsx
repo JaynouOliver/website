@@ -121,8 +121,15 @@ export default function GitHubPRs({
                   <span>#{pr.number}</span>
                   <span>{fmtDate(pr.created)}</span>
                   {pr.landed && (
-                    <span className="pf-pr-landed" title="Closed on GitHub, but its commit landed on main (rebased by the project's merge bot)">
-                      landed on main
+                    <span
+                      className="pf-pr-landed"
+                      title={
+                        pr.how === "cherry-picked"
+                          ? "Closed on GitHub, but the maintainers cherry-picked the commit onto main with my authorship"
+                          : "Closed on GitHub, but its commit landed on main (rebased by the project's merge bot)"
+                      }
+                    >
+                      {pr.how === "cherry-picked" ? "cherry-picked to main" : "landed on main"}
                     </span>
                   )}
                 </span>
