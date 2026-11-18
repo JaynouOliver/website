@@ -34,6 +34,11 @@ export async function GET(req: NextRequest) {
   if (!process.env.DASH_PASSWORD || !store) return NextResponse.json({ error: "not configured" }, { status: 503 });
   if (!cookieOk((await cookies()).get(COOKIE)?.value)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
+  // The network I'm on right now is mine: remember when I last used it, so the
+  // dashboard can hide views from it (private windows, other browser profiles).
+  const myIp = clientIp(req.headers);
+  if (req.nextUrl.searchParams.get("net") !== "0" && myIp !== "unknown") await store.hset(KEYS.myips, { [myIp]: String(Date.now()) });
+
   const days = Math.max(0, Math.min(3650, Number(req.nextUrl.searchParams.get("days")) || 0));
   const now = Date.now();
   const cutoff = days ? now - days * 864e5 : 0;
@@ -41,12 +46,15 @@ export async function GET(req: NextRequest) {
 
   const events = await readSince<Ev>(KEYS.events, cutoff, MAX_EVENTS, budget);
   const old = budget.left > 0 ? await readSince<OldVisit>(KEYS.legacy, cutoff, 10000, budget) : [];
-  const [owners, xips, labels, rawBeats] = await Promise.all([
+  const [owners, xips, labels, rawBeats, rawMyIps] = await Promise.all([
     store.smembers(KEYS.owners),
     store.smembers(KEYS.xips),
     store.hgetall(KEYS.labels),
     store.hgetall(KEYS.beats),
+    store.hgetall(KEYS.myips),
   ]);
+  const myips: Record<string, number> = {};
+  for (const [k, v] of Object.entries(rawMyIps || {})) if (Number(v)) myips[k] = Number(v);
   const beats: Record<string, Beat> = {};
   for (const [k, v] of Object.entries(rawBeats || {})) { const b = parse<Beat>(v); if (b && b.t >= cutoff) beats[k] = b; }
 
@@ -72,5 +80,5 @@ export async function GET(req: NextRequest) {
   const names: Record<string, string> = {};
   for (const [k, v] of Object.entries(labels || {})) if (v != null) names[k] = String(v);
 
-  return NextResponse.json({ now, events, beats, ipinfo, owners, xips, labels: names, myIp: clientIp(req.headers), truncated: budget.left < 0 }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json({ now, events, beats, ipinfo, owners, xips, labels: names, myips, myIp, truncated: budget.left < 0 }, { headers: { "Cache-Control": "no-store" } });
 }

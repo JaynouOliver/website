@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 // Small edits from the dashboard, all behind the login cookie:
 //   { action: "owner",  vid, on }   mark / unmark a visitor id as me
 //   { action: "xip",    ip, on }    hide / show an IP
+//   { action: "mynet",  ip }        stop treating a network as mine
 //   { action: "label",  key, name } name a visitor ("" removes the name)
 //   { action: "lookup", ips }       fill in missing network names (max 20 per call)
 export async function POST(req: NextRequest) {
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
 
   if (b.action === "owner" && vid) await (b.on === false ? store.srem(KEYS.owners, vid) : store.sadd(KEYS.owners, vid));
   else if (b.action === "xip" && ip) await (b.on === false ? store.srem(KEYS.xips, ip) : store.sadd(KEYS.xips, ip));
+  else if (b.action === "mynet" && ip) await store.hdel(KEYS.myips, ip);
   else if (b.action === "label" && key) {
     const name = clip(b.name, 60);
     await (name ? store.hset(KEYS.labels, { [key]: name }) : store.hdel(KEYS.labels, key));

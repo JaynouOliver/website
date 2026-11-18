@@ -10,6 +10,7 @@ export type Data = {
   ipinfo: Record<string, IpInfo>;
   owners: string[];
   xips: string[];
+  myips?: Record<string, number>; // ip -> last time I used the dashboard from it
   labels: Record<string, string>;
   myIp: string;
   truncated?: boolean;
@@ -50,11 +51,15 @@ export type Visitor = {
 export type Model = { pvs: PV[]; sessions: Session[]; visitors: Map<string, Visitor>; hiddenMine: number; hiddenBots: number };
 
 const IDLE = 30 * 60 * 1000;
+// An IP counts as mine up to this long after I last opened the dashboard from
+// it. Home IPs get reassigned; later visits from the same address are someone else.
+const MY_NET_GRACE = 12 * 36e5;
 export const DAY = 864e5;
 const dayOf = (t: number) => { const d = new Date(t); return d.getFullYear() * 10000 + d.getMonth() * 100 + d.getDate(); };
 
 export function build(data: Data, opts: { showMine: boolean; showBots: boolean }): Model {
-  const owners = new Set(data.owners), xips = new Set(data.xips);
+  const owners = new Set(data.owners), xips = new Set(data.xips), myips = data.myips || {};
+  const isMine = (e: Ev) => (!!e.v && owners.has(e.v)) || (!!e.ip && (xips.has(e.ip) || (myips[e.ip] !== undefined && e.t <= myips[e.ip] + MY_NET_GRACE)));
   const dur = new Map<string, { ms: number; sc?: number }>();
   const clicks = new Map<string, Ev[]>();
   for (const e of data.events) {
@@ -70,8 +75,7 @@ export function build(data: Data, opts: { showMine: boolean; showBots: boolean }
   const all: PV[] = [];
   for (const e of data.events) {
     if (e.k !== "p") continue;
-    const mine = (!!e.v && owners.has(e.v)) || (!!e.ip && xips.has(e.ip));
-    if (mine && !opts.showMine) { hiddenMine++; continue; }
+    if (isMine(e) && !opts.showMine) { hiddenMine++; continue; }
     if (e.bot && !opts.showBots) { hiddenBots++; continue; }
     const d = e.i ? dur.get(e.i) : undefined;
     all.push({
@@ -129,7 +133,7 @@ export function build(data: Data, opts: { showMine: boolean; showBots: boolean }
         if (p.ip && data.ipinfo[p.ip]) { v.info = data.ipinfo[p.ip]; v.org = v.info.org; }
       }
       if (p.bot) v.bot = true;
-      if ((p.v && owners.has(p.v)) || (p.ip && xips.has(p.ip))) v.mine = true;
+      if (isMine(p)) v.mine = true;
       v.clicks += p.clicks.length;
     }
   }
