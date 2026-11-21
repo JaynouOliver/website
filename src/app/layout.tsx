@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   applicationName: DATA.name,
   authors: [{ name: DATA.name, url: DATA.url }],
   creator: DATA.name,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: { "text/markdown": "/llms-full.txt", "text/plain": "/llms.txt" } },
   openGraph: {
     title: siteTitle,
     description: plainDescription,

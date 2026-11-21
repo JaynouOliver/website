@@ -19,6 +19,22 @@ export function proxy(request: NextRequest) {
     return res;
   }
 
+  // AI agents: /?agent=1 shows the Markdown view, and "Accept: text/markdown"
+  // on a page address returns its Markdown copy (src/lib/agent-md.ts).
+  const path = request.nextUrl.pathname;
+  if (path === "/" && request.nextUrl.searchParams.get("agent") === "1") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/agent";
+    url.search = "";
+    return NextResponse.rewrite(url);
+  }
+  const accept = request.headers.get("accept") || "";
+  if (/text\/markdown/i.test(accept) && !/text\/html/i.test(accept) && (path === "/" || path === "/blog" || path === "/open-source" || /^\/blog\/[^/]+$/.test(path))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/md" + (path === "/" ? "/index" : path);
+    return NextResponse.rewrite(url);
+  }
+
   const blogHost = process.env.BLOG_HOST;
   if (!blogHost) return NextResponse.next();
 

@@ -66,7 +66,7 @@ export function TimeChart({ buckets, title }: { buckets: Bucket[]; title: string
   );
 }
 
-export type Tab = { id: string; title: string; rows: Row[]; total: number; render?: (name: string) => React.ReactNode; onPick?: (name: string) => void; unit?: string };
+export type Tab = { id: string; title: string; rows: Row[]; total: number; render?: (name: string) => React.ReactNode; onPick?: (name: string) => void; unit?: string; unit2?: string };
 
 // A card with one or more ranked lists (tabs). Clicking a row filters the page.
 export function Panel({ tabs, onMore }: { tabs: Tab[]; onMore?: (id: string) => void }) {
@@ -88,7 +88,7 @@ export function Panel({ tabs, onMore }: { tabs: Tab[]; onMore?: (id: string) => 
           </div>
         )}
         <span>{tab.unit || "Visitors"}</span>
-        <span>{tab.unit ? "Clicks" : "Views"}</span>
+        <span>{tab.unit2 || (tab.unit ? "Clicks" : "Views")}</span>
       </div>
       {tab.rows.map((r) => (
         <button key={r.name} className={"an-row" + (tab.onPick ? "" : " is-static")} onClick={() => tab.onPick?.(r.name)} title={tab.onPick ? "Filter by " + r.name : undefined}>

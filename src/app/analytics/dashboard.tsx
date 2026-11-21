@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./analytics.css";
-import { applyFilters, breakdown, build, clickBreakdown, countryName, DAY, field, flag, fmtDur, series, stats, tabOpen, type Data, type FilterKey, type Filters, type PV, type Visitor } from "./compute";
+import { agentReads, applyFilters, breakdown, build, clickBreakdown, countryName, DAY, field, flag, fmtDur, series, stats, tabOpen, type Data, type FilterKey, type Filters, type PV, type Visitor } from "./compute";
 import { Kpi, Panel, TimeChart, type Tab } from "./panels";
 import People from "./people";
 import VisitMap from "./visit-map";
@@ -140,6 +140,7 @@ export default function Dashboard() {
   });
   const more = (id: string) => setExpanded((x) => ({ ...x, [id]: true }));
   const clicks = clickBreakdown(cur, lim("clicks"));
+  const agents = agentReads(data.events, from);
 
   const netMine = data.myips?.[data.myIp] !== undefined;
 
@@ -245,6 +246,10 @@ export default function Dashboard() {
         <Panel onMore={more} tabs={[tab("devices", "Devices", field.device, "device"), tab("models", "Models", field.model, "model"), tab("browsers", "Browsers", field.browser, "browser"), tab("os", "Systems", field.os, "os")]} />
         <Panel onMore={more} tabs={[tab("networks", "Networks & companies", field.network, "network")]} />
         <Panel onMore={more} tabs={[{ id: "clicks", title: "Links clicked", rows: clicks, total: clicks.length, unit: "People" }]} />
+        <Panel tabs={[
+          { id: "agents", title: "AI agents & crawlers", rows: agents.agents.slice(0, 12), total: agents.agents.length, unit: "IPs", unit2: "Reads" },
+          { id: "agentpages", title: "What they read", rows: agents.pages.slice(0, 12), total: agents.pages.length, unit: "IPs", unit2: "Reads" },
+        ]} />
       </div>
 
       <div className="an-h2">

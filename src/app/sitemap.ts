@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: SITE, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: SITE + "/blog", lastModified: new Date(latest), changeFrequency: "weekly", priority: 0.8 },
     { url: SITE + "/open-source", lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: SITE + "/agent", lastModified: new Date(latest), changeFrequency: "weekly", priority: 0.5 },
     ...posts.map((p) => ({
       url: SITE + "/blog/" + p.slug,
       lastModified: new Date(p.date),
