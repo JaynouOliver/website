@@ -56,6 +56,12 @@ export default function Hero({
   return (
     <header className="hx">
       <div className="hx-text">
+        <div className="pf-agent-toggle hx-view" role="group" aria-label="View">
+          <span aria-current="page">Human</span>
+          <Link href="/?agent=1" prefetch={false} title="The whole site as plain Markdown, for AI agents">
+            Agent
+          </Link>
+        </div>
         <p className="hx-status">
           <span className="hx-live" aria-hidden="true" />
           <span className="hx-fullname">{fullName}</span>
