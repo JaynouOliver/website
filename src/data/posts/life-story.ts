@@ -24,7 +24,7 @@ I did not have a computer in my home, so I used to watch youtube videos of progr
 ## 2021
 I passed one of the college entrance exam tests with flying colors and started pursuing CS from [Academy of Technology](https://en.wikipedia.org/wiki/Academy_of_Technology)
 
-![First year in college, speaking on some random shit](/life_story2.jpg)
+![First year in college, speaking on things I barely understood](/life_story2.jpg)
 
 ## 2022
 My journey slowly begins and I started coding, attending hackathons, by the end of 2022 I was the first one to get an internship in my class/whole college. 
@@ -38,11 +38,20 @@ I found out everything around me is created by men and women who had GRIT and we
 
 I was fortunate enough in life to meet some people at the right place at the right time that changed the course of my life. In 2023 me and my friends started [ProjectX](https://projectx.cloud/). It was a simple idea, we wanted to give people access to high performance computing on browsers. People who did not have money to buy macbook could rent our software through their old devices and run heavy applications on the web. 
 
-I used to manage, tech, finance, day to day operations, had some of the best years of my life during this phase. I travelled places across the country, and boarded my first domestic flight. Building a startup from scratch from a tier 3 college and village with the kind of societial pressure from primitive mindset people, family, friends etc is hard with limited resources. We fought, we still pulled off. 
+I used to manage, tech, finance, day to day operations, had some of the best years of my life during this phase. I travelled places across the country, and boarded my first domestic flight.
 
-By the end of 2024 we still had a lot left to uncover, but managed to pull off handsome amount of funds ($30000). Build a basic prototype, hire a few people at the age of 20, pull of an absolute fight with college management to grant 100% attendance for the rest of the college(I only came to college during exams 😆). Everytime someone said no, I made the system work in my favour.
+Building a startup from a tier-3 college in a village meant nobody around me understood what I was doing. Family, friends, neighbours, all of them thought I was wasting my time and should get a "proper job." Some days I half-believed them. We fought, we still pulled off.
 
-Entrepreneurship is a luxury in India, without a safety net, your life can get very complicated. The fear of failing is real. I quit the startup later due to various reasons and pursued my ML career and later hoped to start a company someday.
+By the end of 2024 we still had a lot left to uncover, but we managed to pull off a handsome amount of funds ($30000), build a basic prototype and hire a few people at the age of 20.
+
+I spent months fighting college management so my team could get attendance while we built ProjectX (I only came to college during exams 😆). It wasn't easy and I made a few enemies, but I wasn't going to let a register decide whether we shipped.
+
+Entrepreneurship in India is a luxury. There's no safety net, and if it fails, it's on you and your family. So we built lean and made every rupee count.
+
+The fear of failing is real. I felt it every single month.
+
+Leaving ProjectX was one of the hardest decisions I've made. I realised I wanted to go deep on ML, not split my time across management, finance and tech. So I stepped away, hoping to start a company again someday.
+
 ![Subhro speaking about his entrepreneurship journey](/life_story3.jpg)
 
 
@@ -68,6 +77,6 @@ more in my [instagram](https://www.instagram.com/subhros_story/)
 I visited 5 countries in a span of 5 months, from nothing in 2021 to exploring the world in 2026, it was a long journey, it was a nice journey. 
 
 
-I am planning to pursue something in hardware now. more about it later.
+Next: hardware. I'm building Sinthos Industries, a defense company, starting with software and moving into drones. The kid who missed a CS seat by one rank is now trying to build an Apple-scale hardware company. Let's see.
 `,
 };
