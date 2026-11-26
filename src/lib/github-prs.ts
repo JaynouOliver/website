@@ -75,7 +75,7 @@ export async function getPRs(user: string): Promise<PR[]> {
   const q = `type:pr author:${user}`;
   const r = await fetch(`${GH}/search/issues?sort=created&order=desc&per_page=100&q=${encodeURIComponent(q)}`, {
     headers: HEADERS,
-    next: { revalidate: 3600 },
+    next: { revalidate: 600 },
   });
   if (!r.ok) throw new Error("GitHub search failed: " + r.status);
   const items = ((await r.json()) as { items?: SearchItem[] }).items || [];

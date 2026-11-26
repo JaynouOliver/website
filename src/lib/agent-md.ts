@@ -96,11 +96,11 @@ export function talksMd(): string {
 export async function openSourceMd(): Promise<string> {
   const head = ["## Open source", "", `Pull requests by [@${DATA.githubUsername}](${social.GitHub.url}) to other people's projects. Live list: ${SITE}/open-source`];
   try {
-    const prs = (await getPRs(DATA.githubUsername)).filter((p) => p.state !== "closed").slice(0, 40);
+    const prs = (await getPRs(DATA.githubUsername)).slice(0, 40);
     return [
       ...head,
       "",
-      ...prs.map((p) => `- [${p.title}](${p.url}) · ${p.repo}#${p.number} · ${p.state}${p.how === "cherry-picked" ? " (cherry-picked to main)" : p.landed ? " (landed on main)" : ""} · ${p.created.slice(0, 10)}`),
+      ...prs.map((p) => `- [${p.title}](${p.url}) · ${p.repo}#${p.number} · ${p.state === "closed" ? "closed, not merged" : p.state}${p.how === "cherry-picked" ? " (cherry-picked to main)" : p.landed ? " (landed on main)" : ""} · ${p.created.slice(0, 10)}`),
     ].join("\n");
   } catch {
     return head.join("\n"); // GitHub unavailable: keep the pointer to the live page

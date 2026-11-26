@@ -23,13 +23,14 @@ export default function OpenSourcePage() {
         Open source
       </h1>
       <p style={{ margin: "0 0 20px", color: "var(--muted)", fontSize: 16 }}>
-        Merged and open pull requests from 2026 by{" "}
+        Every pull request from 2026 by{" "}
         <a href={gh} target="_blank" rel="noopener">@{DATA.githubUsername}</a>. Some projects, PyTorch among them, land
         changes by rebasing them onto main and closing the PR; those count as merged here and are marked{" "}
         <span className="pf-pr-landed">landed on main</span>. Others cherry-pick the commit with my authorship; those
-        are marked <span className="pf-pr-landed">cherry-picked to main</span>.
+        are marked <span className="pf-pr-landed">cherry-picked to main</span>. A PR that was closed without its change
+        landing is shown as <span className="pf-pr-closed">closed, not merged</span>.
       </p>
-      <GitHubPRs user={DATA.githubUsername} count={100} states={["merged", "open"]} year={2026} summary />
+      <GitHubPRs user={DATA.githubUsername} count={100} year={2026} summary />
     </main>
   );
 }

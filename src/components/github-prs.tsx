@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Recent pull requests from /api/prs (server-cached; PRs that landed as a
-// rebased commit count as merged). Optional filters: `states` keeps only those
+// rebased commit count as merged; ones closed without landing are tagged). Optional filters: `states` keeps only those
 // states, `year` keeps only PRs created that year. `summary` shows totals.
 
 const MergedIcon = () => (
@@ -87,6 +87,7 @@ export default function GitHubPRs({
   const shown = filtered.slice(0, count);
   const merged = filtered.filter((p) => p.state === "merged").length;
   const open = filtered.filter((p) => p.state === "open").length;
+  const closed = filtered.filter((p) => p.state === "closed").length;
   const repos = new Set(filtered.map((p) => p.repo)).size;
 
   return (
@@ -99,6 +100,11 @@ export default function GitHubPRs({
           <span>
             <b>{open}</b> open
           </span>
+          {closed > 0 && (
+            <span>
+              <b>{closed}</b> closed, not merged
+            </span>
+          )}
           <span>
             <b>{repos}</b> repos
           </span>
@@ -120,6 +126,11 @@ export default function GitHubPRs({
                   <span className="pf-pr-repo">{pr.repo}</span>
                   <span>#{pr.number}</span>
                   <span>{fmtDate(pr.created)}</span>
+                  {pr.state === "closed" && (
+                    <span className="pf-pr-closed" title="Closed on GitHub without being merged, and its change is not on the project's main branch">
+                      closed, not merged
+                    </span>
+                  )}
                   {pr.landed && (
                     <span
                       className="pf-pr-landed"
