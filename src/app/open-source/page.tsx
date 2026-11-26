@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/open-source" },
+  alternates: { canonical: "/open-source", types: { "text/markdown": "/open-source.md" } },
   title: "Open source",
   description: `Pull requests by ${DATA.name} — merged, open, and closed.`,
 };

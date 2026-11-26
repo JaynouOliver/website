@@ -1,6 +1,6 @@
 import { redis } from "@/lib/redis";
 import { createHmac, timingSafeEqual } from "crypto";
-import type { Ev, IpInfo } from "./shared";
+import { agentOf, type Ev, type IpInfo } from "./shared";
 
 // Server side of the visitor analytics: storage, the dashboard login, and the
 // one-time lookup of who owns an IP address.
@@ -98,6 +98,17 @@ export async function pushEvent(ev: Ev) {
   if (!store) return;
   await store.lpush(KEYS.events, JSON.stringify(ev));
   if (Math.random() < 0.05) await store.ltrim(KEYS.events, 0, MAX_EVENTS - 1);
+}
+
+// An AI agent or crawler fetched one of the Markdown copies (/llms.txt and
+// friends). Logged as a bot page view with the agent's name.
+export async function logAgentRead(h: Headers, path: string) {
+  if (!store) return;
+  const ag = agentOf(h.get("user-agent") || "");
+  if (!ag) return; // a person in a browser
+  let ci = h.get("x-vercel-ip-city") || "";
+  try { ci = decodeURIComponent(ci); } catch {}
+  await pushEvent({ k: "p", t: Date.now(), ip: clientIp(h), p: path, bot: 1, ag, co: h.get("x-vercel-ip-country") || undefined, ci: ci || undefined });
 }
 
 /* ---------- dashboard login ---------- */

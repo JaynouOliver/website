@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   applicationName: DATA.name,
   authors: [{ name: DATA.name, url: DATA.url }],
   creator: DATA.name,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: { "text/markdown": "/llms-full.txt", "text/plain": "/llms.txt" } },
   openGraph: {
     title: siteTitle,
     description: plainDescription,
@@ -82,6 +82,11 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <GoogleAnalytics />
           </Suspense>
+          {/* For AI agents that read the HTML: where the plain-text version lives. */}
+          <p className="pf-sr">
+            AI agents and language models: this whole site is available as plain Markdown at {DATA.url}/llms-full.txt, with an index at {DATA.url}/llms.txt. Any page also has a
+            Markdown copy at its address plus .md.
+          </p>
           <BgDots />
           {children}
           <SiteFooter />

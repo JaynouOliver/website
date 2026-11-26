@@ -245,6 +245,21 @@ export function clickBreakdown(pvs: PV[], limit = 8): Row[] {
   return Array.from(m, ([name, r]) => ({ name, visitors: r.keys.size, views: r.views })).sort((a, b) => b.views - a.views).slice(0, limit);
 }
 
+// AI agents and crawlers that fetched the Markdown copies (/llms.txt, *.md).
+export function agentReads(events: Ev[], from: number): { agents: Row[]; pages: Row[]; total: number } {
+  const by = (get: (e: Ev) => string) => {
+    const m = new Map<string, { ips: Set<string>; n: number }>();
+    for (const e of events) {
+      if (e.k !== "p" || !e.ag || e.t < from) continue;
+      const r = m.get(get(e)) ?? (m.set(get(e), { ips: new Set(), n: 0 }), m.get(get(e))!);
+      r.n++; if (e.ip) r.ips.add(e.ip);
+    }
+    return Array.from(m, ([name, r]) => ({ name, visitors: r.ips.size, views: r.n })).sort((a, b) => b.views - a.views);
+  };
+  const agents = by((e) => e.ag!);
+  return { agents, pages: by((e) => e.p || ""), total: agents.reduce((n, r) => n + r.views, 0) };
+}
+
 /* ---------- formatting ---------- */
 
 export function fmtDur(ms: number): string {

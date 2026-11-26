@@ -27,6 +27,7 @@ export type Ev = {
   o?: string; // operating system
   d?: string; // Desktop | Mobile | Tablet
   bot?: 1;
+  ag?: string; // AI agent or crawler that fetched a Markdown copy (see agentOf)
   m?: string; // device model, where the browser tells (Android Chrome: "Pixel 9")
   ov?: string; // OS version, where the browser tells
   sw?: number; // screen width
@@ -92,6 +93,36 @@ export function parseUa(ua: string): { b: string; o: string; d: string; bot: boo
                       : "";
   const d = /ipad|tablet|(android(?!.*mobile))/i.test(ua) ? "Tablet" : /mobi|iphone|ipod|android/i.test(ua) ? "Mobile" : "Desktop";
   return { b, o, d, bot };
+}
+
+const AGENTS: [RegExp, string][] = [
+  [/ChatGPT-User/i, "ChatGPT (live browsing)"],
+  [/OAI-SearchBot/i, "ChatGPT search"],
+  [/GPTBot/i, "OpenAI crawler"],
+  [/Claude-User/i, "Claude (live browsing)"],
+  [/Claude-SearchBot/i, "Claude search"],
+  [/ClaudeBot|anthropic-ai/i, "Anthropic crawler"],
+  [/Perplexity-User/i, "Perplexity (live browsing)"],
+  [/PerplexityBot/i, "Perplexity crawler"],
+  [/Google-Extended|GoogleOther|Gemini/i, "Google AI"],
+  [/Googlebot/i, "Googlebot"],
+  [/bingbot/i, "Bingbot"],
+  [/meta-externalagent|meta-externalfetcher|facebookbot/i, "Meta AI"],
+  [/Applebot/i, "Applebot"],
+  [/Amazonbot/i, "Amazonbot"],
+  [/Bytespider/i, "ByteDance crawler"],
+  [/CCBot/i, "Common Crawl"],
+  [/DuckAssistBot|DuckDuckBot/i, "DuckDuckGo"],
+  [/MistralAI/i, "Mistral"],
+  [/cohere/i, "Cohere"],
+  [/YouBot/i, "You.com"],
+  [/curl|wget|python|httpx|axios|node|go-http|undici/i, "Script or coding agent"],
+];
+
+// Who is reading the Markdown copies. Browsers return "" (a person looking).
+export function agentOf(ua: string): string {
+  for (const [re, name] of AGENTS) if (re.test(ua)) return name;
+  return /mozilla/i.test(ua) && !BOT_RE.test(ua) ? "" : "Other bot";
 }
 
 const SOURCES: [RegExp, string][] = [

@@ -11,12 +11,39 @@ import { NextResponse, type NextRequest } from "next/server";
 //
 // Also: the *.vercel.app copies of the site (preview and the project's default
 // domain) are marked noindex, so Google only lists www.subhrokomol.in.
+const AI_AGENT =
+  /ChatGPT-User|OAI-SearchBot|GPTBot|Claude-User|Claude-SearchBot|ClaudeBot|anthropic-ai|Perplexity-User|PerplexityBot|meta-externalagent|meta-externalfetcher|MistralAI|cohere-ai|YouBot|DuckAssistBot|Amazonbot|Applebot-Extended|Bytespider|CCBot/i;
+
 export function proxy(request: NextRequest) {
   const host = (request.headers.get("host") || "").toLowerCase();
   if (host.endsWith(".vercel.app")) {
     const res = NextResponse.next();
     res.headers.set("X-Robots-Tag", "noindex");
     return res;
+  }
+
+  // AI agents get the Markdown copy of a page (src/lib/agent-md.ts) at the
+  // page's normal address, so they never need to know about /llms.txt:
+  //   - a known AI agent's user-agent (ChatGPT, Claude, Perplexity, ...), or
+  //   - "Accept: text/markdown" without text/html.
+  // Search engines (Googlebot, Bingbot) are deliberately not on the list: they
+  // must see the same HTML as people. /?agent=1 shows the Markdown view to anyone.
+  const path = request.nextUrl.pathname;
+  if (path === "/" && request.nextUrl.searchParams.get("agent") === "1") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/agent";
+    url.search = "";
+    return NextResponse.rewrite(url);
+  }
+  const hasMd = path === "/" || path === "/blog" || path === "/open-source" || /^\/blog\/[^/.]+$/.test(path);
+  if (hasMd) {
+    const accept = request.headers.get("accept") || "";
+    const wantsMd = /text\/markdown/i.test(accept) && !/text\/html/i.test(accept);
+    if (wantsMd || AI_AGENT.test(request.headers.get("user-agent") || "")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/md" + (path === "/" ? "/full" : path); // the homepage answers with the whole site
+      return NextResponse.rewrite(url);
+    }
   }
 
   const blogHost = process.env.BLOG_HOST;

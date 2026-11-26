@@ -17,6 +17,7 @@ export default function SiteFooter() {
         { label: "Main quests", href: "/#experience" },
         { label: "Talks & travels", href: "/#talks" },
         { label: "Open source", href: "/open-source" },
+        { label: "For AI agents", href: "/agent" },
       ],
     },
     {
