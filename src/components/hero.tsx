@@ -85,10 +85,7 @@ export default function Hero({
             <Tag label="person" conf="0.99" />
           </span>
           , a software engineer building{" "}
-          <span className="hx-box">
-            AI agents
-            <Tag label="agent" />
-          </span>
+          <span className="hx-hand">AI agents</span>
           : the{" "}
           <span className="hx-box">
             skills
