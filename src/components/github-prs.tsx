@@ -35,6 +35,7 @@ export default function GitHubPRs({
   states,
   year,
   summary,
+  filter,
 }: {
   user: string;
   count?: number;
@@ -42,9 +43,11 @@ export default function GitHubPRs({
   states?: PR["state"][];
   year?: number;
   summary?: boolean;
+  filter?: boolean; // show All / Merged / Open buttons above the list
 }) {
   const [all, setAll] = useState<PR[] | null>(null);
   const [status, setStatus] = useState<"loading" | "done" | "error">("loading");
+  const [tab, setTab] = useState<"all" | "merged" | "open">("all");
 
   useEffect(() => {
     let alive = true;
@@ -84,7 +87,7 @@ export default function GitHubPRs({
   const filtered = all.filter(
     (pr) => (!states || states.includes(pr.state)) && (!year || new Date(pr.created).getFullYear() === year),
   );
-  const shown = filtered.slice(0, count);
+  const shown = filtered.filter((p) => tab === "all" || p.state === tab).slice(0, count);
   const merged = filtered.filter((p) => p.state === "merged").length;
   const open = filtered.filter((p) => p.state === "open").length;
   const closed = filtered.filter((p) => p.state === "closed").length;
@@ -94,12 +97,16 @@ export default function GitHubPRs({
     <div>
       {summary && (
         <div className="pf-prstats">
-          <span>
-            <b>{merged}</b> merged
-          </span>
-          <span>
-            <b>{open}</b> open
-          </span>
+          {!filter && (
+            <>
+              <span>
+                <b>{merged}</b> merged
+              </span>
+              <span>
+                <b>{open}</b> open
+              </span>
+            </>
+          )}
           {closed > 0 && (
             <span>
               <b>{closed}</b> closed, not merged
@@ -110,7 +117,17 @@ export default function GitHubPRs({
           </span>
         </div>
       )}
+      {filter && (
+        <div className="pf-seg" role="group" aria-label="Filter pull requests">
+          {([["all", "All", filtered.length], ["merged", "Merged", merged], ["open", "Open", open]] as const).map(([id, label, n]) => (
+            <button key={id} className={tab === id ? "is-on" : ""} aria-pressed={tab === id} onClick={() => setTab(id)}>
+              {label} <span>{n}</span>
+            </button>
+          ))}
+        </div>
+      )}
       <div className="pf-prlist">
+        {shown.length === 0 && <p style={{ color: "var(--faint)", fontSize: 14, margin: "14px 0" }}>Nothing here yet.</p>}
         {shown.map((pr) => {
           const owner = pr.repo.split("/")[0];
           return (
