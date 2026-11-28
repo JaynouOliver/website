@@ -62,7 +62,5 @@ more on my [instagram](https://www.instagram.com/subhros_story/)
 
 I visited 5 countries in a span of 5 months. From writing code in a diary in 2021 to exploring the world in 2026.
 
-
-Next: hardware. I'm building Sinthos Industries, a defense company, starting with software and moving into drones. The kid who missed a CS seat by one rank is now building toward an Apple-scale hardware company.
 `,
 };
