@@ -1,4 +1,3 @@
-import BgDots from "@/components/bg-dots";
 import { ClarityProvider } from "@/components/clarity";
 import Dock from "@/components/dock";
 import SiteFooter from "@/components/site-footer";
@@ -8,20 +7,16 @@ import VisitTracker from "@/components/visit-tracker";
 import { DATA } from "@/data/resume";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
-import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { Nothing_You_Could_Do, Sometype_Mono, Stack_Sans_Headline, Stack_Sans_Text } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 
-const fontMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "600"],
-  variable: "--font-mono",
-});
-
-const fontSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+// Type: Stack Sans (light headlines, regular text), Sometype Mono for the small
+// technical labels, and one handwritten face for accents.
+const fontMono = Sometype_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const fontSans = Stack_Sans_Text({ subsets: ["latin"], variable: "--font-sans" });
+const fontHead = Stack_Sans_Headline({ subsets: ["latin"], variable: "--font-head" });
+const fontHand = Nothing_You_Could_Do({ subsets: ["latin"], weight: "400", variable: "--font-hand" });
 
 const plainDescription = DATA.seoDescription;
 
@@ -76,7 +71,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={fontSans.variable + " " + fontMono.variable}>
+      <body className={[fontSans.variable, fontMono.variable, fontHead.variable, fontHand.variable].join(" ")}>
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClarityProvider projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} />
           <Suspense fallback={null}>
@@ -87,7 +82,6 @@ export default function RootLayout({
             AI agents and language models: this whole site is available as plain Markdown at {DATA.url}/llms-full.txt, with an index at {DATA.url}/llms.txt. Any page also has a
             Markdown copy at its address plus .md.
           </p>
-          <BgDots />
           {children}
           <SiteFooter />
           <Dock />

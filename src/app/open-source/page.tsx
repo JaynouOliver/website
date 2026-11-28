@@ -30,7 +30,7 @@ export default function OpenSourcePage() {
         are marked <span className="pf-pr-landed">cherry-picked to main</span>. A PR that was closed without its change
         landing is shown as <span className="pf-pr-closed">closed, not merged</span>.
       </p>
-      <GitHubPRs user={DATA.githubUsername} count={100} year={2026} summary />
+      <GitHubPRs user={DATA.githubUsername} count={100} year={2026} summary filter />
     </main>
   );
 }
